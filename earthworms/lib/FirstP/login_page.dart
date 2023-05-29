@@ -1,5 +1,5 @@
 import 'package:earthworms/FirstP/regis_page.dart';
-import 'package:earthworms/components/My_button.dart';
+import 'package:earthworms/components/login_button.dart';
 import 'package:earthworms/components/my_textfield.dart';
 import 'package:flutter/material.dart';
 
@@ -76,7 +76,7 @@ class LoginPage extends StatelessWidget {
             ),
 
             // Login button
-            MyButton(
+            LoginButton(
               onTap: MySignFunc,
             )
           ],

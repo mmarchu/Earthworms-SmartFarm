@@ -1,4 +1,5 @@
 import 'package:earthworms/components/my_textfield.dart';
+import 'package:earthworms/components/regis_button.dart';
 import 'package:flutter/material.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -19,7 +20,7 @@ class RegisterPage extends StatelessWidget {
       ),
       backgroundColor: Color.fromRGBO(214, 232, 219, 1),
       body: SafeArea(
-          child: Center(
+        child: Center(
         child: Column(children: [
           const SizedBox(height: 40),
 
@@ -42,15 +43,17 @@ class RegisterPage extends StatelessWidget {
               controller: emailController,
               hintText: 'Email',
               obscureText: false),
-              const SizedBox(height: 30),
+          const SizedBox(height: 30),
 
           // Password
           MyTextField(
-            controller: passwordController,
-            hintText: 'Password',
-            obscureText: true),
-            const SizedBox(height: 30)
+              controller: passwordController,
+              hintText: 'Password',
+              obscureText: true),
+          const SizedBox(height: 30),
 
+          // Regis button
+          const RegisButton()
         ]),
       )),
     );
