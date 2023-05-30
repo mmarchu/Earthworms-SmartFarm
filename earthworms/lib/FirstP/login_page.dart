@@ -1,4 +1,5 @@
 import 'package:earthworms/FirstP/regis_page.dart';
+import 'package:earthworms/MainFunc/homepage.dart';
 import 'package:earthworms/components/login_button.dart';
 import 'package:earthworms/components/my_textfield.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isKeyboard = MediaQuery.of(context).viewInsets.bottom != 0;
     return Scaffold(
       backgroundColor: Color.fromRGBO(214, 232, 219, 1),
       body: SafeArea(
@@ -21,8 +23,10 @@ class LoginPage extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 1),
-            //logo
-            Image.asset("images/EarthwormIcon.png", height: 250, width: 250),
+            if (!isKeyboard)
+
+              //logo
+              Image.asset("images/EarthwormIcon.png", height: 250, width: 250),
             const SizedBox(height: 10),
 
             //Text
@@ -78,6 +82,16 @@ class LoginPage extends StatelessWidget {
             // Login button
             LoginButton(
               onTap: MySignFunc,
+            ),
+
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => homepage()),
+                );
+              },
+              child: const Text('home')
             )
           ],
         ),
