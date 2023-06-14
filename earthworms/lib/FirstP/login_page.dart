@@ -1,7 +1,5 @@
 import 'package:earthworms/FirstP/regis_page.dart';
 import 'package:earthworms/MainFunc/homepage.dart';
-import 'package:earthworms/components/login_button.dart';
-import 'package:earthworms/components/my_textfield.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
@@ -10,18 +8,19 @@ class LoginPage extends StatelessWidget {
   //text editing controller
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  bool invisible = true;
 
-  void MySignFunc() {}
+
 
   @override
   Widget build(BuildContext context) {
     final isKeyboard = MediaQuery.of(context).viewInsets.bottom != 0;
     return Scaffold(
-      backgroundColor: Color.fromRGBO(214, 232, 219, 1),
+      backgroundColor:const Color.fromRGBO(214, 232, 219, 1),
       body: SafeArea(
           child: Center(
         child: Column(
-          children: [
+          children: <Widget>[
             const SizedBox(height: 1),
             if (!isKeyboard)
 
@@ -39,19 +38,60 @@ class LoginPage extends StatelessWidget {
             ),
             const SizedBox(height: 25),
 
-            //username
-            MyTextField(
-              controller: emailController,
-              hintText: 'Email',
-              obscureText: false,
+            //Email
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: TextFormField(
+                controller: emailController,
+                obscureText: false,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your Email';
+                  }
+                  return null;
+                },
+                decoration: const InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xffC1D0B5)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white)),
+                  fillColor: Color(0xffC1D0B5),
+                  filled: true,
+                  hintText: 'Email',
+                  hintStyle: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+              ),
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 10),
 
-            //password
-            MyTextField(
-              controller: passwordController,
-              hintText: 'Password',
-              obscureText: true,
+            //Password
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: TextFormField(
+                controller: passwordController,
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your Password';
+                  }
+                  return null;
+                },
+                decoration: const InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xffC1D0B5)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white)),
+                    fillColor: Color(0xffC1D0B5),
+                    filled: true,
+                    hintText: 'Password',
+                    hintStyle: TextStyle(
+                        fontWeight: FontWeight.bold, 
+                        color: Colors.white),
+                    ),
+              ),
             ),
             const SizedBox(height: 7),
 
@@ -80,18 +120,53 @@ class LoginPage extends StatelessWidget {
             ),
 
             // Login button
-            LoginButton(
-              onTap: MySignFunc,
+            // ElevatedButton(
+            //   onPressed: (){},
+            //   style: ElevatedButton.styleFrom(
+            //     padding: const EdgeInsets.all(20),
+            //     shape: RoundedRectangleBorder(
+            //       borderRadius: BorderRadius.circular(20)
+            //     ),
+            //     backgroundColor: const Color(0xffA9907E)
+            //   ),
+            //   child: const Text('Login',
+            //   style: TextStyle(
+            //     color: Colors.white,
+            //     fontWeight: FontWeight.bold,
+            //     fontSize: 18
+            //     ),
+            //   ),
+            // ),
+            InkWell(
+              onTap: () {},
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                margin: const EdgeInsets.symmetric(horizontal: 25),
+                decoration: BoxDecoration(
+                    color: const Color(0xffA9907E),
+                    borderRadius: BorderRadius.circular(20)),
+                child: const Center(
+                  child: Text(
+                    'Login',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18),
+                  ),
+                ),
+              ),
             ),
 
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => homepage()),
-                );
-              },
-              child: const Text('home')
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => homepage()),
+                    );
+                  },
+                  child: const Text('home')),
             )
           ],
         ),
