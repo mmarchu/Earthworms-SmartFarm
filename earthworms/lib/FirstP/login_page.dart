@@ -1,7 +1,9 @@
 import 'package:earthworms/FirstP/regis_page.dart';
 import 'package:earthworms/MainFunc/homepage.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
+// ignore: must_be_immutable
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
@@ -9,14 +11,31 @@ class LoginPage extends StatelessWidget {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   bool invisible = true;
+  // String email = emailController.text; // Assuming usernameController is a TextEditingController
+  // String password = passwordController.text; // Assuming passwordController is a TextEditingController
 
 
+  void login(String username, String password) async {
+    var url = 'http://localhost:8080/testDatabase/insert.php'; // Replace with your PHP login API endpoint URL
+
+    var body = {'email': emailController, 'password': passwordController};
+
+    var response = await http.post(Uri.parse(url), body: body);
+
+    if (response.statusCode == 200) {
+      // Login successful, handle the response accordingly
+      print('Login successful');
+    } else {
+      // Login failed, handle the response accordingly
+      print('Login failed');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final isKeyboard = MediaQuery.of(context).viewInsets.bottom != 0;
     return Scaffold(
-      backgroundColor:const Color.fromRGBO(214, 232, 219, 1),
+      backgroundColor: const Color.fromRGBO(214, 232, 219, 1),
       body: SafeArea(
           child: Center(
         child: Column(
@@ -71,7 +90,7 @@ class LoginPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 25),
               child: TextFormField(
                 controller: passwordController,
-                obscureText: true,
+                obscureText: invisible,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your Password';
@@ -79,18 +98,17 @@ class LoginPage extends StatelessWidget {
                   return null;
                 },
                 decoration: const InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xffC1D0B5)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white)),
-                    fillColor: Color(0xffC1D0B5),
-                    filled: true,
-                    hintText: 'Password',
-                    hintStyle: TextStyle(
-                        fontWeight: FontWeight.bold, 
-                        color: Colors.white),
-                    ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xffC1D0B5)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white)),
+                  fillColor: Color(0xffC1D0B5),
+                  filled: true,
+                  hintText: 'Password',
+                  hintStyle: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white),
+                ),
               ),
             ),
             const SizedBox(height: 7),
@@ -120,25 +138,11 @@ class LoginPage extends StatelessWidget {
             ),
 
             // Login button
-            // ElevatedButton(
-            //   onPressed: (){},
-            //   style: ElevatedButton.styleFrom(
-            //     padding: const EdgeInsets.all(20),
-            //     shape: RoundedRectangleBorder(
-            //       borderRadius: BorderRadius.circular(20)
-            //     ),
-            //     backgroundColor: const Color(0xffA9907E)
-            //   ),
-            //   child: const Text('Login',
-            //   style: TextStyle(
-            //     color: Colors.white,
-            //     fontWeight: FontWeight.bold,
-            //     fontSize: 18
-            //     ),
-            //   ),
-            // ),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                print('login');
+                //login(emailController, passwordController);
+              },
               child: Container(
                 padding: const EdgeInsets.all(20),
                 margin: const EdgeInsets.symmetric(horizontal: 25),

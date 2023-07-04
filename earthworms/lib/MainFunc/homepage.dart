@@ -8,50 +8,41 @@ class homepage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Color.fromRGBO(214, 232, 219, 1),
       body: SafeArea(
-        child: Column(
-          children: [
-            //appBar
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 25,
-                vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // icon Menu
-                  IconButton(
-                    onPressed: (){
-                      Scaffold.of(context).openDrawer();
-                    }, 
+          child: Column(
+        children: [
+          //appBar
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // icon Menu
+                IconButton(
+                    onPressed: () {
+                      // Scaffold.of(context).openDrawer();
+                      print('Menu');
+                    },
                     icon: Icon(
                       Icons.menu,
                       size: 38,
-                      color: Colors.grey[800],)
-                  ),
-                  
+                      color: Colors.grey[800],
+                    )),
 
-                  // icon Account
-                  IconButton(
-                    onPressed: (){
-
+                // icon Account
+                IconButton(
+                    onPressed: () {
+                      print('Person');
                     },
-                    icon: Icon(
-                      Icons.person,
-                      size: 38,
-                      color: Colors.grey[800])
-                  )
-                ],
-              ),
+                    icon: Icon(Icons.person, size: 38, color: Colors.grey[800]))
+              ],
             ),
-            const SizedBox(height: 20),
+          ),
+          const SizedBox(height: 20),
 
-            // text
-            Text('Welcome BBack')
-            
-          ],
-        )
-      ),
+          // text
+          Text('Welcome BBack')
+        ],
+      )),
     );
   }
-} 
-        
+}
