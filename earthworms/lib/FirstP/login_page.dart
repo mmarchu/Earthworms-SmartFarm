@@ -14,9 +14,9 @@ class LoginPage extends StatelessWidget {
   // String email = emailController.text; // Assuming usernameController is a TextEditingController
   // String password = passwordController.text; // Assuming passwordController is a TextEditingController
 
-
   void login(String username, String password) async {
-    var url = 'http://localhost:8080/testDatabase/insert.php'; // Replace with your PHP login API endpoint URL
+    var url =
+        'http://localhost:8080/testDatabase/insert.php'; // Replace with your PHP login API endpoint URL
 
     var body = {'email': emailController, 'password': passwordController};
 
@@ -141,6 +141,8 @@ class LoginPage extends StatelessWidget {
             InkWell(
               onTap: () {
                 print('login');
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => homepage()));
                 //login(emailController, passwordController);
               },
               child: Container(
@@ -160,18 +162,6 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
             ),
-
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => homepage()),
-                    );
-                  },
-                  child: const Text('home')),
-            )
           ],
         ),
       )),
