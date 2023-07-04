@@ -3,6 +3,7 @@ import 'package:earthworms/MainFunc/profilepage.dart';
 import 'package:flutter/material.dart';
 
 class homepage extends StatelessWidget {
+  homepage({super.key});
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
