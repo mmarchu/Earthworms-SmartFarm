@@ -1,14 +1,21 @@
 import 'package:earthworms/FirstP/login_page.dart';
 import 'package:earthworms/MainFunc/profilepage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class homepage extends StatelessWidget {
   homepage({super.key});
 
+  String NameDD = 'Ammar Chuapoodee';
+  String EmailDD = 'Ammarchsend@gmail.com';
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  AnnotatedRegion<SystemUiOverlayStyle>( 
+      value: SystemUiOverlayStyle.dark,
+      child: Scaffold(
       key: _scaffoldKey,
       backgroundColor: const Color.fromRGBO(214, 232, 219, 1),
 
@@ -18,17 +25,27 @@ class homepage extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              decoration: const BoxDecoration(
-                color: Color.fromRGBO(214, 232, 219, 1),
-              ),
-              child: Text(
-                'Drawer Header',
-                style: TextStyle(
-                  color: Colors.grey[800],
-                  fontSize: 24,
+                decoration: const BoxDecoration(
+                  color: Color.fromRGBO(214, 232, 219, 1),
                 ),
-              ),
-            ),
+                child: UserAccountsDrawerHeader(
+                  decoration: const BoxDecoration(
+                      color: Color.fromRGBO(214, 232, 219, 1)),
+                  // Name Header
+                  accountName: Text(
+                    NameDD,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[800],
+                    ),
+                  ),
+                  // Email Header
+                  accountEmail: Text(
+                    EmailDD,
+                    style: TextStyle(fontSize: 15, color: Colors.grey[800]),
+                  ),
+                )),
             ListTile(
               title: const Text(
                 'Change password',
@@ -94,6 +111,6 @@ class homepage extends StatelessWidget {
           Text('Welcome Back')
         ],
       )),
-    );
+    ));
   }
 }

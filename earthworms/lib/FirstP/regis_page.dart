@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class RegisterPage extends StatelessWidget {
   RegisterPage({super.key});
@@ -40,7 +41,9 @@ class RegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  AnnotatedRegion<SystemUiOverlayStyle>( 
+      value: SystemUiOverlayStyle.light,
+      child: Scaffold(
       appBar: AppBar(
         title: const Text("Register"),
         backgroundColor: const Color(0xff675D50),
@@ -139,6 +142,8 @@ class RegisterPage extends StatelessWidget {
           InkWell(
             onTap: () {
               print('Register');
+              var snackBar = SnackBar(content: Text(passwordController.text));
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
               //register();
             },
             child: Container(
@@ -161,6 +166,6 @@ class RegisterPage extends StatelessWidget {
           )
         ]),
       )),
-    );
+    ));
   }
 }

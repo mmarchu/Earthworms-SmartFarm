@@ -1,15 +1,17 @@
-import 'package:earthworms/MainFunc/homepage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class MyprofilePage extends StatelessWidget {
   const MyprofilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AnnotatedRegion<SystemUiOverlayStyle>( 
+      value: SystemUiOverlayStyle.dark,
+      child: Scaffold(
       backgroundColor: const Color.fromRGBO(214, 232, 219, 1),
       body: SafeArea(
-          child: Column(
+        child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
@@ -25,6 +27,6 @@ class MyprofilePage extends StatelessWidget {
           )
         ],
       )),
-    );
+    ));
   }
 }

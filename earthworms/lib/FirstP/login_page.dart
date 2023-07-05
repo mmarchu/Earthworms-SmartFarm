@@ -2,6 +2,7 @@ import 'package:earthworms/FirstP/regis_page.dart';
 import 'package:earthworms/MainFunc/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
 
 // ignore: must_be_immutable
 class LoginPage extends StatelessWidget {
@@ -34,7 +35,9 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isKeyboard = MediaQuery.of(context).viewInsets.bottom != 0;
-    return Scaffold(
+    return  AnnotatedRegion<SystemUiOverlayStyle>( 
+      value: SystemUiOverlayStyle.dark,
+      child: Scaffold(
       backgroundColor: const Color.fromRGBO(214, 232, 219, 1),
       body: SafeArea(
           child: Center(
@@ -43,8 +46,8 @@ class LoginPage extends StatelessWidget {
             const SizedBox(height: 1),
             if (!isKeyboard)
 
-              //logo
-              Image.asset("images/EarthwormIcon.png", height: 250, width: 250),
+            //logo
+            Image.asset("images/EarthwormIcon.png", height: 250, width: 250),
             const SizedBox(height: 10),
 
             //Text
@@ -165,6 +168,6 @@ class LoginPage extends StatelessWidget {
           ],
         ),
       )),
-    );
+    ));
   }
 }
