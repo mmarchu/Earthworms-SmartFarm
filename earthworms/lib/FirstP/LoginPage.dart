@@ -126,7 +126,8 @@ class LoginPage extends StatelessWidget {
                         child: const Text(
                           'Register',
                           style: TextStyle(
-                            color: Color.fromRGBO(17, 41, 34, 0.9)
+                            color: Color.fromRGBO(17, 41, 34, 0.9),
+                            decoration: TextDecoration.underline
                           ),),
                       )
                     ],
