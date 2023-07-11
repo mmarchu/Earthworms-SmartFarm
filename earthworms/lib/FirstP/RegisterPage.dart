@@ -48,7 +48,7 @@ class RegisterPage extends StatelessWidget {
         title: const Text("Register"),
         backgroundColor: const Color(0xff675D50),
       ),
-      backgroundColor: Color.fromRGBO(214, 232, 219, 1),
+      backgroundColor: Color.fromRGBO(250, 246, 229, 1),
       body: SafeArea(
           child: Center(
         child: Column(children: [
