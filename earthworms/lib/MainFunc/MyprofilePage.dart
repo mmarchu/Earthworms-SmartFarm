@@ -15,7 +15,7 @@ class MyprofilePage extends StatelessWidget {
             children: [
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                    const EdgeInsets.symmetric(horizontal: 25),
                 child: IconButton(
                     onPressed: () {
                       Navigator.pop(context);

@@ -1,6 +1,6 @@
-import 'dart:convert';
-import 'dart:io';
-import 'package:http/http.dart' as http;
+// import 'dart:convert';
+// import 'dart:io';
+// import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -13,32 +13,6 @@ class RegisterPage extends StatelessWidget {
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
 
-  // Future register() async {
-  //   var URL = 'http://http://127.0.0.1:3306/testDatabase/insert.php';
-  //   final Uri url = Uri.parse(URL);
-  //   var myReq = {};
-  //   myReq['surename'] = nameController;
-  //   myReq['lastname'] = lastnameController;
-  //   myReq['email'] = emailController;
-  //   myReq['password'] = passwordController;
-  //   String jsonReq = jsonEncode(myReq);
-  //   var response = await http.post(url,
-  //       body: jsonReq,
-  //       headers: {HttpHeaders.contentTypeHeader: 'application/json'});
-  //   if (response.statusCode == 200) {
-  //     var msg = jsonDecode(response.body);
-  //     print(msg);
-  //     if (msg["status"] == "Success") {
-  //       print('Register success');
-  //       //Navigator.pop(context);
-  //     } else {
-  //       print('Format Error');
-  //     }
-  //   } else {
-  //     print('Error');
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return  AnnotatedRegion<SystemUiOverlayStyle>( 
@@ -46,11 +20,12 @@ class RegisterPage extends StatelessWidget {
       child: Scaffold(
       appBar: AppBar(
         title: const Text("Register"),
-        backgroundColor: const Color(0xff675D50),
+        backgroundColor: Color(0xff0e4f55),
       ),
       backgroundColor: Color.fromRGBO(250, 246, 229, 1),
       body: SafeArea(
-          child: Center(
+          child: Container(
+            child: SingleChildScrollView(
         child: Column(children: [
           const SizedBox(height: 40),
 
@@ -60,12 +35,16 @@ class RegisterPage extends StatelessWidget {
             child: TextFormField(
               controller: nameController,
               obscureText: false,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white
+              ),
               decoration: const InputDecoration(
                 enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xffC1D0B5))),
+                    borderSide: BorderSide(color: Color.fromRGBO(42, 62, 54, 1))),
                 focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.white)),
-                fillColor: Color(0xffC1D0B5),
+                fillColor: Color.fromRGBO(42, 62, 54, 1),
                 filled: true,
                 hintText: "Name",
                 hintStyle:
@@ -81,12 +60,16 @@ class RegisterPage extends StatelessWidget {
             child: TextFormField(
               controller: lastnameController,
               obscureText: false,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white
+              ),
               decoration: const InputDecoration(
                 enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xffC1D0B5))),
+                    borderSide: BorderSide(color: Color.fromRGBO(42, 62, 54, 1))),
                 focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.white)),
-                fillColor: Color(0xffC1D0B5),
+                fillColor: Color.fromRGBO(42, 62, 54, 1),
                 filled: true,
                 hintText: "Lastname",
                 hintStyle:
@@ -102,12 +85,16 @@ class RegisterPage extends StatelessWidget {
             child: TextFormField(
               controller: emailController,
               obscureText: false,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white
+              ),
               decoration: const InputDecoration(
                 enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xffC1D0B5))),
+                    borderSide: BorderSide(color: Color.fromRGBO(42, 62, 54, 1))),
                 focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.white)),
-                fillColor: Color(0xffC1D0B5),
+                fillColor: Color.fromRGBO(42, 62, 54, 1),
                 filled: true,
                 hintText: "Email",
                 hintStyle:
@@ -123,12 +110,16 @@ class RegisterPage extends StatelessWidget {
             child: TextFormField(
               controller: passwordController,
               obscureText: true,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white
+              ),
               decoration: const InputDecoration(
                 enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xffC1D0B5))),
+                    borderSide: BorderSide(color: Color.fromRGBO(42, 62, 54, 1))),
                 focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.white)),
-                fillColor: Color(0xffC1D0B5),
+                fillColor: Color.fromRGBO(42, 62, 54, 1),
                 filled: true,
                 hintText: "Password",
                 hintStyle:
@@ -150,7 +141,7 @@ class RegisterPage extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               margin: const EdgeInsets.symmetric(horizontal: 25),
               decoration: BoxDecoration(
-                color: const Color(0xffA9907E),
+                color: Color.fromRGBO(239, 165, 38, 1),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: const Center(
@@ -166,6 +157,6 @@ class RegisterPage extends StatelessWidget {
           )
         ]),
       )),
-    ));
+    )));
   }
 }

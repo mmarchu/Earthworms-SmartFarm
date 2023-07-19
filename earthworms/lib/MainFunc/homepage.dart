@@ -1,15 +1,19 @@
 import 'package:earthworms/FirstP/LoginPage.dart';
 import 'package:earthworms/MainFunc/ChangePassPage.dart';
 import 'package:earthworms/MainFunc/MyprofilePage.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:earthworms/MainFunc/WebViewPage.dart';
+//import 'package:earthworms/MainFunc/WebViewPage.dart';
+//import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+// import 'package:url_launcher/url_launcher.dart';
+// import 'package:url_launcher/url_launcher_string.dart';
 
 class homepage extends StatelessWidget {
   homepage({super.key});
 
-  String NameDD = 'Demo Test';
-  String EmailDD = 'Demo@email.com';
+  final NameDD = 'Demo Test';
+  final EmailDD = 'Demo@email.com';
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -28,11 +32,11 @@ class homepage extends StatelessWidget {
               children: <Widget>[
                 DrawerHeader(
                     decoration: const BoxDecoration(
-                      color: Color.fromRGBO(72, 110, 75, 1),
+                      color: Color.fromRGBO(239, 165, 38, 1),
                     ),
                     child: UserAccountsDrawerHeader(
                       decoration: const BoxDecoration(
-                          color: Color.fromRGBO(72, 110, 75, 1)),
+                          color: Color.fromRGBO(239, 165, 38, 1)),
                       // Name Header
                       accountName: Text(
                         NameDD,
@@ -45,13 +49,9 @@ class homepage extends StatelessWidget {
                       // Email Header
                       accountEmail: Text(
                         EmailDD,
-                        style: TextStyle(
-                          fontSize: 15, 
-                          color: Colors.white
-                          ),
+                        style: TextStyle(fontSize: 15, color: Colors.white),
                       ),
                     )),
-                    
                 ListTile(
                   title: const Text(
                     'Change password',
@@ -63,7 +63,7 @@ class homepage extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ChangePassPage()));
-                    Navigator.pop(context);
+                    //Navigator.pop(context);
                   },
                 ),
                 ListTile(
@@ -73,7 +73,7 @@ class homepage extends StatelessWidget {
                   ),
                   onTap: () {
                     print("Log out");
-                    Navigator.push(context,
+                    Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => LoginPage()));
                   },
                 ),
@@ -86,7 +86,7 @@ class homepage extends StatelessWidget {
             children: [
               //appBar
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                padding: EdgeInsets.symmetric(horizontal: 25),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -124,25 +124,28 @@ class homepage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Welcome Back To",
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.grey[800],
-                      ),),
+                      Text(
+                        "Welcome Back To",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.grey[800],
+                        ),
+                      ),
                       SizedBox(
                         height: 5,
                       ),
                       Text(
                         "The Earthworm's SmartFarm", //Name of user
                         style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey[800]),
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey[800]),
                       )
                     ],
                   )),
               const SizedBox(height: 10),
 
+              // Function Button
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                 child: Row(
@@ -154,7 +157,7 @@ class homepage extends StatelessWidget {
                       height: 200,
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: Color.fromRGBO(72, 110, 75, 1),
+                          color: Color.fromRGBO(42, 62, 54, 1),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Column(children: [
@@ -194,7 +197,7 @@ class homepage extends StatelessWidget {
                       height: 200,
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: Color.fromRGBO(72, 110, 75, 1),
+                          color: Color.fromRGBO(42, 62, 54, 1),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Column(children: [
@@ -206,13 +209,17 @@ class homepage extends StatelessWidget {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                SizedBox(height: 25,),
+                                SizedBox(
+                                  height: 25,
+                                ),
                                 Image.asset(
                                   "images/sensor-1-1.png",
                                   height: 100,
                                   width: 100,
                                 ),
-                                SizedBox(height: 20,),
+                                SizedBox(
+                                  height: 20,
+                                ),
                                 Text(
                                   'Sensor2',
                                   style: TextStyle(
@@ -230,9 +237,7 @@ class homepage extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
 
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
@@ -245,24 +250,28 @@ class homepage extends StatelessWidget {
                       height: 200,
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: Color.fromRGBO(72, 110, 75, 1),
+                          color: Color.fromRGBO(42, 62, 54, 1),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Column(children: [
                           InkWell(
-                            onTap: () {
+                            onTap: () async {
                               print('Water Pump');
                             },
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                SizedBox(height: 25,),
+                                SizedBox(
+                                  height: 25,
+                                ),
                                 Image.asset(
                                   "images/water-pump-1.png",
                                   width: 100,
                                   height: 100,
                                 ),
-                                SizedBox(height: 20,),
+                                SizedBox(
+                                  height: 20,
+                                ),
                                 Text(
                                   'Water Pump',
                                   style: TextStyle(
@@ -275,6 +284,55 @@ class homepage extends StatelessWidget {
                             ),
                           )
                         ]),
+                      ),
+                    ),
+
+                    //Stats Page
+                    SizedBox(
+                      width: 150,
+                      height: 200,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: Color.fromRGBO(42, 62, 54, 1),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Column(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                print('Stats Web');
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => WebViewPage()));
+                              },
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    height: 25,
+                                  ),
+                                  Image.asset(
+                                    "images/StatsIcons.png",
+                                    height: 100,
+                                    width: 100,
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    'Statistics View',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     )
                   ],
