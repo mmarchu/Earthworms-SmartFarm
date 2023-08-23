@@ -18,7 +18,6 @@ class LoginPage extends StatelessWidget {
   //   String email = emailController.text;
   //   String password = passwordController.text;
   // }
-
   
 
   @override
@@ -55,6 +54,12 @@ class LoginPage extends StatelessWidget {
                       child: TextFormField(
                         controller: emailController,
                         obscureText: false,
+                        // validator: (value) {
+                        //   if (value.isEmpty) {
+                        //     return 'Please enter your name';
+                        //   }
+                        //   return null;
+                        // },
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.white),
                         decoration: const InputDecoration(

@@ -4,14 +4,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class RegisterPage extends StatelessWidget {
-  RegisterPage({super.key});
+// ignore: must_be_immutable
+class RegisterPage  extends StatelessWidget {
+  RegisterPage ({super.key});
 
   //text editing controller
-  var nameController = TextEditingController();
-  var lastnameController = TextEditingController();
-  var emailController = TextEditingController();
-  var passwordController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController lastnameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {

@@ -23,7 +23,7 @@ class homepage extends StatelessWidget {
         value: SystemUiOverlayStyle.dark,
         child: Scaffold(
           key: _scaffoldKey,
-          backgroundColor: const Color.fromRGBO(250, 246, 229, 1),
+          backgroundColor:  Color.fromRGBO(250, 246, 229, 1),
 
           //navigation drawer
           drawer: Drawer(
@@ -116,7 +116,7 @@ class homepage extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 15),
 
               // text Header
               Padding(
@@ -131,9 +131,7 @@ class homepage extends StatelessWidget {
                           color: Colors.grey[800],
                         ),
                       ),
-                      SizedBox(
-                        height: 5,
-                      ),
+                      SizedBox(height: 10,),
                       Text(
                         "The Earthworm's SmartFarm", //Name of user
                         style: TextStyle(
@@ -143,7 +141,7 @@ class homepage extends StatelessWidget {
                       )
                     ],
                   )),
-              const SizedBox(height: 10),
+              const SizedBox(height: 15),
 
               // Function Button
               Padding(
