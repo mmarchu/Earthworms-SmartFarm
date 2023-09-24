@@ -1,7 +1,8 @@
 import 'package:earthworms/FirstP/LoginPage.dart';
 import 'package:earthworms/MainFunc/ChangePassPage.dart';
 import 'package:earthworms/MainFunc/MyprofilePage.dart';
-import 'package:earthworms/MainFunc/WebViewPage.dart';
+import 'package:earthworms/MainFunc/statisPage.dart';
+import 'package:earthworms/MainFunc/waterpumpPage.dart';
 //import 'package:earthworms/MainFunc/WebViewPage.dart';
 //import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ class homepage extends StatelessWidget {
         value: SystemUiOverlayStyle.dark,
         child: Scaffold(
           key: _scaffoldKey,
-          backgroundColor:  Color.fromRGBO(250, 246, 229, 1),
+          backgroundColor: Color.fromRGBO(250, 246, 229, 1),
 
           //navigation drawer
           drawer: Drawer(
@@ -131,7 +132,9 @@ class homepage extends StatelessWidget {
                           color: Colors.grey[800],
                         ),
                       ),
-                      SizedBox(height: 10,),
+                      SizedBox(
+                        height: 10,
+                      ),
                       Text(
                         "The Earthworm's SmartFarm", //Name of user
                         style: TextStyle(
@@ -255,6 +258,10 @@ class homepage extends StatelessWidget {
                           InkWell(
                             onTap: () {
                               print('Water Pump');
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => waterpumpPage()));
                             },
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -302,7 +309,7 @@ class homepage extends StatelessWidget {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => WebViewPage()));
+                                        builder: (context) => statisPage()));
                               },
                               child: Column(
                                 mainAxisAlignment:

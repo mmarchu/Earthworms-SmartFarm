@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class WebViewPage extends StatelessWidget {
-  WebViewPage({super.key});
+class statisPage extends StatelessWidget {
+  statisPage({super.key});
   @override
   Widget build(BuildContext context) {
     //final isKeyboard = MediaQuery.of(context).viewInsets.bottom != 0;
