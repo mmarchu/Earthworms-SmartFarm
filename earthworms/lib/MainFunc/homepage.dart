@@ -11,10 +11,12 @@ import 'package:flutter/services.dart';
 // import 'package:url_launcher/url_launcher_string.dart';
 
 class homepage extends StatelessWidget {
-  homepage({super.key});
 
   final NameDD = 'Demo Test';
   final EmailDD = 'Demo@email.com';
+
+  final String email;
+  homepage({required this.email});
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -49,7 +51,7 @@ class homepage extends StatelessWidget {
                       ),
                       // Email Header
                       accountEmail: Text(
-                        EmailDD,
+                        email,
                         style: TextStyle(fontSize: 15, color: Colors.white),
                       ),
                     )),

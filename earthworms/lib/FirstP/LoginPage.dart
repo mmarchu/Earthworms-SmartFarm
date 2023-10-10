@@ -5,20 +5,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // ignore: must_be_immutable
-class LoginPage extends StatelessWidget {
-  LoginPage({super.key});
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
 
-  //text editing controller
-  // final emailController = TextEditingController();
-  // final passwordController = TextEditingController();
+class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  // void _LohinFunc() async {
-  //   String email = emailController.text;
-  //   String password = passwordController.text;
-  // }
-  
+  String CorrectEmail = "admin@admin.com";
+  String CorrectPassword = "admin";
+
+  void login() {
+    if (emailController.text == CorrectEmail &&
+        passwordController.text == CorrectPassword) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => homepage(email: CorrectEmail),
+          ));
+    } else {
+       var snackBar = SnackBar(content: Text("Login Failed. Please check your username and password."));
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -138,12 +149,11 @@ class LoginPage extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         print('login');
-                        //if(TextEditingController.fromValue() = 'Admin@email.com')
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => homepage()));
-                        //login(emailController, passwordController);
+                        login();
+                        // Navigator.pushReplacement(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) => homepage()));
                       },
                       child: Container(
                         padding: const EdgeInsets.all(20),

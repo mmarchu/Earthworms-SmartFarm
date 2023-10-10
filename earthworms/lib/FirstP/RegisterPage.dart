@@ -133,7 +133,7 @@ class RegisterPage  extends StatelessWidget {
           // Regis button
           InkWell(
             onTap: () {
-              print('Register');
+              print(passwordController.text);
               var snackBar = SnackBar(content: Text(passwordController.text));
               ScaffoldMessenger.of(context).showSnackBar(snackBar);
               //register();
