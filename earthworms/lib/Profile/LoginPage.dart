@@ -1,4 +1,4 @@
-import 'package:earthworms/FirstP/RegisterPage.dart';
+import 'package:earthworms/Profile/RegisterPage.dart';
 import 'package:earthworms/MainFunc/homepage.dart';
 import 'package:flutter/material.dart';
 //import 'package:http/http.dart' as http;
@@ -11,11 +11,14 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  String CorrectEmail = "admin@admin.com";
+  String CorrectEmail = "admin@test.com";
   String CorrectPassword = "admin";
+  String CorrectName = "Admin";
+  String CorrectLastname = "Test";
 
   void login() {
     if (emailController.text == CorrectEmail &&
@@ -23,11 +26,13 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => homepage(email: CorrectEmail),
+            builder: (context) => homepage(email: CorrectEmail, name: CorrectName, lastname: CorrectLastname),
           ));
     } else {
-       var snackBar = SnackBar(content: Text("Login Failed. Please check your username and password."));
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      var snackBar = SnackBar(
+          content:
+              Text("Login Failed. Please check your username and password."));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 

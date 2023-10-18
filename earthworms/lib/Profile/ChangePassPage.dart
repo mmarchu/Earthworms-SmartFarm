@@ -3,9 +3,11 @@ import 'package:flutter/services.dart';
 
 // ignore: must_be_immutable
 class ChangePassPage extends StatelessWidget {
-  ChangePassPage({super.key});
-
   TextEditingController CurrentP = TextEditingController();
+  final String name;
+  final String lastname;
+
+  ChangePassPage({required this.name, required this.lastname});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,7 @@ class ChangePassPage extends StatelessWidget {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
                 Text(
-                  "Demo Test",
+                  name + " " + lastname,
                   style: TextStyle(fontSize: 15),
                 )
               ],
@@ -30,10 +32,7 @@ class ChangePassPage extends StatelessWidget {
           ),
           body: SafeArea(
               child: Container(
-            child: SingleChildScrollView(
-                child: Row(
-                  
-            )),
+            child: SingleChildScrollView(child: Row()),
           )),
         ));
   }

@@ -9,15 +9,32 @@ class statisPage extends StatelessWidget {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
-        backgroundColor: const Color.fromRGBO(250, 246, 229, 1),
-        body: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
+          backgroundColor: const Color.fromRGBO(250, 246, 229, 1),
+          body: SafeArea(
+            child: Container(
+                child: SingleChildScrollView(
               child: Column(
-                children: [],
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 25),
+                    child: Row(
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: Icon(
+                              Icons.arrow_back_ios_rounded,
+                              size: 35,
+                              color: Colors.grey[800],
+                            ))
+                      ],
+                    ),
+                  )
+                ],
               ),
-            )),)
-      ),
+            )),
+          )),
     );
   }
 }

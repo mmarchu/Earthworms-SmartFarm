@@ -1,6 +1,8 @@
-import 'package:earthworms/FirstP/LoginPage.dart';
-import 'package:earthworms/MainFunc/ChangePassPage.dart';
-import 'package:earthworms/MainFunc/MyprofilePage.dart';
+import 'package:earthworms/Profile/LoginPage.dart';
+import 'package:earthworms/Profile/ChangePassPage.dart';
+import 'package:earthworms/Profile/MyprofilePage.dart';
+import 'package:earthworms/MainFunc/Sensor1Page.dart';
+import 'package:earthworms/MainFunc/Sensor2Page.dart';
 import 'package:earthworms/MainFunc/statisPage.dart';
 import 'package:earthworms/MainFunc/waterpumpPage.dart';
 //import 'package:earthworms/MainFunc/WebViewPage.dart';
@@ -11,12 +13,11 @@ import 'package:flutter/services.dart';
 // import 'package:url_launcher/url_launcher_string.dart';
 
 class homepage extends StatelessWidget {
-
-  final NameDD = 'Demo Test';
-  final EmailDD = 'Demo@email.com';
-
   final String email;
-  homepage({required this.email});
+  final String name;
+  final String lastname;
+
+  homepage({required this.email, required this.name, required this.lastname});
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -42,13 +43,14 @@ class homepage extends StatelessWidget {
                           color: Color.fromRGBO(239, 165, 38, 1)),
                       // Name Header
                       accountName: Text(
-                        NameDD,
+                        name + " " + lastname,
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                       ),
+
                       // Email Header
                       accountEmail: Text(
                         email,
@@ -65,8 +67,8 @@ class homepage extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ChangePassPage()));
-                    //Navigator.pop(context);
+                            builder: (context) => ChangePassPage(
+                                name: name, lastname: lastname)));
                   },
                 ),
                 ListTile(
@@ -105,17 +107,17 @@ class homepage extends StatelessWidget {
                           color: Colors.grey[800],
                         )),
 
-                    // icon profile
-                    IconButton(
-                        onPressed: () {
-                          print('Person');
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => MyprofilePage()));
-                        },
-                        icon: Icon(Icons.person,
-                            size: 35, color: Colors.grey[800])),
+                    // icon profile **** อาจจะไม่เอา ****
+                    // IconButton(
+                    //     onPressed: () {
+                    //       print('Person');
+                    //       Navigator.push(
+                    //           context,
+                    //           MaterialPageRoute(
+                    //               builder: (context) => MyprofilePage()));
+                    //     },
+                    //     icon: Icon(Icons.person,
+                    //         size: 35, color: Colors.grey[800])),
                   ],
                 ),
               ),
@@ -167,7 +169,10 @@ class homepage extends StatelessWidget {
                           InkWell(
                             onTap: () {
                               print('Sensor1');
-                              //other Function
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Sensor1Page()));
                             },
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -207,7 +212,10 @@ class homepage extends StatelessWidget {
                           InkWell(
                             onTap: () {
                               print('Sensor2');
-                              //other Function
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Sensor2Page()));
                             },
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,

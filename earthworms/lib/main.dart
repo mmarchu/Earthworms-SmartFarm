@@ -1,4 +1,4 @@
-import 'package:earthworms/FirstP/LoginPage.dart';
+import 'package:earthworms/Profile/LoginPage.dart';
 // import 'package:earthworms/FirstP/RegisterPage.dart';
 // import 'package:earthworms/MainFunc/ChangePassPage.dart';
 // import 'package:earthworms/MainFunc/MyprofilePage.dart';
