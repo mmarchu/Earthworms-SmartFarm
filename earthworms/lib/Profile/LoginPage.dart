@@ -15,8 +15,6 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  String CorrectEmail = "admin@test.com";
-  String CorrectPassword = "admin";
   String CorrectName = "Admin";
   String CorrectLastname = "Test";
 
@@ -40,31 +38,31 @@ class _LoginPageState extends State<LoginPage> {
   // }
 
   Future<void> _login() async {
-    final email = emailController.text;
-    final password = passwordController.text;
+    final InputEmail = emailController.text;
+    final InputPassword = passwordController.text;
 
     final response = await http.post(
-      Uri.parse('http://localhost:4000/api/auth/login'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charest=UTF-8'
-      },
-      body: jsonEncode({'email': email, 'password': password}));
-      if (response.statusCode == 200) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => homepage(
-                  email: CorrectEmail,
-                  name: CorrectName,
-                  lastname: CorrectLastname),
-            ));
-      } else {
-          var snackBar = SnackBar(
-            content:
+        Uri.parse('http://localhost:4000/api/auth/login'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charest=UTF-8'
+        },
+        body: jsonEncode({'email': InputEmail, 'password': InputPassword}));
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      String DBname = data['name'];
+      String DBlastname = data['lastname'];
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                homepage(email: InputEmail, name: DBname, lastname: DBlastname),
+          ));
+    } else {
+      var snackBar = SnackBar(
+          content:
               Text("Login Failed. Please check your username and password."));
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        }
-
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 
   @override

@@ -1,4 +1,3 @@
-import 'package:earthworms/Func2/Sensor2Responsive.dart';
 import 'package:earthworms/Profile/LoginPage.dart';
 // import 'package:earthworms/FirstP/RegisterPage.dart';
 // import 'package:earthworms/MainFunc/ChangePassPage.dart';
