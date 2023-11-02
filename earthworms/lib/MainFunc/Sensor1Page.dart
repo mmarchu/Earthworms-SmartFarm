@@ -4,11 +4,20 @@ import 'package:flutter/services.dart';
 class Sensor1Page extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
+    return LayoutBuilder(builder: (context, Constraints) {
+      final screenWidth = MediaQuery.of(context).size.width;
+      final screenHeight = MediaQuery.of(context).size.height;
+      final smallestDimension =
+          screenWidth < screenHeight ? screenWidth : screenHeight;
+      final textScaleFactor = smallestDimension / 400;
+
+      return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
         backgroundColor: const Color.fromRGBO(250, 246, 229, 1),
         body: SafeArea(
+          child: Container(
+            child: SingleChildScrollView(
           child: Column(
             children: [
               Padding(
@@ -28,7 +37,7 @@ class Sensor1Page extends StatelessWidget {
                   ],
                 ),
               ),
-              //const SizedBox(height: 10),
+              //SizedBox(height: 10 * textScaleFactor),
               
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
@@ -38,8 +47,8 @@ class Sensor1Page extends StatelessWidget {
                       children: [
                         //Humidity
                         SizedBox(
-                          width: 350,
-                          height: 200,
+                          width: 350 * textScaleFactor,
+                          height: 200 * textScaleFactor,
                           child: DecoratedBox(
                             decoration: BoxDecoration(
                             color: Color.fromRGBO(42, 62, 54, 190),
@@ -47,12 +56,12 @@ class Sensor1Page extends StatelessWidget {
                           ),
                           ),
                         ),
-                        SizedBox(height: 10),
+                        SizedBox(height: 10 * textScaleFactor),
 
                         //Temperature
                         SizedBox(
-                          width: 350,
-                          height: 200,
+                          width: 350 * textScaleFactor,
+                          height: 200 * textScaleFactor,
                           child: DecoratedBox(
                             decoration: BoxDecoration(
                             color: Color.fromRGBO(42, 62, 54, 190),
@@ -60,12 +69,12 @@ class Sensor1Page extends StatelessWidget {
                           ),
                           ),
                         ),
-                        SizedBox(height: 10),
+                        SizedBox(height: 10 * textScaleFactor),
 
                         //Light
                         SizedBox(
-                          width: 350,
-                          height: 200,
+                          width: 350 * textScaleFactor,
+                          height: 200 * textScaleFactor,
                           child: DecoratedBox(
                             decoration: BoxDecoration(
                             color: Color.fromRGBO(42, 62, 54, 190),
@@ -83,6 +92,8 @@ class Sensor1Page extends StatelessWidget {
           ),
         ),
       ),
+        ))
     );
+    });
   }
 }

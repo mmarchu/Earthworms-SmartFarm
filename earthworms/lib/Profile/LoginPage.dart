@@ -1,7 +1,8 @@
+import 'dart:convert';
 import 'package:earthworms/Profile/RegisterPage.dart';
 import 'package:earthworms/MainFunc/homepage.dart';
 import 'package:flutter/material.dart';
-//import 'package:http/http.dart' as http;
+import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 
 // ignore: must_be_immutable
@@ -11,7 +12,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -20,20 +20,51 @@ class _LoginPageState extends State<LoginPage> {
   String CorrectName = "Admin";
   String CorrectLastname = "Test";
 
-  void login() {
-    if (emailController.text == CorrectEmail &&
-        passwordController.text == CorrectPassword) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => homepage(email: CorrectEmail, name: CorrectName, lastname: CorrectLastname),
-          ));
-    } else {
-      var snackBar = SnackBar(
-          content:
+  // void login() {
+  //   if (emailController.text == CorrectEmail &&
+  //       passwordController.text == CorrectPassword) {
+  //     Navigator.push(
+  //         context,
+  //         MaterialPageRoute(
+  //           builder: (context) => homepage(
+  //               email: CorrectEmail,
+  //               name: CorrectName,
+  //               lastname: CorrectLastname),
+  //         ));
+  //   } else {
+  //     var snackBar = SnackBar(
+  //         content:
+  //             Text("Login Failed. Please check your username and password."));
+  //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  //   }
+  // }
+
+  Future<void> _login() async {
+    final email = emailController.text;
+    final password = passwordController.text;
+
+    final response = await http.post(
+      Uri.parse('http://localhost:4000/api/auth/login'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charest=UTF-8'
+      },
+      body: jsonEncode({'email': email, 'password': password}));
+      if (response.statusCode == 200) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => homepage(
+                  email: CorrectEmail,
+                  name: CorrectName,
+                  lastname: CorrectLastname),
+            ));
+      } else {
+          var snackBar = SnackBar(
+            content:
               Text("Login Failed. Please check your username and password."));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+
   }
 
   @override
@@ -154,7 +185,8 @@ class _LoginPageState extends State<LoginPage> {
                     InkWell(
                       onTap: () {
                         print('login');
-                        login();
+                        //login();
+                        _login();
                         // Navigator.pushReplacement(
                         //     context,
                         //     MaterialPageRoute(
