@@ -54,6 +54,31 @@ class Sensor1Page extends StatelessWidget {
                             color: Color.fromRGBO(42, 62, 54, 190),
                             borderRadius: BorderRadius.circular(20)
                           ),
+                          child: Column(children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                              child: InkWell(
+                                child: Row(
+                                  mainAxisAlignment: 
+                                    MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(height: 25 * textScaleFactor,),
+                                    Image.asset(
+                                      "images/humidity.png",
+                                      height: 50 * textScaleFactor,
+                                      width: 50 * textScaleFactor,
+                                    ),
+                                    Text(
+                                      "Hello world",
+                                      style: TextStyle(
+                                        fontSize: 30 
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
+                          ]),
                           ),
                         ),
                         SizedBox(height: 10 * textScaleFactor),

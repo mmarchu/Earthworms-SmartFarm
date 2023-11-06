@@ -15,8 +15,8 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  String CorrectName = "Admin";
-  String CorrectLastname = "Test";
+  // String CorrectName = "Admin";
+  // String CorrectLastname = "Test";
 
   // void login() {
   //   if (emailController.text == CorrectEmail &&

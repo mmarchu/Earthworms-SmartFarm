@@ -1,8 +1,11 @@
 // import 'dart:convert';
 // import 'dart:io';
 // import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 
 // ignore: must_be_immutable
 class RegisterPage extends StatefulWidget {
@@ -17,6 +20,25 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController ConfirmPassController = TextEditingController();
+
+  Future<void> _regis() async {
+    final InputName = nameController.text;
+    final InputLastname = lastnameController.text;
+    final InputEmail = emailController.text;
+    final InputPassword = passwordController.text;
+    final InputConfirmPass = ConfirmPassController.text;
+
+    final response = await http.post(
+        Uri.parse('http://localhost:4000/api/auth/register'),
+        headers: <String, String>{'Content-Type': 'application/json: charest=UTF-8'
+        },
+        body: jsonEncode({'name': InputName, 
+                          'lastname': InputLastname, 
+                          'email': InputEmail, 
+                          'password': InputPassword,
+                          'confirmpassword': InputConfirmPass}));
+      // if(re)
+  }
 
   @override
   Widget build(BuildContext context) {
