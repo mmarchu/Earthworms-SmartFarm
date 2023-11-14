@@ -30,14 +30,38 @@ class _RegisterPageState extends State<RegisterPage> {
 
     final response = await http.post(
         Uri.parse('http://localhost:4000/api/auth/register'),
-        headers: <String, String>{'Content-Type': 'application/json: charest=UTF-8'
+        headers: <String, String>{
+          'Content-Type': 'application/json; charest=UTF-8'
         },
-        body: jsonEncode({'name': InputName, 
-                          'lastname': InputLastname, 
-                          'email': InputEmail, 
-                          'password': InputPassword,
-                          'confirmpassword': InputConfirmPass}));
-      // if(re)
+        body: jsonEncode({
+          'name': InputName,
+          'lastname': InputLastname,
+          'email': InputEmail,
+          'password': InputPassword,
+          'confirmpassword': InputConfirmPass
+        }));
+
+    if (response.statusCode == 400) {
+      var snackBar = SnackBar(content: Text("Already have this email."));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else if (InputName.isEmpty ||
+        InputLastname.isEmpty ||
+        InputEmail.isEmpty ||
+        InputPassword.isEmpty ||
+        InputConfirmPass.isEmpty) {
+      var snackBar = SnackBar(content: Text("Please fill in complete information."));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else if (passwordController.text != ConfirmPassController.text) {
+      var snackBar =
+          SnackBar(content: Text("Those passwords didn't match. Try again."));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else {
+      var snackBar =
+          SnackBar(content: Text("You account has been successfully created."));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      Navigator.pop(context);
+    }
+    ;
   }
 
   @override
@@ -58,13 +82,14 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   // Name
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    padding: EdgeInsets.symmetric(horizontal: 25),
                     child: TextFormField(
                       controller: nameController,
                       obscureText: false,
+                      textCapitalization: TextCapitalization.words,
                       style: TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.white),
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                                 color: Color.fromRGBO(42, 62, 54, 1))),
@@ -82,13 +107,14 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   // Lastname
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    padding: EdgeInsets.symmetric(horizontal: 25),
                     child: TextFormField(
                       controller: lastnameController,
                       obscureText: false,
+                      textCapitalization: TextCapitalization.words,
                       style: TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.white),
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                                 color: Color.fromRGBO(42, 62, 54, 1))),
@@ -106,13 +132,13 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   // Email
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    padding: EdgeInsets.symmetric(horizontal: 25),
                     child: TextFormField(
                       controller: emailController,
                       obscureText: false,
                       style: TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.white),
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                                 color: Color.fromRGBO(42, 62, 54, 1))),
@@ -130,13 +156,13 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   // Password
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    padding: EdgeInsets.symmetric(horizontal: 25),
                     child: TextFormField(
                       controller: passwordController,
                       obscureText: true,
                       style: TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.white),
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                                 color: Color.fromRGBO(42, 62, 54, 1))),
@@ -154,13 +180,13 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   // Confirm Password
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    padding: EdgeInsets.symmetric(horizontal: 25),
                     child: TextFormField(
                       controller: ConfirmPassController,
                       obscureText: true,
                       style: TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.white),
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                                 color: Color.fromRGBO(42, 62, 54, 1))),
@@ -179,11 +205,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   // Regis button
                   InkWell(
                     onTap: () {
-                      print(passwordController.text);
-                      var snackBar =
-                          SnackBar(content: Text(passwordController.text));
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      //register();
+                      print("register");
+                      _regis();
                     },
                     child: Container(
                       padding: const EdgeInsets.all(20),
@@ -192,7 +215,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         color: Color.fromRGBO(239, 165, 38, 1),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: const Center(
+                      child: Center(
                         child: Text(
                           'Sign Up',
                           style: TextStyle(

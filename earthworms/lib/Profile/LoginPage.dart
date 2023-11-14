@@ -60,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       var snackBar = SnackBar(
           content:
-              Text("Login Failed. Please check your username and password."));
+              Text("Login Failed. Please check your Email and Password."));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }

@@ -39,11 +39,11 @@ class homepage extends StatelessWidget {
                 children: <Widget>[
                   DrawerHeader(
                       decoration: const BoxDecoration(
-                        color: Color.fromRGBO(239, 165, 38, 1),
+                        color: Color.fromRGBO(42, 62, 54, 1),
                       ),
                       child: UserAccountsDrawerHeader(
                         decoration: const BoxDecoration(
-                            color: Color.fromRGBO(239, 165, 38, 1)),
+                            color: Color.fromRGBO(42, 62, 54, 1)),
                         // Name Header
                         accountName: Text(
                           name + " " + lastname,
