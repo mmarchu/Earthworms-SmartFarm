@@ -37,7 +37,6 @@ class Sensor1Page extends StatelessWidget {
                   ],
                 ),
               ),
-              //SizedBox(height: 10 * textScaleFactor),
               
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
@@ -54,31 +53,49 @@ class Sensor1Page extends StatelessWidget {
                             color: Color.fromRGBO(42, 62, 54, 190),
                             borderRadius: BorderRadius.circular(20)
                           ),
-                          child: Column(children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                              child: InkWell(
-                                child: Row(
-                                  mainAxisAlignment: 
-                                    MainAxisAlignment.spaceBetween,
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Humidity",
+                                  style: TextStyle(
+                                    fontSize: 30 * textScaleFactor,
+                                    fontWeight: FontWeight.bold
+                                  )
+                                ),
+                                SizedBox(height: 10 * textScaleFactor,),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    SizedBox(height: 25 * textScaleFactor,),
-                                    Image.asset(
-                                      "images/humidity.png",
-                                      height: 50 * textScaleFactor,
-                                      width: 50 * textScaleFactor,
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 10, top: 10),
+                                      child: Image.asset(
+                                        "images/humidity.png",
+                                        height: 95 * textScaleFactor,
+                                        width: 95 * textScaleFactor,
+                                        ),
                                     ),
                                     Text(
-                                      "Hello world",
+                                      "|",
+                                    style: TextStyle(
+                                      fontSize: 100 * textScaleFactor,
+                                      fontWeight: FontWeight.w300
+                                    ),),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 10, right: 20),
+                                      child: Text(
+                                        "25",
                                       style: TextStyle(
-                                        fontSize: 30 
-                                      ),
+                                        fontSize: 70 * textScaleFactor,
+                                        fontWeight: FontWeight.normal
+                                      ),),
                                     )
                                   ],
-                                ),
-                              ),
-                            )
-                          ]),
+                                )
+                              ],
+                            ),
+                          ),
                           ),
                         ),
                         SizedBox(height: 10 * textScaleFactor),
@@ -91,6 +108,50 @@ class Sensor1Page extends StatelessWidget {
                             decoration: BoxDecoration(
                             color: Color.fromRGBO(42, 62, 54, 190),
                             borderRadius: BorderRadius.circular(20)
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Temperature",
+                                  style: TextStyle(
+                                    fontSize: 30 * textScaleFactor,
+                                    fontWeight: FontWeight.bold
+                                  )
+                                ),
+                                SizedBox(height: 10 * textScaleFactor,),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: Image.asset(
+                                        "images/temperature-sensor.png",
+                                        height: 100 * textScaleFactor,
+                                        width: 100 * textScaleFactor,
+                                        ),
+                                    ),
+                                    Text(
+                                      "|",
+                                    style: TextStyle(
+                                      fontSize: 100 * textScaleFactor,
+                                      fontWeight: FontWeight.w300
+                                    ),),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 10, right: 20),
+                                      child: Text(
+                                        "25",
+                                      style: TextStyle(
+                                        fontSize: 70 * textScaleFactor,
+                                        fontWeight: FontWeight.normal
+                                      ),),
+                                    )
+                                  ],
+                                )
+                              ],
+                              
+                            ),
                           ),
                           ),
                         ),
@@ -105,6 +166,49 @@ class Sensor1Page extends StatelessWidget {
                             color: Color.fromRGBO(42, 62, 54, 190),
                             borderRadius: BorderRadius.circular(20)
                           ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Light",
+                                  style: TextStyle(
+                                    fontSize: 30 * textScaleFactor,
+                                    fontWeight: FontWeight.bold
+                                  )
+                                ),
+                                SizedBox(height: 10 * textScaleFactor,),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: Image.asset(
+                                        "images/light.png",
+                                        height: 100 * textScaleFactor,
+                                        width: 100 * textScaleFactor,
+                                        ),
+                                    ),
+                                    Text(
+                                      "|",
+                                    style: TextStyle(
+                                      fontSize: 100 * textScaleFactor,
+                                      fontWeight: FontWeight.w300
+                                    ),),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 10, right: 20),
+                                      child: Text(
+                                        "25",
+                                      style: TextStyle(
+                                        fontSize: 70 * textScaleFactor,
+                                        fontWeight: FontWeight.normal
+                                      ),),
+                                    )
+                                  ],
+                                )
+                              ],                   
+                            ),
+                          ),
                           ),
                         ),
                       ],
@@ -112,7 +216,6 @@ class Sensor1Page extends StatelessWidget {
                   ),
                 ),
               )
-
             ],
           ),
         ),

@@ -4,8 +4,6 @@ import 'package:earthworms/Profile/ChangePassPage.dart';
 import 'package:earthworms/MainFunc/Sensor1Page.dart';
 import 'package:earthworms/MainFunc/statisPage.dart';
 import 'package:earthworms/MainFunc/waterpumpPage.dart';
-//import 'package:earthworms/MainFunc/WebViewPage.dart';
-//import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
