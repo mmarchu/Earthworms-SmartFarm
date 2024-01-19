@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class Sensor1Page extends StatelessWidget {
+class Sensor2Page extends StatefulWidget {
+  @override
+  State<Sensor2Page> createState() => _Sensor2PageState();
+}
+
+class _Sensor2PageState extends State<Sensor2Page> {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, Constraints) {
@@ -150,7 +155,6 @@ class Sensor1Page extends StatelessWidget {
                                   ],
                                 )
                               ],
-                              
                             ),
                           ),
                           ),
@@ -206,7 +210,7 @@ class Sensor1Page extends StatelessWidget {
                                     )
                                   ],
                                 )
-                              ],                   
+                              ],
                             ),
                           ),
                           ),

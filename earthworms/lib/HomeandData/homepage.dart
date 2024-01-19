@@ -1,9 +1,11 @@
-import 'package:earthworms/MainFunc/Sensor2Page.dart';
-import 'package:earthworms/Profile/LoginPage.dart';
-import 'package:earthworms/Profile/ChangePassPage.dart';
-import 'package:earthworms/MainFunc/Sensor1Page.dart';
-import 'package:earthworms/MainFunc/statisPage.dart';
-import 'package:earthworms/MainFunc/waterpumpPage.dart';
+import 'package:earthworms/TestFunc/DropDown.dart';
+import 'package:earthworms/HomeandData/Sensor2Page.dart';
+import 'package:earthworms/MainFunction/LoginPage.dart';
+import 'package:earthworms/MainFunction/ChangePassPage.dart';
+import 'package:earthworms/HomeandData/Sensor1Page.dart';
+import 'package:earthworms/HomeandData/statisPage.dart';
+import 'package:earthworms/HomeandData/waterpumpPage.dart';
+import 'package:earthworms/MainFunction/SessionToken.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -56,7 +58,7 @@ class homepage extends StatelessWidget {
                         accountEmail: Text(
                           email,
                           style: TextStyle(
-                            fontSize: 15 * textScaleFactor, 
+                            fontSize: 16 * textScaleFactor, 
                             color: Colors.white),
                         ),
                       )),
@@ -137,7 +139,7 @@ class homepage extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 20 * textScaleFactor,
                             color: Colors.grey[800],
-                          ),
+                          ), 
                         ),
                         SizedBox(
                           height: 10 * textScaleFactor,
@@ -155,7 +157,7 @@ class homepage extends StatelessWidget {
 
                 // Function Button
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 30 * textScaleFactor, vertical: 10 * textScaleFactor),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -256,7 +258,7 @@ class homepage extends StatelessWidget {
                 const SizedBox(height: 10),
 
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 30 * textScaleFactor, vertical: 10 * textScaleFactor),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -276,7 +278,7 @@ class homepage extends StatelessWidget {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => waterpumpPage()));
+                                        builder: (context) => SessionToken()));
                               },
                               child: Column(
                                 mainAxisAlignment:
@@ -332,7 +334,7 @@ class homepage extends StatelessWidget {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     SizedBox(
-                                      height: 25 * textScaleFactor,
+                                      height: 20 * textScaleFactor,
                                     ),
                                     Image.asset(
                                       "images/StatsIcons.png",
@@ -340,15 +342,22 @@ class homepage extends StatelessWidget {
                                       width: 100 * textScaleFactor,
                                     ),
                                     SizedBox(
-                                      height: 20 * textScaleFactor,
+                                      height: 15 * textScaleFactor,
                                     ),
                                     Text(
-                                      'Statistics View',
+                                      'Summary',
                                       style: TextStyle(
-                                          fontSize: 18 * textScaleFactor,
+                                          fontSize: 20 * textScaleFactor,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.white),
-                                    )
+                                    ),
+                                    Text(
+                                      'Report',
+                                      style: TextStyle(
+                                          fontSize: 20 * textScaleFactor,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                    ),
                                   ],
                                 ),
                               )
