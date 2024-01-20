@@ -29,10 +29,17 @@ class MainColors {
 //   }
 // }
 
+Future<String?> loadData(String key) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString(key);
+}
+
 Future<int> CheckToken() async {
   // ดึง token จาก Shared Preferences
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String? token = prefs.getString('token');
+  // SharedPreferences prefs = await SharedPreferences.getInstance();
+  // String? token = prefs.getString(DBtoken);
+
+  String? token = await loadData('Token');
 
   if (token == null) {
     // ถ้าไม่มี token, ส่งค่า 400 กลับ

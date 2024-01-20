@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:earthworms/MainFunction/RegisterPage.dart';
 import 'package:earthworms/HomeandData/homepage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,15 +15,11 @@ class LoginPage extends StatefulWidget {
 String DBname = '';
 String DBlastname = '';
 String DBtoken = '';
-
-class TokenManager {
-  static String _tokenKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQHRlc3QuY29tIiwibmFtZSI6IkFkbWluIiwiaWF0IjoxNzA1NTk4MjY4LCJleHAiOjE3MDU2ODQ2Njh9.GsjyD9nNU0d9Uv_HacytaEiR4VBBcb2tExLNzeGi5tg';
-
+  
   // Save the token
-  static Future<void> saveToken(String token) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_tokenKey, token);
-  }
+Future<void> saveData(String key, String value) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString(key, value);
 }
 
 class _LoginPageState extends State<LoginPage> {
@@ -35,10 +30,12 @@ class _LoginPageState extends State<LoginPage> {
     final InputEmail = emailController.text;
     final InputPassword = passwordController.text;
 
+
     final response = await http.post(
         Uri.parse('http://localhost:4000/api/auth/login'),
         headers: <String, String>{
-          'Content-Type': 'application/json; charest=UTF-8'
+          'Content-Type': 'application/json; charest=UTF-8',
+          'Authorization': 'Bearer $DBtoken',
         },
         body: jsonEncode({'email': InputEmail, 'password': InputPassword}));
 
@@ -53,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
             builder: (context) =>
                 homepage(email: InputEmail, name: DBname, lastname: DBlastname),
           ));
-      await TokenManager.saveToken(DBtoken);
+      await saveData('Token', DBtoken);
       print(DBtoken);
     } else {
       var snackBar = SnackBar(
@@ -87,13 +84,12 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 10),
 
                       //Text
-                      Text(
-                        'Welcome back to our Farm!',
-                        style: TextStyle(
+                      Text('Welcome back to our Farm!',
+                          style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Color(0xff0e4f55),
-                            fontSize: 16 * textScaleFactor,)
-                      ),
+                            fontSize: 16 * textScaleFactor,
+                          )),
                       const SizedBox(height: 25),
 
                       //Email

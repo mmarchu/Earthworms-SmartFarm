@@ -8,14 +8,31 @@ import 'package:earthworms/HomeandData/waterpumpPage.dart';
 import 'package:earthworms/MainFunction/SessionToken.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class homepage extends StatelessWidget {
+class homepage extends StatefulWidget {
   final String email;
   final String name;
   final String lastname;
 
   homepage({required this.email, required this.name, required this.lastname});
 
+  @override
+  State<homepage> createState() => _homepageState();
+}
+
+// Delete Token in SharePref
+Future<void> removeData(String key) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.remove(key);
+}
+
+void _logout() async {
+  await removeData('Token');
+  print("Log out");
+}
+
+class _homepageState extends State<homepage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -46,7 +63,7 @@ class homepage extends StatelessWidget {
                             color: Color.fromRGBO(42, 62, 54, 1)),
                         // Name Header
                         accountName: Text(
-                          name + " " + lastname,
+                          widget.name + " " + widget.lastname,
                           style: TextStyle(
                             fontSize: 18 * textScaleFactor,
                             fontWeight: FontWeight.bold,
@@ -56,33 +73,34 @@ class homepage extends StatelessWidget {
 
                         // Email Header
                         accountEmail: Text(
-                          email,
+                          widget.email,
                           style: TextStyle(
-                            fontSize: 16 * textScaleFactor, 
-                            color: Colors.white),
+                              fontSize: 16 * textScaleFactor,
+                              color: Colors.white),
                         ),
                       )),
-                  ListTile(
-                    title: Text(
-                      'Change password',
-                      style: TextStyle(fontSize: 18 * textScaleFactor),
-                    ),
-                    onTap: () {
-                      print('change password');
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ChangePassPage(
-                                  name: name, lastname: lastname)));
-                    },
-                  ),
+                  // ListTile(
+                  //   title: Text(
+                  //     'Change password',
+                  //     style: TextStyle(fontSize: 18 * textScaleFactor),
+                  //   ),
+                  //   onTap: () {
+                  //     print('change password');
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => ChangePassPage(
+                  //                 name: widget.name,
+                  //                 lastname: widget.lastname)));
+                  //   },
+                  // ),
                   ListTile(
                     title: Text(
                       'Log out',
                       style: TextStyle(fontSize: 18 * textScaleFactor),
                     ),
                     onTap: () {
-                      print("Log out");
+                      _logout();
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) => LoginPage()));
                     },
@@ -108,7 +126,7 @@ class homepage extends StatelessWidget {
                           },
                           icon: Icon(
                             Icons.menu,
-                            size: 35,
+                            size: 35 * textScaleFactor,
                             color: Colors.grey[800],
                           )),
 
@@ -130,16 +148,17 @@ class homepage extends StatelessWidget {
 
                 // text Header
                 Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 35 * textScaleFactor),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 35 * textScaleFactor),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           "Welcome Back To",
                           style: TextStyle(
-                            fontSize: 20 * textScaleFactor,
+                            fontSize: 23 * textScaleFactor,
                             color: Colors.grey[800],
-                          ), 
+                          ),
                         ),
                         SizedBox(
                           height: 10 * textScaleFactor,
@@ -147,7 +166,7 @@ class homepage extends StatelessWidget {
                         Text(
                           "The Earthworm's SmartFarm", //Name of user
                           style: TextStyle(
-                              fontSize: 30 * textScaleFactor,
+                              fontSize: 35 * textScaleFactor,
                               fontWeight: FontWeight.bold,
                               color: Colors.grey[800]),
                         )
@@ -157,7 +176,9 @@ class homepage extends StatelessWidget {
 
                 // Function Button
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30 * textScaleFactor, vertical: 10 * textScaleFactor),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 30 * textScaleFactor,
+                      vertical: 10 * textScaleFactor),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -258,7 +279,9 @@ class homepage extends StatelessWidget {
                 const SizedBox(height: 10),
 
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30 * textScaleFactor, vertical: 10 * textScaleFactor),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 30 * textScaleFactor,
+                      vertical: 10 * textScaleFactor),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
