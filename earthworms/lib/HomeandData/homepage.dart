@@ -1,11 +1,9 @@
-import 'package:earthworms/TestFunc/DropDown.dart';
 import 'package:earthworms/HomeandData/Sensor2Page.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
-import 'package:earthworms/MainFunction/ChangePassPage.dart';
 import 'package:earthworms/HomeandData/Sensor1Page.dart';
 import 'package:earthworms/HomeandData/statisPage.dart';
 import 'package:earthworms/HomeandData/waterpumpPage.dart';
-import 'package:earthworms/MainFunction/SessionToken.dart';
+import 'package:earthworms/TestFunc/Sensor2PageNO2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -301,7 +299,7 @@ class _homepageState extends State<homepage> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => SessionToken()));
+                                        builder: (context) => waterpumpPage()));
                               },
                               child: Column(
                                 mainAxisAlignment:

@@ -44,7 +44,7 @@ Future<int> CheckToken() async {
   if (token == null) {
     // ถ้าไม่มี token, ส่งค่า 400 กลับ
     print('no token jaaa');
-    return 400;
+    return 401;
   }
 
   final response = await http.get(
@@ -81,7 +81,7 @@ class MyApp extends StatelessWidget {
               print('Waiting');
               return SessionToken();
             } else {
-              if (snapshot.hasError || snapshot.data == 400) {
+              if (snapshot.hasError || snapshot.data == 401) {
                 print('back to login');
                 return LoginPage();
               } else {

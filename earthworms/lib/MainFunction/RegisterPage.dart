@@ -66,7 +66,8 @@ class _RegisterPageState extends State<RegisterPage> {
         value: SystemUiOverlayStyle.light,
         child: Scaffold(
             appBar: AppBar(
-              title: const Text("Register"),
+              title: const Text("Register",
+              style: TextStyle(color: Color.fromRGBO(250, 246, 229, 1)),),
               backgroundColor: Color(0xff0e4f55),
             ),
             backgroundColor: Color.fromRGBO(250, 246, 229, 1),

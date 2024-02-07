@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 class statisPage extends StatefulWidget {
   statisPage({super.key});
@@ -85,8 +86,25 @@ class _statisPageState extends State<statisPage> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 30 * textScaleFactor, vertical: 10 * textScaleFactor),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [],
+                        
+                        children: [
+                          ToggleSwitch(
+                            minWidth: 100.0,
+                            cornerRadius: 20.0,
+                            activeBgColors: [[Colors.green[800]!], [Colors.red[800]!]],
+                            animate: true,
+                            activeFgColor: Colors.white,
+                            inactiveBgColor: Colors.grey,
+                            inactiveFgColor: Colors.white,
+                            initialLabelIndex: 1,
+                            totalSwitches: 3,
+                            labels: ['Humidity', 'Temperature', 'Light'],
+                            radiusStyle: true,
+                            onToggle: (index) {
+                              print('switched to: $index');
+                            },
+                          )
+                        ],
                       ),
                     )
                   ],

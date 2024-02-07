@@ -1,14 +1,17 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class waterpumpPage extends StatelessWidget {
-  //final bool PowerOn;
+class waterpumpPage extends StatefulWidget {
+  @override
+  State<waterpumpPage> createState() => _waterpumpPageState();
+}
 
-  // waterpumpPage({super.key,
-  //   required this.PowerOn
-  //   });
-  
-  
+class _waterpumpPageState extends State<waterpumpPage> {
+  //final bool PowerOn;
+  bool Power = true;
+  bool MorA = true;
+
   @override
   Widget build(BuildContext context) {
     //final isKeyboard = MediaQuery.of(context).viewInsets.bottom != 0;
@@ -36,25 +39,47 @@ class waterpumpPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 35),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 50),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Power",
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey[800],
-                      ),
-                    ),
-                    // CupertinoSwitch(
-                    //   value: PowerOn, 
-                    //   onChanged: (value) {})
-                  ],
-                ),
-              )
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 50),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Power off/ON",
+                            style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[800],
+                            ),
+                          ),
+                          CupertinoSwitch(
+                              value: Power,
+                              onChanged: (value) => setState(() => Power = value))
+                        ]),
+                  ),
+                  SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 50),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Manual/Auto",
+                            style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[800],
+                            ),
+                          ),
+                          CupertinoSwitch(
+                              value: MorA,
+                              onChanged: (value) => setState(() => MorA = value))
+                        ]),
+                  ),
+                ],
+              ),
             ]),
           )),
     );

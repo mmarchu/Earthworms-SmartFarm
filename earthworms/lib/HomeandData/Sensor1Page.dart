@@ -26,7 +26,7 @@ class _Sensor1PageState extends State<Sensor1Page> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
+                padding: EdgeInsets.symmetric(horizontal: 25),
                 child: Row(
                   children: [
                     IconButton(
@@ -69,7 +69,7 @@ class _Sensor1PageState extends State<Sensor1Page> {
                                     fontWeight: FontWeight.bold
                                   )
                                 ),
-                                SizedBox(height: 10 * textScaleFactor,),
+                                SizedBox(height: 10,),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
@@ -84,7 +84,7 @@ class _Sensor1PageState extends State<Sensor1Page> {
                                     Text(
                                       "|",
                                     style: TextStyle(
-                                      fontSize: 100 * textScaleFactor,
+                                      fontSize: 80 * textScaleFactor,
                                       fontWeight: FontWeight.w300
                                     ),),
                                     Padding(
@@ -103,12 +103,12 @@ class _Sensor1PageState extends State<Sensor1Page> {
                           ),
                           ),
                         ),
-                        SizedBox(height: 10 * textScaleFactor),
+                        SizedBox(height: 10),
 
                         //Temperature
                         SizedBox(
-                          width: 350 * textScaleFactor,
-                          height: 200 * textScaleFactor,
+                          width: 350,
+                          height: 200,
                           child: DecoratedBox(
                             decoration: BoxDecoration(
                             color: Color.fromRGBO(42, 62, 54, 190),
@@ -125,7 +125,7 @@ class _Sensor1PageState extends State<Sensor1Page> {
                                     fontWeight: FontWeight.bold
                                   )
                                 ),
-                                SizedBox(height: 10 * textScaleFactor,),
+                                SizedBox(height: 10,),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
@@ -133,14 +133,14 @@ class _Sensor1PageState extends State<Sensor1Page> {
                                       padding: const EdgeInsets.only(left: 10),
                                       child: Image.asset(
                                         "images/temperature-sensor.png",
-                                        height: 100 * textScaleFactor,
-                                        width: 100 * textScaleFactor,
+                                        height: 95 * textScaleFactor,
+                                        width: 95 * textScaleFactor,
                                         ),
                                     ),
                                     Text(
                                       "|",
                                     style: TextStyle(
-                                      fontSize: 100 * textScaleFactor,
+                                      fontSize: 80 * textScaleFactor,
                                       fontWeight: FontWeight.w300
                                     ),),
                                     Padding(
@@ -160,7 +160,7 @@ class _Sensor1PageState extends State<Sensor1Page> {
                           ),
                           ),
                         ),
-                        SizedBox(height: 10 * textScaleFactor),
+                        SizedBox(height: 10),
 
                         //Light
                         SizedBox(
@@ -197,7 +197,7 @@ class _Sensor1PageState extends State<Sensor1Page> {
                                     Text(
                                       "|",
                                     style: TextStyle(
-                                      fontSize: 100 * textScaleFactor,
+                                      fontSize: 80 * textScaleFactor,
                                       fontWeight: FontWeight.w300
                                     ),),
                                     Padding(
