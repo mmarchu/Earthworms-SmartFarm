@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:earthworms/mqtt/mqttmanage.dart';
 
 // ignore: must_be_immutable
 class LoginPage extends StatefulWidget {
@@ -15,8 +16,8 @@ class LoginPage extends StatefulWidget {
 String DBname = '';
 String DBlastname = '';
 String DBtoken = '';
-  
-  // Save the token
+
+// Save the token
 Future<void> saveData(String key, String value) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setString(key, value);
@@ -30,14 +31,13 @@ class _LoginPageState extends State<LoginPage> {
     final InputEmail = emailController.text;
     final InputPassword = passwordController.text;
 
-
-    final response = await http.post(
-        Uri.parse('http://localhost:4000/api/auth/login'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charest=UTF-8',
-          'Authorization': 'Bearer $DBtoken',
-        },
-        body: jsonEncode({'email': InputEmail, 'password': InputPassword}));
+    final response =
+        await http.post(Uri.parse('http://localhost:4000/api/auth/login'),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charest=UTF-8',
+              'Authorization': 'Bearer $DBtoken',
+            },
+            body: jsonEncode({'email': InputEmail, 'password': InputPassword}));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -180,6 +180,7 @@ class _LoginPageState extends State<LoginPage> {
                         onTap: () {
                           print('login');
                           _login();
+                          ConMqtt();
                         },
                         child: Container(
                           padding: const EdgeInsets.all(20),

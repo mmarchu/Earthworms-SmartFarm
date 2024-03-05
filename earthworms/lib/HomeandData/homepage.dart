@@ -7,6 +7,8 @@ import 'package:earthworms/TestFunc/Sensor2PageNO2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
+import 'package:earthworms/mqtt/mqttmanage.dart'; 
 
 class homepage extends StatefulWidget {
   final String email;
@@ -191,7 +193,8 @@ class _homepageState extends State<homepage> {
                           ),
                           child: Column(children: [
                             InkWell(
-                              onTap: () {
+                              onTap: () async {
+                                await ConMqtt();
                                 print('Sensor1');
                                 Navigator.push(
                                     context,
@@ -299,7 +302,8 @@ class _homepageState extends State<homepage> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => waterpumpPage()));
+                                        builder: (context) =>
+                                            BarChartSample2()));
                               },
                               child: Column(
                                 mainAxisAlignment:
@@ -395,3 +399,4 @@ class _homepageState extends State<homepage> {
     });
   }
 }
+

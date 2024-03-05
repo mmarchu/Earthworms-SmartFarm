@@ -1,13 +1,15 @@
 import 'dart:convert';
-
 import 'package:earthworms/HomeandData/homepage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:earthworms/MainFunction/SessionToken.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:mqtt_client/mqtt_client.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:earthworms/mqtt/mqttmanage.dart';
 
-void main() {
+Future<void> main() async {
   runApp(MyApp());
 }
 
@@ -21,24 +23,13 @@ class MainColors {
   final GreenText = Color(0xff0e4f55);
 }
 
-// class TokenManager {
-//   // Retrieve the token
-//   static Future<String?> retrieveToken() async {
-//     SharedPreferences prefs = await SharedPreferences.getInstance();
-//     return prefs.getString(DBtoken);
-//   }
-// }
-
+//Token--------------------------------------------
 Future<String?> loadData(String key) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   return prefs.getString(key);
 }
 
 Future<int> CheckToken() async {
-  // ดึง token จาก Shared Preferences
-  // SharedPreferences prefs = await SharedPreferences.getInstance();
-  // String? token = prefs.getString(DBtoken);
-
   String? token = await loadData('Token');
 
   if (token == null) {
@@ -62,6 +53,11 @@ Future<int> CheckToken() async {
     return response.statusCode;
   }
 }
+//-------------------------------------------------
+
+//mqtt---------------------------------------------
+
+//-------------------------------------------------
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -86,6 +82,7 @@ class MyApp extends StatelessWidget {
                 return LoginPage();
               } else {
                 print('go to homepage');
+                ConMqtt();
                 return homepage(
                     email: DBemail, name: DBname, lastname: DBlastname);
               }

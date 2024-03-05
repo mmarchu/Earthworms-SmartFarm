@@ -39,8 +39,9 @@ dependencies:
   dropdown_button2: ^2.3.9
   shared_preferences: ^2.2.2
   toggle_switch: ^2.1.0
-  fl_chart: ^0.66.1
+  fl_chart: ^0.66.2
   syncfusion_flutter_charts: ^24.2.4+1
+  mqtt_client: ^10.2.0
 
 dev_dependencies:
   flutter_test:
@@ -86,6 +87,7 @@ flutter:
      - images/humidity.png
      - images/light.png
      - images/rain.png
+     - images/message-2.txt
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
