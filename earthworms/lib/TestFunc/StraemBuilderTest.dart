@@ -4,12 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:earthworms/mqtt/mqttmanage.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 
-class Sensor2Page extends StatefulWidget {
+class StraemBuilderTest extends StatefulWidget {
   @override
-  State<Sensor2Page> createState() => _Sensor2PageState();
+  State<StraemBuilderTest> createState() => _StraemBuilderTestState();
 }
 
-class _Sensor2PageState extends State<Sensor2Page> {
+class _StraemBuilderTestState extends State<StraemBuilderTest> {
   final StreamController<String> messageController =
       StreamController<String>.broadcast();
 
@@ -21,15 +21,30 @@ class _Sensor2PageState extends State<Sensor2Page> {
   }
 
   Future<void> _updateMQTT() async {
-    Timer.periodic(Duration(seconds: 1), (timer) {
+
+    
+
+    // Simulating MQTT data arrival
+    Timer.periodic(Duration(seconds: 5), (timer) {
+      // Replace this line with actual MQTT data or retrieval logic
+      // final mqttData = '1.2,3.4,5.6';
+      // final parsedData = _parseMQTTData(mqttData);
+      // final formattedData = parsedData.join(', ');
+      // Add the formatted data to the stream
+      // messageController.add(formattedData);
       client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
-        final recMess = c![0].payload as MqttPublishMessage;
-        final pt =
-            MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-        messageController.add(pt);
-      });
+      final recMess = c![0].payload as MqttPublishMessage;
+      final pt =
+          MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+      messageController.add(pt);
+    });
     });
   }
+
+  // List<double> _parseMQTTData(String mqttData) {
+  //   List<String> values = mqttData.split(',');
+  //   return values.map((value) => double.parse(value)).toList();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +70,6 @@ class _Sensor2PageState extends State<Sensor2Page> {
                           IconButton(
                             onPressed: () {
                               Navigator.pop(context);
-                              client.onDisconnected;
                             },
                             icon: Icon(
                               Icons.arrow_back_ios_rounded,
@@ -63,30 +77,6 @@ class _Sensor2PageState extends State<Sensor2Page> {
                               color: Colors.grey[800],
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 183),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.battery_std,
-                                  size: 32,
-                                  color: Colors.grey[700],
-                                ),
-                                StreamBuilder<String>(
-                                  stream: messageController.stream,
-                                  builder: (context, snapshot) {
-                                  return Text(
-                                    '${snapshot.data != null ? snapshot.data!.split(',')[7] : "N/A"}%',
-                                    style: TextStyle(
-                                      fontSize: 25 * textScaleFactor,
-                                      color: Colors.grey[700],
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  );
-                                }),
-                              ],
-                            ),
-                          )
                         ],
                       ),
                     ),
@@ -146,7 +136,7 @@ class _Sensor2PageState extends State<Sensor2Page> {
                                                     messageController.stream,
                                                 builder: (context, snapshot) {
                                                   return Text(
-                                                    '${snapshot.data != null ? snapshot.data!.split(',')[4] : "N/A"}',
+                                                    '${snapshot.data != null ? snapshot.data!.split(',')[0] : "N/A"}',
                                                     style: TextStyle(
                                                       fontSize:
                                                           70 * textScaleFactor,
@@ -215,7 +205,7 @@ class _Sensor2PageState extends State<Sensor2Page> {
                                                     messageController.stream,
                                                 builder: (context, snapshot) {
                                                   return Text(
-                                                    '${snapshot.data != null ? snapshot.data!.split(',')[5] : "N/A"}',
+                                                    '${snapshot.data != null ? snapshot.data!.split(',')[1] : "N/A"}',
                                                     style: TextStyle(
                                                       fontSize:
                                                           70 * textScaleFactor,
@@ -284,10 +274,10 @@ class _Sensor2PageState extends State<Sensor2Page> {
                                                     messageController.stream,
                                                 builder: (context, snapshot) {
                                                   return Text(
-                                                    '${snapshot.data != null ? snapshot.data!.split(',')[6] : "N/A"}',
+                                                    '${snapshot.data != null ? snapshot.data!.split(',')[2] : "N/A"}',
                                                     style: TextStyle(
                                                       fontSize:
-                                                          70 * textScaleFactor,
+                                                          60 * textScaleFactor,
                                                       fontWeight:
                                                           FontWeight.normal,
                                                     ),

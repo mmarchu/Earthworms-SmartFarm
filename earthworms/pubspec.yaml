@@ -87,7 +87,9 @@ flutter:
      - images/humidity.png
      - images/light.png
      - images/rain.png
-     - images/message-2.txt
+     - images/certificate.txt
+     - images/certificate-copy.pem
+     - message.txt
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:earthworms/HomeandData/Sensor1Page.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -16,17 +17,13 @@ Future<int> ConMqtt() async {
   client.onSubscribed = onSubscribed;
   client.pongCallback = pong;
 
-  final String content = await rootBundle.loadString('images/message-2.txt');
-  //final String content = 'images/message-2.txt';
-
-  //  Set up security options for the connection
-  final SecurityContext securityContext = SecurityContext.defaultContext;
-
-  // Import TLS Certificate from PEM file
-  securityContext.setTrustedCertificates('images/message-2.txt');
+  final context = SecurityContext.defaultContext;
+  final clientAuthorities =
+      await rootBundle.load('images/certificate-copy.pem');
+  context.setClientAuthoritiesBytes(clientAuthorities.buffer.asUint8List());
 
   client.secure = true;
-  client.securityContext = securityContext;
+  client.securityContext = context;
 
   final connMess = MqttConnectMessage()
       .authenticateAs('march', 'Third0804151646')
@@ -67,23 +64,23 @@ Future<int> ConMqtt() async {
     print('Received message: topic is ${c[0].topic}, payload is $pt');
   });
 
-  client.published!.listen((MqttPublishMessage message) {
-    print(
-        'Published topic: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
-  });
+  // client.published!.listen((MqttPublishMessage message) {
+  //   print(
+  //       'Published topic: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
+  // });
 
-  const pubTopic = 'flora_detail';
-  final builder = MqttClientPayloadBuilder();
-  builder.addString('Hello from mqtt_client');
+  // const pubTopic = 'flora_detail';
+  // final builder = MqttClientPayloadBuilder();
+  // builder.addString('Hello from mqtt_client');
 
-  print('Subscribing to the $pubTopic topic');
-  client.subscribe(pubTopic, MqttQos.exactlyOnce);
+  // print('Subscribing to the $pubTopic topic');
+  // client.subscribe(pubTopic, MqttQos.exactlyOnce);
 
-  print('Publishing our topic');
-  client.publishMessage(pubTopic, MqttQos.exactlyOnce, builder.payload!);
+  // print('Publishing our topic');
+  // client.publishMessage(pubTopic, MqttQos.exactlyOnce, builder.payload!);
 
-  print('Sleeping....');
-  await MqttUtilities.asyncSleep(80);
+  // print('Sleeping....');
+  // await MqttUtilities.asyncSleep(80);
 
   // print('Unsubscribing');
   // client.unsubscribe(subTopic);

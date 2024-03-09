@@ -3,12 +3,10 @@ import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:earthworms/HomeandData/Sensor1Page.dart';
 import 'package:earthworms/HomeandData/statisPage.dart';
 import 'package:earthworms/HomeandData/waterpumpPage.dart';
-import 'package:earthworms/TestFunc/Sensor2PageNO2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
-import 'package:earthworms/mqtt/mqttmanage.dart'; 
 
 class homepage extends StatefulWidget {
   final String email;
@@ -34,7 +32,11 @@ void _logout() async {
 
 class _homepageState extends State<homepage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
+  String receivedMassage1 = '';
+  String receivedMassage2 = '';
+  List<double> dataList1 = [];
+  List<double> dataList2 = [];
+  
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, Constraints) {
@@ -79,21 +81,6 @@ class _homepageState extends State<homepage> {
                               color: Colors.white),
                         ),
                       )),
-                  // ListTile(
-                  //   title: Text(
-                  //     'Change password',
-                  //     style: TextStyle(fontSize: 18 * textScaleFactor),
-                  //   ),
-                  //   onTap: () {
-                  //     print('change password');
-                  //     Navigator.push(
-                  //         context,
-                  //         MaterialPageRoute(
-                  //             builder: (context) => ChangePassPage(
-                  //                 name: widget.name,
-                  //                 lastname: widget.lastname)));
-                  //   },
-                  // ),
                   ListTile(
                     title: Text(
                       'Log out',
@@ -129,18 +116,6 @@ class _homepageState extends State<homepage> {
                             size: 35 * textScaleFactor,
                             color: Colors.grey[800],
                           )),
-
-                      // icon profile **** อาจจะไม่เอา ****
-                      // IconButton(
-                      //     onPressed: () {
-                      //       print('Person');
-                      //       Navigator.push(
-                      //           context,
-                      //           MaterialPageRoute(
-                      //               builder: (context) => MyprofilePage()));
-                      //     },
-                      //     icon: Icon(Icons.person,
-                      //         size: 35, color: Colors.grey[800])),
                     ],
                   ),
                 ),
@@ -194,7 +169,6 @@ class _homepageState extends State<homepage> {
                           child: Column(children: [
                             InkWell(
                               onTap: () async {
-                                await ConMqtt();
                                 print('Sensor1');
                                 Navigator.push(
                                     context,
@@ -238,12 +212,13 @@ class _homepageState extends State<homepage> {
                           ),
                           child: Column(children: [
                             InkWell(
-                              onTap: () {
+                              onTap: () async {
                                 print('Sensor2');
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Sensor2Page()));
+                                        builder: (context) =>
+                                            Sensor2Page()));
                               },
                               child: Column(
                                 mainAxisAlignment:
@@ -302,8 +277,7 @@ class _homepageState extends State<homepage> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            BarChartSample2()));
+                                        builder: (context) => waterpumpPage()));
                               },
                               child: Column(
                                 mainAxisAlignment:
@@ -399,4 +373,3 @@ class _homepageState extends State<homepage> {
     });
   }
 }
-

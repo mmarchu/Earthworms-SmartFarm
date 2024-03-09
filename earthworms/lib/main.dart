@@ -82,7 +82,7 @@ class MyApp extends StatelessWidget {
                 return LoginPage();
               } else {
                 print('go to homepage');
-                ConMqtt();
+                // ConMqtt();
                 return homepage(
                     email: DBemail, name: DBname, lastname: DBlastname);
               }
