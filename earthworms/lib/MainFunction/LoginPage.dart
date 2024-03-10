@@ -44,6 +44,7 @@ class _LoginPageState extends State<LoginPage> {
       DBname = data['name'];
       DBlastname = data['lastname'];
       DBtoken = data['token'];
+      ConMqtt();
       Navigator.push(
           context,
           MaterialPageRoute(
@@ -177,10 +178,9 @@ class _LoginPageState extends State<LoginPage> {
 
                       // Login button
                       InkWell(
-                        onTap: () {
+                        onTap: () async {
                           print('login');
                           _login();
-                          ConMqtt();
                         },
                         child: Container(
                           padding: const EdgeInsets.all(20),

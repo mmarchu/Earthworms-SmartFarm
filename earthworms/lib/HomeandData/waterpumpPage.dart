@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mqtt_client/mqtt_client.dart';
+import 'package:earthworms/mqtt/mqttmanage.dart';
 
 class waterpumpPage extends StatefulWidget {
   @override
@@ -9,8 +11,23 @@ class waterpumpPage extends StatefulWidget {
 
 class _waterpumpPageState extends State<waterpumpPage> {
   //final bool PowerOn;
-  bool Power = true;
-  bool MorA = true;
+  bool M_A = true;
+  bool power = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _publishMQTT();
+  }
+
+  void _publishMQTT() {
+    final builder = MqttClientPayloadBuilder();
+    builder.addString('$M_A,$power');
+    //print('$M_A,$power');
+
+    const topic = 'waterpump';
+    client.publishMessage(topic, MqttQos.atMostOnce, builder.payload!);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +64,7 @@ class _waterpumpPageState extends State<waterpumpPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Power off/ON",
+                            "Manual/Auto",
                             style: TextStyle(
                               fontSize: 25,
                               fontWeight: FontWeight.bold,
@@ -55,8 +72,17 @@ class _waterpumpPageState extends State<waterpumpPage> {
                             ),
                           ),
                           CupertinoSwitch(
-                              value: Power,
-                              onChanged: (value) => setState(() => Power = value))
+                            value: M_A,
+                            onChanged: (value) {
+                              setState(() {
+                                M_A = value;
+                                if (value) {
+                                  power = false;
+                                }
+                              });
+                              _publishMQTT();
+                            },
+                          )
                         ]),
                   ),
                   SizedBox(height: 10),
@@ -66,7 +92,7 @@ class _waterpumpPageState extends State<waterpumpPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Manual/Auto",
+                            "Power off/ON",
                             style: TextStyle(
                               fontSize: 25,
                               fontWeight: FontWeight.bold,
@@ -74,8 +100,15 @@ class _waterpumpPageState extends State<waterpumpPage> {
                             ),
                           ),
                           CupertinoSwitch(
-                              value: MorA,
-                              onChanged: (value) => setState(() => MorA = value))
+                              value: power,
+                              onChanged: (value) {
+                                setState(() {
+                                  if (!M_A) {
+                                    power = value;
+                                  }
+                                });
+                                _publishMQTT();
+                              })
                         ]),
                   ),
                 ],

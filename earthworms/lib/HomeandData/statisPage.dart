@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:toggle_switch/toggle_switch.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:earthworms/MainFunction/RegisterPage.dart';
+
 
 class statisPage extends StatefulWidget {
   statisPage({super.key});
@@ -12,39 +11,6 @@ class statisPage extends StatefulWidget {
 }
 
 class _statisPageState extends State<statisPage> {
-  String SelectButton = " ";
-  final List<double> data = [
-    10,
-    20,
-    15,
-    25,
-    30,
-    18,
-    12,
-    28,
-    22,
-    17,
-    29,
-    14,
-    26,
-    19,
-    23,
-    16,
-    27,
-    21,
-    13,
-    24,
-    11,
-    30,
-    15,
-    28,
-    20,
-    12,
-    26,
-    18,
-    14,
-    22
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -116,74 +82,10 @@ class _statisPageState extends State<statisPage> {
                         ],
                       ),
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    SizedBox( height: 10,),
 
-                    //Category
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 30 * textScaleFactor,
-                          vertical: 10 * textScaleFactor),
-                      child: Column(
-                        children: [
-                          ToggleSwitch(
-                            customWidths: [105.0, 120.0, 105.0],
-                            minHeight: 50,
-                            initialLabelIndex: 5,
-                            cornerRadius: 30.0,
-                            animate: true,
-                            activeFgColor: Colors.white,
-                            inactiveBgColor: Color.fromRGBO(179, 176, 163, 1),
-                            inactiveFgColor: Colors.black,
-                            totalSwitches: 3,
-                            labels: ['Humidity', 'Temperature', 'Light'],
-                            activeBgColors: [
-                              [Colors.blue],
-                              [Colors.pink],
-                              [Color.fromRGBO(213, 213, 165, 10)]
-                            ],
-                            onToggle: (index) {
-                              //SelectB = index;
-                              //print(index);
-                              if (index == 0) {
-                                SelectButton = "0";
-                                print("Button = $SelectButton");
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => RegisterPage()));
-                              } else if (index == 1) {
-                                SelectButton = "1";
-                                print("Button = $SelectButton");
-                              } else {
-                                SelectButton = "2";
-                                print("Button = $SelectButton");
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    
 
-                    // BarChart(
-                    //   BarChartData(
-                    //     alignment: BarChartAlignment.spaceAround,
-                    //     maxY: 100,
-                    //     titlesData: FlTitlesData(
-                    //       leftTitles: SideTitles(
-                    //         showTitles: true,
-                    //         getTextStyles: (value) => const TextStyle(
-                    //           color: Color(0xff7589a2),
-                    //           fontWeight: FontWeight.bold,
-                    //           fontSize: 14,
-                    //         ),)
-                    //     )
-                    //   )
-                    // )
                   ],
                 ),
               )),

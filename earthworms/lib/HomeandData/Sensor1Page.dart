@@ -15,7 +15,6 @@ class _Sensor1PageState extends State<Sensor1Page> {
   @override
   void initState() {
     super.initState();
-    ConMqtt();
     _updateMQTT();
   }
 
@@ -23,8 +22,7 @@ class _Sensor1PageState extends State<Sensor1Page> {
     Timer.periodic(Duration(seconds: 1), (timer) {
       client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
         final recMess = c![0].payload as MqttPublishMessage;
-        final pt =
-            MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+        final pt = MqttPublishPayload.bytesToStringAsString(recMess.payload.message) ;
         messageController.add(pt);
       });
     });
@@ -76,7 +74,7 @@ class _Sensor1PageState extends State<Sensor1Page> {
                                   return Text(
                                     '${snapshot.data != null ? snapshot.data!.split(',')[3] : "N/A"}%',
                                     style: TextStyle(
-                                      fontSize: 25 * textScaleFactor,
+                                      fontSize: 23 * textScaleFactor,
                                       color: Colors.grey[700],
                                       fontWeight: FontWeight.bold,
                                     ),

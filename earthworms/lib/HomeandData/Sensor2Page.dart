@@ -16,7 +16,6 @@ class _Sensor2PageState extends State<Sensor2Page> {
   @override
   void initState() {
     super.initState();
-    ConMqtt();
     _updateMQTT();
   }
 
@@ -78,7 +77,7 @@ class _Sensor2PageState extends State<Sensor2Page> {
                                   return Text(
                                     '${snapshot.data != null ? snapshot.data!.split(',')[7] : "N/A"}%',
                                     style: TextStyle(
-                                      fontSize: 25 * textScaleFactor,
+                                      fontSize: 23 * textScaleFactor,
                                       color: Colors.grey[700],
                                       fontWeight: FontWeight.bold,
                                     ),

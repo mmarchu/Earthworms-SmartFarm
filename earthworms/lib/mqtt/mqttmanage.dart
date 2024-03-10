@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:earthworms/HomeandData/Sensor1Page.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -54,15 +53,24 @@ Future<int> ConMqtt() async {
     exit(-1);
   }
 
-  const subTopic = 'flora_detail';
-  print('Subscribing to the $subTopic topic');
-  client.subscribe(subTopic, MqttQos.atMostOnce);
+  // Subscribe Sensor Topic
+  const subTopicSensor = 'flora_detail';
+  print('Subscribing to $subTopicSensor topic');
+  client.subscribe(subTopicSensor, MqttQos.atMostOnce);
+
+   // Subscribe Water Pump
+  const subTopicWater = 'waterpump';
+  print('Subscribing to $subTopicWater topic');
+
+  client.subscribe(subTopicWater, MqttQos.atMostOnce);
   client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
     final recMess = c![0].payload as MqttPublishMessage;
     final pt =
         MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-    print('Received message: topic is ${c[0].topic}, payload is $pt');
+    print('From ${c[0].topic}, value is $pt');
   });
+
+ 
 
   // client.published!.listen((MqttPublishMessage message) {
   //   print(
