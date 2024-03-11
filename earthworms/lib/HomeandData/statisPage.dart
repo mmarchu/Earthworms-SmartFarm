@@ -1,7 +1,6 @@
+import 'package:earthworms/HomeandData/BarGraph/bar_graph.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fl_chart/fl_chart.dart';
-
 
 class statisPage extends StatefulWidget {
   statisPage({super.key});
@@ -11,6 +10,7 @@ class statisPage extends StatefulWidget {
 }
 
 class _statisPageState extends State<statisPage> {
+  List<double> monthSummary = [20, 33, 47];
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,7 @@ class _statisPageState extends State<statisPage> {
                           Text(
                             "Summary",
                             style: TextStyle(
-                              fontSize: 40 * textScaleFactor,
+                              fontSize: 45 * textScaleFactor,
                               fontWeight: FontWeight.bold,
                               color: Colors.grey[800],
                             ),
@@ -67,9 +67,10 @@ class _statisPageState extends State<statisPage> {
                         ],
                       ),
                     ),
+                    // SizedBox(height: 15,),
                     Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: 35 * textScaleFactor),
+                          horizontal: 40 * textScaleFactor),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -82,10 +83,15 @@ class _statisPageState extends State<statisPage> {
                         ],
                       ),
                     ),
-                    SizedBox( height: 10,),
-
-                    
-
+                    SizedBox(
+                      height: 30,
+                    ),
+                    SizedBox(
+                      height: 450 * textScaleFactor,
+                      child: MyBarGraph(
+                        monthSummary: monthSummary,
+                      ),
+                    )
                   ],
                 ),
               )),

@@ -26,7 +26,16 @@ class _waterpumpPageState extends State<waterpumpPage> {
     //print('$M_A,$power');
 
     const topic = 'waterpump';
-    client.publishMessage(topic, MqttQos.atMostOnce, builder.payload!);
+    client.publishMessage(topic, MqttQos.exactlyOnce, builder.payload!);
+  }
+
+  void _publishDefultMQTT() {
+    final builder = MqttClientPayloadBuilder();
+    builder.addString('true,false');
+    //print('$M_A,$power');
+
+    const topic = 'waterpump';
+    client.publishMessage(topic, MqttQos.exactlyOnce, builder.payload!);
   }
 
   @override
@@ -44,6 +53,7 @@ class _waterpumpPageState extends State<waterpumpPage> {
                   children: [
                     IconButton(
                       onPressed: () {
+                        _publishDefultMQTT();
                         Navigator.pop(context);
                       },
                       icon: Icon(
