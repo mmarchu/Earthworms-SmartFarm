@@ -62,12 +62,12 @@ Future<int> ConMqtt() async {
   const subTopicWater = 'waterpump';
   print('Subscribing to $subTopicWater topic');
 
-  client.subscribe(subTopicWater, MqttQos.atMostOnce);
+  //client.subscribe(subTopicWater, MqttQos.atMostOnce);
   client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
     final recMess = c![0].payload as MqttPublishMessage;
-    final pt =
+    final pump =
         MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-    print('From ${c[0].topic}, value is $pt');
+    print('From ${c[0].topic}, value is $pump');
   });
 
  

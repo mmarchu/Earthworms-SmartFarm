@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:earthworms/mqtt/mqttmanage.dart';
 import 'package:mqtt_client/mqtt_client.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class Sensor1Page extends StatefulWidget {
   @override
@@ -12,6 +13,19 @@ class Sensor1Page extends StatefulWidget {
 class _Sensor1PageState extends State<Sensor1Page> {
   final StreamController<String> messageController =
       StreamController<String>.broadcast();
+  List<FlSpot> chartData = [
+  FlSpot(0, 1),
+  FlSpot(1, 3),
+  FlSpot(2, 10),
+  FlSpot(3, 7),
+  FlSpot(4, 12),
+  FlSpot(5, 13),
+  FlSpot(6, 17),
+  FlSpot(7, 15),
+  FlSpot(8, 20),
+  FlSpot(9, 1)
+];
+    
   @override
   void initState() {
     super.initState();
@@ -72,7 +86,7 @@ class _Sensor1PageState extends State<Sensor1Page> {
                                   stream: messageController.stream,
                                   builder: (context, snapshot) {
                                   return Text(
-                                    '${snapshot.data != null ? snapshot.data!.split(',')[3] : "N/A"}%',
+                                    '${snapshot.data != null ? snapshot.data!.split(',')[4] : "N/A"}%',
                                     style: TextStyle(
                                       fontSize: 23 * textScaleFactor,
                                       color: Colors.grey[700],
@@ -102,61 +116,8 @@ class _Sensor1PageState extends State<Sensor1Page> {
                                     color: Color.fromRGBO(42, 62, 54, 190),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          "Humidity",
-                                          style: TextStyle(
-                                            fontSize: 30 * textScaleFactor,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(height: 10),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 10, top: 10),
-                                              child: Image.asset(
-                                                "images/humidity.png",
-                                                height: 95 * textScaleFactor,
-                                                width: 95 * textScaleFactor,
-                                              ),
-                                            ),
-                                            Text(
-                                              "|",
-                                              style: TextStyle(
-                                                fontSize: 80 * textScaleFactor,
-                                                fontWeight: FontWeight.w300,
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 10, right: 20),
-                                              child: StreamBuilder<String>(
-                                                stream:
-                                                    messageController.stream,
-                                                builder: (context, snapshot) {
-                                                  return Text(
-                                                    '${snapshot.data != null ? snapshot.data!.split(',')[0] : "N/A"}',
-                                                    style: TextStyle(
-                                                      fontSize:
-                                                          70 * textScaleFactor,
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
+                                  child: LineChart(
+                                    LineChartData(borderData: FlBorderData(show: false), lineBarsData: [LineChartBarData(spots: chartData)])
                                   ),
                                 ),
                               ),

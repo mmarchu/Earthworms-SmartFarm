@@ -17,8 +17,14 @@ class _waterpumpPageState extends State<waterpumpPage> {
   @override
   void initState() {
     super.initState();
-    _publishMQTT();
+    //_publishMQTT();
   }
+
+  // void dispose() {
+  //   _publishDefultMQTT();
+  //   print('dispose');
+  //   super.dispose();
+  // }
 
   void _publishMQTT() {
     final builder = MqttClientPayloadBuilder();

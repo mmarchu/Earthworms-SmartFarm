@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'package:earthworms/HomeandData/homepage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:earthworms/MainFunction/SessionToken.dart';
+import 'package:earthworms/NewHomePage/NewHomepage.dart';
 import 'package:earthworms/mqtt/mqttmanage.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+
 Future<void> main() async {
   runApp(MyApp());
 }
@@ -76,7 +78,7 @@ class MyApp extends StatelessWidget {
               } else {
                 print('go to homepage');
                 ConMqtt();
-                return homepage(
+                return Newhomepage(
                     email: DBemail, name: DBname, lastname: DBlastname);
               }
             }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:earthworms/MainFunction/RegisterPage.dart';
 import 'package:earthworms/HomeandData/homepage.dart';
+import 'package:earthworms/NewHomePage/NewHomepage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
@@ -49,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
           context,
           MaterialPageRoute(
             builder: (context) =>
-                homepage(email: InputEmail, name: DBname, lastname: DBlastname),
+                Newhomepage(email: InputEmail, name: DBname, lastname: DBlastname),
           ));
       await saveData('Token', DBtoken);
       print(DBtoken);
