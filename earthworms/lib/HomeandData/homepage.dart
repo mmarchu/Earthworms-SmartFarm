@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -67,7 +68,7 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Padding(
                   padding: EdgeInsets.only(
-                      top: 60.0 * textScaleFactor, left: 40 * textScaleFactor),
+                      top: 65 * textScaleFactor, left: 40 * textScaleFactor),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -84,7 +85,7 @@ class _HomePageState extends State<HomePage> {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Padding(
-                          padding: EdgeInsets.only(top: 5 * textScaleFactor),
+                          padding: EdgeInsets.only(top: 2 * textScaleFactor),
                           child: Text(
                             widget.lastname,
                             style: TextStyle(
@@ -98,7 +99,7 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                SizedBox(height: 25 * textScaleFactor),
+                SizedBox(height: 15 * textScaleFactor),
                 SizedBox(
                   width: screenWidth,
                   height: screenHeight,
@@ -110,9 +111,19 @@ class _HomePageState extends State<HomePage> {
                     child: Column(
                       children: [
                         Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Text(
+                            "THE EARTHWORM'S SMARTFARM",
+                            style: TextStyle(
+                                fontSize: 18 * textScaleFactor,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Padding(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 20 * textScaleFactor,
-                              vertical: 40 * textScaleFactor),
+                            horizontal: 20 * textScaleFactor,
+                            // vertical: 40 * textScaleFactor
+                          ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -146,6 +157,12 @@ class _HomePageState extends State<HomePage> {
                                   child: InkWell(
                                     onTap: () async {
                                       print("Temperature");
+                                      _logout();
+                                      Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  LoginPage()));
                                     },
                                   ),
                                 ),
