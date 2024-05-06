@@ -3,6 +3,8 @@ import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:earthworms/HomeandData/Sensor1Page.dart';
 import 'package:earthworms/HomeandData/statisPage.dart';
 import 'package:earthworms/HomeandData/waterpumpPage.dart';
+import 'package:earthworms/NewHomePage/TimeSeries.dart';
+import 'package:earthworms/TestFunc/Sensor2Responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -148,12 +150,14 @@ class _NewhomepageState extends State<Newhomepage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "The Earthworms SmartFarm",
-                          style: TextStyle(
-                            fontSize: 25 * textScaleFactor,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey[800],
+                        Center(
+                          child: Text(
+                            "The Earthworms SmartFarm",
+                            style: TextStyle(
+                              fontSize: 23 * textScaleFactor,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[800],
+                            ),
                           ),
                         ),
                         SizedBox(
@@ -171,6 +175,7 @@ class _NewhomepageState extends State<Newhomepage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      //Sensor1
                       SizedBox(
                         width: 172 * textScaleFactor,
                         height: 300 * textScaleFactor,
@@ -188,7 +193,7 @@ class _NewhomepageState extends State<Newhomepage> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Sensor1Page()));
+                                          builder: (context) => TimeSeries()));
                                 },
                                 child: Column(
                                   children: [
@@ -423,6 +428,8 @@ class _NewhomepageState extends State<Newhomepage> {
                           ),
                         ),
                       ),
+
+                      //Sensor2
                       SizedBox(
                         width: 172 * textScaleFactor,
                         height: 300 * textScaleFactor,
@@ -754,7 +761,7 @@ class _NewhomepageState extends State<Newhomepage> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => statisPage()));
+                                          builder: (context) => TimeSE1()));
                                 },
                                 child: Column(
                                   mainAxisAlignment:

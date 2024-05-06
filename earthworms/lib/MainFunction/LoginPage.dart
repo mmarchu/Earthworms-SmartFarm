@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
           context,
           MaterialPageRoute(
             builder: (context) =>
-                Newhomepage(email: InputEmail, name: DBname, lastname: DBlastname),
+                HomePage(name: DBname, lastname: DBlastname),
           ));
       await saveData('Token', DBtoken);
       print(DBtoken);

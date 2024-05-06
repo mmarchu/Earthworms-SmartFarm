@@ -1,22 +1,18 @@
-import 'package:earthworms/HomeandData/Sensor2Page.dart';
-import 'package:earthworms/MainFunction/LoginPage.dart';
-import 'package:earthworms/HomeandData/Sensor1Page.dart';
-import 'package:earthworms/HomeandData/statisPage.dart';
-import 'package:earthworms/HomeandData/waterpumpPage.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:async';
+import 'package:earthworms/mqtt/mqttmanage.dart';
+import 'package:mqtt_client/mqtt_client.dart';
 
-class homepage extends StatefulWidget {
-  final String email;
+class HomePage extends StatefulWidget {
   final String name;
   final String lastname;
 
-  homepage({required this.email, required this.name, required this.lastname});
+  HomePage({required this.name, required this.lastname});
 
   @override
-  State<homepage> createState() => _homepageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 // Delete Token in SharePref
@@ -30,15 +26,32 @@ void _logout() async {
   print("Log out");
 }
 
-class _homepageState extends State<homepage> {
+class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  String receivedMassage1 = '';
-  String receivedMassage2 = '';
-  List<double> dataList1 = [];
-  List<double> dataList2 = [];
-  
+  final StreamController<String> messageController =
+      StreamController<String>.broadcast();
+  List<String> sensorData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _updateMQTT();
+  }
+
+  Future<void> _updateMQTT() async {
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
+        final recMess = c![0].payload as MqttPublishMessage;
+        final pt =
+            MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+        messageController.add(pt);
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    // ignore: non_constant_identifier_names
     return LayoutBuilder(builder: (context, Constraints) {
       final screenWidth = MediaQuery.of(context).size.width;
       final screenHeight = MediaQuery.of(context).size.height;
@@ -46,330 +59,109 @@ class _homepageState extends State<homepage> {
           screenWidth < screenHeight ? screenWidth : screenHeight;
       final textScaleFactor = smallestDimension / 400;
       return AnnotatedRegion<SystemUiOverlayStyle>(
-          value: SystemUiOverlayStyle.dark,
-          child: Scaffold(
-            key: _scaffoldKey,
-            backgroundColor: Color.fromRGBO(250, 246, 229, 1),
-
-            //navigation drawer
-            drawer: Drawer(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: <Widget>[
-                  DrawerHeader(
-                      decoration: const BoxDecoration(
-                        color: Color.fromRGBO(42, 62, 54, 1),
-                      ),
-                      child: UserAccountsDrawerHeader(
-                        decoration: const BoxDecoration(
-                            color: Color.fromRGBO(42, 62, 54, 1)),
-                        // Name Header
-                        accountName: Text(
-                          widget.name + " " + widget.lastname,
+        value: SystemUiOverlayStyle.light,
+        child: Scaffold(
+          backgroundColor: const Color(0xff0e4f55),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(
+                      top: 60.0 * textScaleFactor, left: 40 * textScaleFactor),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          widget.name,
                           style: TextStyle(
-                            fontSize: 18 * textScaleFactor,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-
-                        // Email Header
-                        accountEmail: Text(
-                          widget.email,
-                          style: TextStyle(
-                              fontSize: 16 * textScaleFactor,
+                              fontSize: 30 * textScaleFactor,
+                              fontWeight: FontWeight.bold,
                               color: Colors.white),
                         ),
-                      )),
-                  ListTile(
-                    title: Text(
-                      'Log out',
-                      style: TextStyle(fontSize: 18 * textScaleFactor),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 5 * textScaleFactor),
+                          child: Text(
+                            widget.lastname,
+                            style: TextStyle(
+                                fontSize: 30 * textScaleFactor,
+                                fontWeight: FontWeight.bold,
+                                color:
+                                    const Color.fromARGB(255, 213, 205, 205)),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 25 * textScaleFactor),
+                SizedBox(
+                  width: screenWidth,
+                  height: screenHeight,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: const Color.fromRGBO(250, 246, 229, 1),
+                      borderRadius: BorderRadius.circular(40),
                     ),
-                    onTap: () {
-                      _logout();
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => LoginPage()));
-                    },
-                  ),
-                ],
-              ),
-            ),
-
-            body: SafeArea(
-                child: Column(
-              children: [
-                //appBar
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 25),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // icon Menu
-                      IconButton(
-                          onPressed: () {
-                            _scaffoldKey.currentState?.openDrawer();
-                            print('Menu');
-                          },
-                          icon: Icon(
-                            Icons.menu,
-                            size: 35 * textScaleFactor,
-                            color: Colors.grey[800],
-                          )),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 15),
-
-                // text Header
-                Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 35 * textScaleFactor),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "Welcome Back To",
-                          style: TextStyle(
-                            fontSize: 23 * textScaleFactor,
-                            color: Colors.grey[800],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10 * textScaleFactor,
-                        ),
-                        Text(
-                          "The Earthworm's SmartFarm", //Name of user
-                          style: TextStyle(
-                              fontSize: 35 * textScaleFactor,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey[800]),
-                        )
-                      ],
-                    )),
-                const SizedBox(height: 15),
-
-                // Function Button
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 30 * textScaleFactor,
-                      vertical: 10 * textScaleFactor),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      //Sensor 1
-                      SizedBox(
-                        width: 150 * textScaleFactor,
-                        height: 200 * textScaleFactor,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: Color.fromRGBO(42, 62, 54, 1),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Column(children: [
-                            InkWell(
-                              onTap: () async {
-                                print('Sensor1');
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => Sensor1Page()));
-                              },
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(height: 25 * textScaleFactor),
-                                  Image.asset(
-                                    "images/sensor-1-1.png",
-                                    height: 100 * textScaleFactor,
-                                    width: 100 * textScaleFactor,
-                                  ),
-                                  SizedBox(height: 20 * textScaleFactor),
-                                  Text(
-                                    'Sensor1',
-                                    style: TextStyle(
-                                      fontSize: 20 * textScaleFactor,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ]),
-                        ),
-                      ),
-
-                      //Sensor 2
-                      SizedBox(
-                        width: 150 * textScaleFactor,
-                        height: 200 * textScaleFactor,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: Color.fromRGBO(42, 62, 54, 1),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Column(children: [
-                            InkWell(
-                              onTap: () async {
-                                print('Sensor2');
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            Sensor2Page()));
-                              },
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(
-                                    height: 25 * textScaleFactor,
-                                  ),
-                                  Image.asset(
-                                    "images/sensor-1-1.png",
-                                    height: 100 * textScaleFactor,
-                                    width: 100 * textScaleFactor,
-                                  ),
-                                  SizedBox(
-                                    height: 20 * textScaleFactor,
-                                  ),
-                                  Text(
-                                    'Sensor2',
-                                    style: TextStyle(
-                                      fontSize: 20 * textScaleFactor,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ]),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 10),
-
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 30 * textScaleFactor,
-                      vertical: 10 * textScaleFactor),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      //Water Pump
-                      SizedBox(
-                        width: 150 * textScaleFactor,
-                        height: 200 * textScaleFactor,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: Color.fromRGBO(42, 62, 54, 1),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Column(children: [
-                            InkWell(
-                              onTap: () {
-                                print('Water Pump');
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => waterpumpPage()));
-                              },
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(
-                                    height: 25 * textScaleFactor,
-                                  ),
-                                  Image.asset(
-                                    "images/water-pump-1.png",
-                                    width: 100 * textScaleFactor,
-                                    height: 100 * textScaleFactor,
-                                  ),
-                                  SizedBox(
-                                    height: 20 * textScaleFactor,
-                                  ),
-                                  Text(
-                                    'Water Pump',
-                                    style: TextStyle(
-                                      fontSize: 20 * textScaleFactor,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ]),
-                        ),
-                      ),
-
-                      //Stats Page
-                      SizedBox(
-                        width: 150 * textScaleFactor,
-                        height: 200 * textScaleFactor,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: Color.fromRGBO(42, 62, 54, 1),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Column(
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20 * textScaleFactor,
+                              vertical: 40 * textScaleFactor),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              InkWell(
-                                onTap: () {
-                                  print('Stats Web');
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => statisPage()));
-                                },
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    SizedBox(
-                                      height: 20 * textScaleFactor,
-                                    ),
-                                    Image.asset(
-                                      "images/StatsIcons.png",
-                                      height: 100 * textScaleFactor,
-                                      width: 100 * textScaleFactor,
-                                    ),
-                                    SizedBox(
-                                      height: 15 * textScaleFactor,
-                                    ),
-                                    Text(
-                                      'Summary',
-                                      style: TextStyle(
-                                          fontSize: 20 * textScaleFactor,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white),
-                                    ),
-                                    Text(
-                                      'Report',
-                                      style: TextStyle(
-                                          fontSize: 20 * textScaleFactor,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white),
-                                    ),
-                                  ],
+                              //Humidity
+                              SizedBox(
+                                width: 175 * textScaleFactor,
+                                height: 160 * textScaleFactor,
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: Color.fromRGBO(232, 225, 198, 1),
+                                    borderRadius: BorderRadius.circular(25),
+                                    //boxShadow: [BoxShadow(blurRadius: 1)]
+                                  ),
+                                  child: InkWell(
+                                    onTap: () async {
+                                      print("Humidity");
+                                    },
+                                  ),
                                 ),
-                              )
+                              ),
+                              //Temperature
+                              SizedBox(
+                                width: 175 * textScaleFactor,
+                                height: 160 * textScaleFactor,
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: Color.fromRGBO(232, 225, 198, 1),
+                                    borderRadius: BorderRadius.circular(25),
+                                    //boxShadow: [BoxShadow(blurRadius: 1)]
+                                  ),
+                                  child: InkWell(
+                                    onTap: () async {
+                                      print("Temperature");
+                                    },
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
-                )
+                ),
               ],
-            )),
-          ));
+            ),
+          ),
+        ),
+      );
     });
   }
 }
