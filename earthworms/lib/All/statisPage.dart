@@ -1,4 +1,4 @@
-import 'package:earthworms/HomeandData/BarGraph/bar_graph.dart';
+import 'package:earthworms/All/BarGraph/bar_graph.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

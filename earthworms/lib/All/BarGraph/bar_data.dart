@@ -1,4 +1,4 @@
-import 'package:earthworms/HomeandData/BarGraph/individual_bar.dart';
+import 'package:earthworms/All/BarGraph/individual_bar.dart';
 
 class BarData {
   final double ratAmount;

@@ -52,7 +52,7 @@ Future<int> ConMqtt() async {
     client.disconnect();
     exit(-1);
   }
-
+  
   // Subscribe Sensor Topic
   const subTopicSensor = 'flora_detail';
   print('Subscribing to $subTopicSensor topic');

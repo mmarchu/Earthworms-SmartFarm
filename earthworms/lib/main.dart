@@ -1,8 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:earthworms/HomeandData/homepage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:earthworms/MainFunction/SessionToken.dart';
-import 'package:earthworms/NewHomePage/NewHomepage.dart';
+// import 'package:earthworms/NewHomePage/NewHomepage.dart';
 import 'package:earthworms/mqtt/mqttmanage.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,6 +32,13 @@ Future<String?> loadData(String key) async {
 Future<int> CheckToken() async {
   String? token = await loadData('Token');
 
+  var url;
+  if (Platform.isAndroid) {
+    url = 'http://10.0.2.2:4000/api/auth/getoneuser';
+  } else if (Platform.isIOS) {
+    url = 'http://127.0.0.1:4000/api/auth/getoneuser';
+  }
+
   if (token == null) {
     // ถ้าไม่มี token, ส่งค่า 400 กลับ
     print('no token jaaa');
@@ -38,7 +46,7 @@ Future<int> CheckToken() async {
   }
 
   final response = await http.get(
-    Uri.parse('http://localhost:4000/api/auth/getoneuser'),
+    Uri.parse(url),
     headers: {'Authorization': 'Bearer $token'},
   );
 
@@ -53,7 +61,6 @@ Future<int> CheckToken() async {
   }
 }
 //-------------------------------------------------
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

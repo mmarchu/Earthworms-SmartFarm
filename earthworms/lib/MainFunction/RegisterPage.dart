@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -24,8 +25,15 @@ class _RegisterPageState extends State<RegisterPage> {
     final InputPassword = passwordController.text;
     final InputConfirmPass = ConfirmPassController.text;
 
+    var url;
+    if (Platform.isAndroid) {
+      url = 'http://10.0.2.2:4000/api/auth/register';
+    } else if (Platform.isIOS) {
+      url = 'http://127.0.0.1:4000/api/auth/register';
+    }
+
     final response = await http.post(
-        Uri.parse('http://localhost:4000/api/auth/register'),
+        Uri.parse(url),
         headers: <String, String>{
           'Content-Type': 'application/json; charest=UTF-8'
         },

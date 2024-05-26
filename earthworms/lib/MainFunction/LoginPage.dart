@@ -1,7 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:earthworms/MainFunction/RegisterPage.dart';
 import 'package:earthworms/HomeandData/homepage.dart';
-import 'package:earthworms/NewHomePage/NewHomepage.dart';
+//import 'package:earthworms/NewHomePage/NewHomepage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
@@ -32,8 +33,15 @@ class _LoginPageState extends State<LoginPage> {
     final InputEmail = emailController.text;
     final InputPassword = passwordController.text;
 
+    var url;
+    if (Platform.isAndroid) {
+      url = 'http://10.0.2.2:4000/api/auth/login';
+    } else if (Platform.isIOS) {
+      url = 'http://127.0.0.1:4000/api/auth/login';
+    }
+
     final response =
-        await http.post(Uri.parse('http://localhost:4000/api/auth/login'),
+        await http.post(Uri.parse(url),
             headers: <String, String>{
               'Content-Type': 'application/json; charest=UTF-8',
               'Authorization': 'Bearer $DBtoken',

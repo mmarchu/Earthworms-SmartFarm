@@ -303,7 +303,6 @@ class AppColors {
   static const Color contentColorCyan = Color(0xFF50E4FF);
 }
 
-//import 'dart:ui';
 
 extension ColorExtension on Color {
   /// Convert the color to a darken color based on the [percent]
