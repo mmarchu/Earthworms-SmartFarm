@@ -29,7 +29,8 @@ class _RegisterPageState extends State<RegisterPage> {
     if (Platform.isAndroid) {
       url = 'http://10.0.2.2:4000/api/auth/register';
     } else if (Platform.isIOS) {
-      url = 'http://127.0.0.1:4000/api/auth/register';
+      //url = 'http://127.0.0.1:4000/api/auth/register';
+      url = 'http://192.168.1.40:4000/api/auth/register';
     }
 
     final response = await http.post(

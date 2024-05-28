@@ -1,6 +1,6 @@
 import 'dart:async';
 // import 'dart:ffi';
-import 'package:earthworms/All/waterpumpPage.dart';
+import 'package:earthworms/HomeandData/AddSensorPage.dart';
 // import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:earthworms/HomeandData/Components/HomeWidget.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
@@ -34,27 +34,22 @@ void _logout() async {
 }
 
 class _HomePageState extends State<HomePage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  //final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final StreamController<String> messageController =
       StreamController<String>.broadcast();
   bool M_A = true;
   bool power = false;
   TextEditingController lastnameController = TextEditingController();
-  int SensorCount = 3;
-  // ignore: unused_field
-  int _selectBottomBar = 0;
+  int SensorCount = 10;
 
   //OnTapBottmBar
   void _OnTapBottomBar(int index) {
-    setState(() {
-      _selectBottomBar = index;
-    });
     switch (index) {
       case 0:
         break;
       case 1:
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => waterpumpPage()));
+            context, MaterialPageRoute(builder: (context) => AddSensorPage()));
         break;
       case 2:
         showCupertinoModalPopup<void>(
@@ -68,16 +63,23 @@ class _HomePageState extends State<HomePage> {
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: Text("No")),
+                        child: Text(
+                          "No",
+                          style: TextStyle(color: Colors.blue),
+                        )),
                     CupertinoDialogAction(
                         onPressed: () {
                           _logout();
-                          Navigator.pushReplacement(
+                          Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => LoginPage()));
+                                  builder: (context) => LoginPage()),
+                              (Route<dynamic> Route) => false);
                         },
-                        child: Text("Yes"))
+                        child: Text(
+                          "Yes",
+                          style: TextStyle(color: Colors.blue),
+                        ))
                   ],
                 ));
         break;
@@ -126,13 +128,16 @@ class _HomePageState extends State<HomePage> {
           child: Scaffold(
             backgroundColor: Color.fromRGBO(250, 246, 229, 1),
             bottomNavigationBar: BottomNavigationBar(
-              items: const <BottomNavigationBarItem>[
+              items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   icon: Icon(Icons.home),
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.add),
+                  icon: Icon(
+                    Icons.add,
+                    size: 29 * textScaleFactor,
+                  ),
                   label: 'Add Sensor',
                 ),
                 BottomNavigationBarItem(
@@ -142,7 +147,7 @@ class _HomePageState extends State<HomePage> {
               ],
               currentIndex: 0,
               selectedItemColor: Color.fromRGBO(232, 225, 198, 1),
-              unselectedItemColor: Color.fromRGBO(250, 246, 229, 1),
+              unselectedItemColor: Colors.white,
               backgroundColor: Color(0xff0e4f55),
               onTap: _OnTapBottomBar,
             ),
@@ -242,10 +247,12 @@ class _HomePageState extends State<HomePage> {
                             // ),
                             Expanded(
                               child: ListView.builder(
-                                itemCount: 4,
+                                itemCount: SensorCount,
                                 itemBuilder: (context, index) {
                                   return HomeWidget(
-                                      NumSensor: "Sensor ${index + 1}");
+                                    NumSensor: "Sensor ${index + 1}",
+                                    Indexsensor: index + 1,
+                                  );
                                 },
                               ),
                             ),

@@ -33,7 +33,7 @@ void _logout() async {
 }
 
 class _HomePageState extends State<HomePage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+//  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final StreamController<String> messageController =
       StreamController<String>.broadcast();
   bool M_A = true;
@@ -171,15 +171,16 @@ class _HomePageState extends State<HomePage> {
                                       fontWeight: FontWeight.bold),
                                 ),
                               ),
-                              ListView.builder(
-                                itemCount: 6,
-                                itemBuilder: (context, index) {
-                                  return Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child:
-                                          HomeWidget(NumSensor: "Sensor ${index + 1}"));
-                                },
-                              ),
+                              // ListView.builder(
+                              //   itemCount: 6,
+                              //   itemBuilder: (context, index) {
+                              //     return Padding(
+                              //         padding: const EdgeInsets.all(8.0),
+                              //         child:
+                              //             HomeWidget(NumSensor: "Sensor ${index + 1}")
+                              //             );
+                              //   },
+                              // ),
                             ],
                           ),
                         ),

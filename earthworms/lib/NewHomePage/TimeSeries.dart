@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:intl/intl.dart';
+// import 'package:intl/intl.dart';
 
 class TimeSeries extends StatefulWidget {
   const TimeSeries({super.key});

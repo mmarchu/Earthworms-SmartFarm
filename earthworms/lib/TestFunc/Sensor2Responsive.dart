@@ -38,6 +38,7 @@ class _TimeSE1State extends State<TimeSE1> {
       final screenHeight = MediaQuery.of(context).size.height;
       final smallestDimension =
           screenWidth < screenHeight ? screenWidth : screenHeight;
+      // ignore: unused_local_variable
       final textScaleFactor = smallestDimension / 400;
       return AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,

@@ -1,7 +1,7 @@
 import 'package:earthworms/All/Sensor2Page.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
-import 'package:earthworms/All/Sensor1Page.dart';
-import 'package:earthworms/All/statisPage.dart';
+// import 'package:earthworms/All/Sensor1Page.dart';
+// import 'package:earthworms/All/statisPage.dart';
 import 'package:earthworms/All/waterpumpPage.dart';
 import 'package:earthworms/NewHomePage/TimeSeries.dart';
 import 'package:earthworms/TestFunc/Sensor2Responsive.dart';

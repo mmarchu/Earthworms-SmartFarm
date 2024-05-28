@@ -37,16 +37,16 @@ class _LoginPageState extends State<LoginPage> {
     if (Platform.isAndroid) {
       url = 'http://10.0.2.2:4000/api/auth/login';
     } else if (Platform.isIOS) {
-      url = 'http://127.0.0.1:4000/api/auth/login';
+      //url = 'http://127.0.0.1:4000/api/auth/login';
+      url = 'http://192.168.1.40:4000/api/auth/login';
     }
 
-    final response =
-        await http.post(Uri.parse(url),
-            headers: <String, String>{
-              'Content-Type': 'application/json; charest=UTF-8',
-              'Authorization': 'Bearer $DBtoken',
-            },
-            body: jsonEncode({'email': InputEmail, 'password': InputPassword}));
+    final response = await http.post(Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charest=UTF-8',
+          'Authorization': 'Bearer $DBtoken',
+        },
+        body: jsonEncode({'email': InputEmail, 'password': InputPassword}));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -54,11 +54,10 @@ class _LoginPageState extends State<LoginPage> {
       DBlastname = data['lastname'];
       DBtoken = data['token'];
       ConMqtt();
-      Navigator.push(
+      Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                HomePage(name: DBname, lastname: DBlastname),
+            builder: (context) => HomePage(name: DBname, lastname: DBlastname),
           ));
       await saveData('Token', DBtoken);
       print(DBtoken);
