@@ -65,9 +65,33 @@ class _AddSensorPageState extends State<AddSensorPage> {
   }
 
   //Dialog Add Sensor
-  // void DialodAddSensor(BuildContext context){
-  //   showDialog(context: context, builder: builder)
-  // }
+  void DialogAddSensor(BuildContext context) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          Future.delayed(Duration(seconds: 5), () {
+            Navigator.pop(context);
+          });
+          return AlertDialog(
+              title: Text("Scan Sensor"),
+              content: Row(
+                children: [
+                  Text("Put the sensors near the board."),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 7),
+                    child: SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Color(0xff0e4f55))),
+                    ),
+                  )
+                ],
+              ));
+        });
+  }
 
   //Conditions BottomBar
   void _OnTapBottomBar(int index) {
@@ -189,8 +213,9 @@ class _AddSensorPageState extends State<AddSensorPage> {
                                 itemCount: ListSensor.length,
                                 itemBuilder: (context, index) {
                                   return GestureDetector(
-                                      onTap: () {
+                                      onTap: () async {
                                         print(index + 1);
+                                        Navigator.pop(context);
                                       },
                                       child: Column(
                                         children: [

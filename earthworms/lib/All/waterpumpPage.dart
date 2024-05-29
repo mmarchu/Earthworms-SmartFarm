@@ -58,8 +58,7 @@ class _waterpumpPageState extends State<waterpumpPage> {
                 child: Row(
                   children: [
                     IconButton(
-                      onPressed: () {
-                        _publishDefultMQTT();
+                      onPressed: () { 
                         Navigator.pop(context);
                       },
                       icon: Icon(

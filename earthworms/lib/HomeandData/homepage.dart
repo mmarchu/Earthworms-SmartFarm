@@ -1,7 +1,5 @@
 import 'dart:async';
-// import 'dart:ffi';
 import 'package:earthworms/HomeandData/AddSensorPage.dart';
-// import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:earthworms/HomeandData/Components/HomeWidget.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +38,16 @@ class _HomePageState extends State<HomePage> {
   bool M_A = true;
   bool power = false;
   TextEditingController lastnameController = TextEditingController();
-  int SensorCount = 10;
+  List<String> ListSensor = [
+    'Sensor A',
+    'Sensor B',
+    'Sensor C',
+    'Sensor D',
+    'Sensor E',
+    'Sensor F',
+    'Sensor G',
+    'Sensor H'
+  ];
 
   //OnTapBottmBar
   void _OnTapBottomBar(int index) {
@@ -247,11 +254,11 @@ class _HomePageState extends State<HomePage> {
                             // ),
                             Expanded(
                               child: ListView.builder(
-                                itemCount: SensorCount,
+                                itemCount: ListSensor.length,
                                 itemBuilder: (context, index) {
                                   return HomeWidget(
-                                    NumSensor: "Sensor ${index + 1}",
-                                    Indexsensor: index + 1,
+                                    NumSensor: ListSensor[index],
+                                    IndexSensor: ListSensor[index],
                                   );
                                 },
                               ),

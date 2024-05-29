@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:earthworms/HomeandData/SensorDetailPage.dart';
 import 'package:flutter/material.dart';
 
 class HomeWidget extends StatelessWidget {
@@ -8,9 +10,9 @@ class HomeWidget extends StatelessWidget {
       StreamController<String>.broadcast();
 
   final String NumSensor;
-  final int Indexsensor;
+  final String IndexSensor;
 
-  HomeWidget({required this.NumSensor, required this.Indexsensor, Key? key})
+  HomeWidget({required this.NumSensor, required this.IndexSensor, Key? key})
       : super(key: key);
 
   @override
@@ -25,7 +27,12 @@ class HomeWidget extends StatelessWidget {
         children: [
           InkWell(
               onTap: () {
-                print("Sensor ${Indexsensor}");
+                print(IndexSensor);
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            SensorDetailPage(IndexSensor: IndexSensor)));
               },
               child: SizedBox(
                 width: 360 * textScaleFactor,
@@ -37,12 +44,16 @@ class HomeWidget extends StatelessWidget {
                   child: Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Text(
+                        padding: const EdgeInsets.all(8.0),
+                        child: AutoSizeText(
                           NumSensor,
+                          //'jadshvbadhjsbfvhjdsfghjdfgdhsjfgdhjsfgdhsfgdhjsfgdhsjfgdhsjfgdhjfgdhjsfgdbgf',
                           style: TextStyle(
-                              fontSize: 20 * textScaleFactor,
-                              fontWeight: FontWeight.bold),
+                            fontSize: 23 * textScaleFactor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 1,
+                          textAlign: TextAlign.center,
                         ),
                       ),
                       Row(
