@@ -12,14 +12,14 @@ import 'package:flutter/cupertino.dart';
 class HomePage extends StatefulWidget {
   final String name;
   final String lastname;
-
-  HomePage({required this.name, required this.lastname});
+  final String email;
+  HomePage({required this.name, required this.lastname, required this.email});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
-// Delete Token in SharePref
+//Delete Token in SharePref
 Future<void> removeData(String key) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.remove(key);
@@ -32,7 +32,6 @@ void _logout() async {
 }
 
 class _HomePageState extends State<HomePage> {
-  //final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final StreamController<String> messageController =
       StreamController<String>.broadcast();
   bool M_A = true;
@@ -55,8 +54,15 @@ class _HomePageState extends State<HomePage> {
       case 0:
         break;
       case 1:
+        _publishMQTT(widget.email);
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => AddSensorPage()));
+            context,
+            MaterialPageRoute(
+                builder: (context) => AddSensorPage(
+                      name: widget.name,
+                      lastname: widget.lastname,
+                      email: widget.email,
+                    )));
         break;
       case 2:
         showCupertinoModalPopup<void>(
@@ -111,15 +117,19 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-//Public pump data to MQTT
-  void _publishMQTT() {
+//Public scan sensor
+  void _publishMQTT(String email) {
     final builder = MqttClientPayloadBuilder();
-    builder.addString('$M_A,$power');
-    //print('$M_A,$power');
-
-    const topic = 'waterpump';
+    builder.addString('true,$email');
+    const topic = 'scan_sensor';
     client.publishMessage(topic, MqttQos.exactlyOnce, builder.payload!);
   }
+
+  // void subTopic() {
+  //   const subTopicSensor = 'flora_detail';
+  //   print('Subscribing to $subTopicSensor topic');
+  //   client.subscribe(subTopicSensor, MqttQos.atMostOnce);
+  // }
 
   @override
   Widget build(BuildContext context) {

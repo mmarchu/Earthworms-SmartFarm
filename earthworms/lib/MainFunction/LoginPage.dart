@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:earthworms/MainFunction/RegisterPage.dart';
 import 'package:earthworms/HomeandData/homepage.dart';
-//import 'package:earthworms/NewHomePage/NewHomepage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:earthworms/mqtt/mqttmanage.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 // ignore: must_be_immutable
 class LoginPage extends StatefulWidget {
@@ -18,6 +18,7 @@ class LoginPage extends StatefulWidget {
 String DBname = '';
 String DBlastname = '';
 String DBtoken = '';
+String DBemail = '';
 
 // Save the token
 Future<void> saveData(String key, String value) async {
@@ -28,10 +29,20 @@ Future<void> saveData(String key, String value) async {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool _isPasswordVisible = true;
 
   Future<void> _login() async {
     final InputEmail = emailController.text;
     final InputPassword = passwordController.text;
+
+    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter your email and password.'),
+        ),
+      );
+      return;
+    }
 
     var url;
     if (Platform.isAndroid) {
@@ -39,7 +50,27 @@ class _LoginPageState extends State<LoginPage> {
     } else if (Platform.isIOS) {
       //url = 'http://127.0.0.1:4000/api/auth/login';
       url = 'http://192.168.1.40:4000/api/auth/login';
+      //url = 'http://172.20.10.2:4000/api/auth/login';
     }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SizedBox(
+            width: 300,
+            height: 100,
+            child: Center(
+              child: LoadingAnimationWidget.halfTriangleDot(
+                color: Color(0xff0e4f55),
+                size: 50,
+              ),
+            ),
+          ),
+        );
+      },
+    );
 
     final response = await http.post(Uri.parse(url),
         headers: <String, String>{
@@ -48,8 +79,11 @@ class _LoginPageState extends State<LoginPage> {
         },
         body: jsonEncode({'email': InputEmail, 'password': InputPassword}));
 
+    Navigator.of(context).pop();
+
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
+      DBemail = data['email'];
       DBname = data['name'];
       DBlastname = data['lastname'];
       DBtoken = data['token'];
@@ -57,7 +91,11 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => HomePage(name: DBname, lastname: DBlastname),
+            builder: (context) => HomePage(
+              name: DBname,
+              lastname: DBlastname,
+              email: DBemail,
+            ),
           ));
       await saveData('Token', DBtoken);
       print(DBtoken);
@@ -132,7 +170,7 @@ class _LoginPageState extends State<LoginPage> {
                         padding: const EdgeInsets.symmetric(horizontal: 25),
                         child: TextFormField(
                           controller: passwordController,
-                          obscureText: true,
+                          obscureText: _isPasswordVisible,
                           style: TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.white),
                           decoration: const InputDecoration(
@@ -151,11 +189,9 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 7),
 
-                      //Register button
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 25),
+                        padding: EdgeInsets.only(right: 20 * textScaleFactor),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
@@ -166,18 +202,17 @@ class _LoginPageState extends State<LoginPage> {
                                 fontWeight: FontWeight.bold,
                               )),
                               onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => RegisterPage()),
-                                );
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
                               },
                               child: Text(
-                                'Register',
+                                _isPasswordVisible
+                                    ? 'Show Password'
+                                    : 'Hide Password',
                                 style: TextStyle(
-                                    color: Color.fromRGBO(17, 41, 34, 0.9),
-                                    decoration: TextDecoration.underline,
-                                    fontSize: 16 * textScaleFactor),
+                                    color: Color.fromRGBO(17, 41, 34, 0.698),
+                                    fontSize: 15 * textScaleFactor),
                               ),
                             )
                           ],
@@ -201,6 +236,37 @@ class _LoginPageState extends State<LoginPage> {
                               'Login',
                               style: TextStyle(
                                   color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 15 * textScaleFactor),
+
+                      //Register Button
+                      InkWell(
+                        onTap: () async {
+                          print('Register');
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => RegisterPage()));
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(20),
+                          margin: const EdgeInsets.symmetric(horizontal: 25),
+                          decoration: BoxDecoration(
+                              color: Color.fromRGBO(250, 246, 229, 1),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                  color: Color.fromRGBO(239, 165, 38, 1),
+                                  width: 2)),
+                          child: const Center(
+                            child: Text(
+                              'Register',
+                              style: TextStyle(
+                                  color: Color.fromRGBO(239, 165, 38, 1),
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18),
                             ),

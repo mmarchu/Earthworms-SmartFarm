@@ -52,15 +52,18 @@ Future<int> ConMqtt() async {
     client.disconnect();
     exit(-1);
   }
-  
+
   // Subscribe Sensor Topic
   const subTopicSensor = 'flora_detail';
   print('Subscribing to $subTopicSensor topic');
   client.subscribe(subTopicSensor, MqttQos.atMostOnce);
 
-   // Subscribe Water Pump
-  const subTopicWater = 'waterpump';
-  print('Subscribing to $subTopicWater topic');
+  // Subscribe Water Pump
+  const subTopicScanSensor = 'scan_sensor';
+  print('Subscribing to $subTopicScanSensor topic');
+
+  const subTopicSensorList = 'sensor_lists';
+  print('Subscribing to $subTopicSensorList topic');
 
   //client.subscribe(subTopicWater, MqttQos.atMostOnce);
   client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
@@ -69,8 +72,6 @@ Future<int> ConMqtt() async {
         MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
     print('From ${c[0].topic}, value is $pump');
   });
-
- 
 
   // client.published!.listen((MqttPublishMessage message) {
   //   print(

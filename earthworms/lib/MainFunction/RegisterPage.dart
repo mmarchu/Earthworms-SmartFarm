@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
+
 // ignore: must_be_immutable
 class RegisterPage extends StatefulWidget {
   @override
@@ -27,14 +28,14 @@ class _RegisterPageState extends State<RegisterPage> {
 
     var url;
     if (Platform.isAndroid) {
-      url = 'http://10.0.2.2:4000/api/auth/register';
+      //url = 'http://10.0.2.2:4000/api/auth/register';
     } else if (Platform.isIOS) {
-      //url = 'http://127.0.0.1:4000/api/auth/register';
-      url = 'http://192.168.1.40:4000/api/auth/register';
+      url = 'http://127.0.0.1:4000/api/auth/register';
+      //url = 'http://192.168.1.40:4000/api/auth/register';
+      //url = 'http://172.20.10.2:4000/api/auth/register';
     }
 
-    final response = await http.post(
-        Uri.parse(url),
+    final response = await http.post(Uri.parse(url),
         headers: <String, String>{
           'Content-Type': 'application/json; charest=UTF-8'
         },
@@ -54,7 +55,8 @@ class _RegisterPageState extends State<RegisterPage> {
         InputEmail.isEmpty ||
         InputPassword.isEmpty ||
         InputConfirmPass.isEmpty) {
-      var snackBar = SnackBar(content: Text("Please fill in complete information."));
+      var snackBar =
+          SnackBar(content: Text("Please fill in complete information."));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } else if (passwordController.text != ConfirmPassController.text) {
       var snackBar =
@@ -75,8 +77,19 @@ class _RegisterPageState extends State<RegisterPage> {
         value: SystemUiOverlayStyle.light,
         child: Scaffold(
             appBar: AppBar(
-              title: const Text("Register",
-              style: TextStyle(color: Color.fromRGBO(250, 246, 229, 1)),),
+              leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back_ios_rounded,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                color: Colors.white, // สีของปุ่ม
+              ),
+              title: Text(
+                "Register",
+                style: TextStyle(color: Color.fromRGBO(250, 246, 229, 1)),
+              ),
               backgroundColor: Color(0xff0e4f55),
             ),
             backgroundColor: Color.fromRGBO(250, 246, 229, 1),

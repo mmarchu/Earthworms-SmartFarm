@@ -86,7 +86,11 @@ class MyApp extends StatelessWidget {
               } else {
                 print('go to homepage');
                 ConMqtt();
-                return HomePage(name: DBname, lastname: DBlastname);
+                return HomePage(
+                  name: DBname,
+                  lastname: DBlastname,
+                  email: DBemail,
+                );
               }
             }
           },

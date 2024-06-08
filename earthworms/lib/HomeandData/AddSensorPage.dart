@@ -1,12 +1,22 @@
+import 'dart:async';
+import 'dart:convert';
+import 'package:earthworms/HomeandData/homepage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
+import 'package:earthworms/mqtt/mqttmanage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:mqtt_client/mqtt_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AddSensorPage extends StatefulWidget {
-  const AddSensorPage({super.key});
+  final String name;
+  final String lastname;
+  final String email;
+  AddSensorPage(
+      {required this.name, required this.lastname, required this.email});
 
   @override
   State<AddSensorPage> createState() => _AddSensorPageState();
@@ -25,14 +35,73 @@ void _logout() async {
 }
 
 class _AddSensorPageState extends State<AddSensorPage> {
+  TextEditingController NameSensor = TextEditingController();
+  final ValueNotifier<bool> _isButtonEnabled = ValueNotifier<bool>(false);
+  final StreamController<String> messageController =
+      StreamController<String>.broadcast();
   List<String> ListSensor = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+  List<String> ListMacAdd = [
+    'aaaaa',
+    'bbbbb',
+    'ccccc',
+    'ddddd',
+    'eeeee',
+    'fffff',
+    'ggggg',
+    'hhhhh'
+  ];
+  List<String> sensorData = [];
 
   @override
   void initState() {
+    messageController.stream.listen((data) {
+      setState(() {
+        sensorData.add(data);
+      });
+    });
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       DialogScanSenser(context);
     });
+    NameSensor.addListener(_handleTextFieldChange);
+  }
+
+  Future<void> _addSensor(String MacAdd, String NameSensor) async {
+    final email = widget.email;
+    final MacAddress = MacAdd;
+    final SensorName = NameSensor;
+
+    final response = await http.post(
+        Uri.parse("http://127.0.0.1:4000/api/auth/register"),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charesr=UTF-8'
+        },
+        body: jsonEncode(
+            {'email': email, 'MacAdd': MacAddress, 'SensorName': SensorName}));
+
+    if (response.statusCode == 200) {
+      var snackBar = SnackBar(content: Text("Sensor added"));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) => HomePage(
+                    name: widget.name,
+                    lastname: widget.lastname,
+                    email: widget.email,
+                  )),
+          (Route<dynamic> Route) => false);
+    } else {
+      var snackBar = SnackBar(content: Text("Can not Connect! Try again."));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      Navigator.pop(context);
+    }
+  }
+
+  //เช็คว่ามีการใส่ชื่อไปหรือป่าว
+  void _handleTextFieldChange() {
+    final isFilled = NameSensor.text.isNotEmpty;
+    _isButtonEnabled.value = isFilled;
   }
 
   // Dialog Scan Senor
@@ -54,52 +123,73 @@ class _AddSensorPageState extends State<AddSensorPage> {
                     child: SizedBox(
                       width: 30,
                       height: 30,
-                      child: CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Color(0xff0e4f55))),
+                      child: LoadingAnimationWidget.halfTriangleDot(
+                        color: Color(0xff0e4f55),
+                        size: 40,
+                      ),
                     ),
                   )
                 ],
               ));
         });
+  }
+
+  //Public "true" for scan sensor
+  void _publishMQTT(String email) {
+    final builder = MqttClientPayloadBuilder();
+    builder.addString('true,$email');
+    const topic = 'scan_sensor';
+    client.publishMessage(topic, MqttQos.exactlyOnce, builder.payload!);
   }
 
   //Dialog Add Sensor
-  void DialogAddSensor(BuildContext context) {
+  void _DialogNewNameSensor(String Name, String MacAdd) {
     showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) {
-          Future.delayed(Duration(seconds: 5), () {
-            Navigator.pop(context);
-          });
-          return AlertDialog(
-              title: Text("Scan Sensor"),
-              content: Row(
-                children: [
-                  Text("Put the sensors near the board."),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 7),
-                    child: SizedBox(
-                      width: 30,
-                      height: 30,
-                      child: CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Color(0xff0e4f55))),
-                    ),
-                  )
-                ],
-              ));
-        });
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Enter Information'),
+          content: TextField(
+            controller: NameSensor,
+            decoration: InputDecoration(hintText: "Enter your name of sensor"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('CANCEL'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ValueListenableBuilder(
+                valueListenable: _isButtonEnabled,
+                builder: (context, isEnabled, child) {
+                  return TextButton(
+                      child: Text('OK'),
+                      onPressed: isEnabled
+                          ? () {
+                              String NewNameSensor = NameSensor.text;
+                              print("Name: $NewNameSensor");
+                              print(widget.email);
+                              print("Mac: $MacAdd");
+                              _addSensor(MacAdd, NewNameSensor);
+                            }
+                          : null);
+                })
+          ],
+        );
+      },
+    );
   }
 
   //Conditions BottomBar
-  void _OnTapBottomBar(int index) {
+  Future<void> _OnTapBottomBar(int index) async {
     switch (index) {
       case 0:
         Navigator.pop(context);
         break;
       case 1:
+        _publishMQTT(widget.email);
+        DialogScanSenser(context);
         break;
       case 2:
         showCupertinoModalPopup<void>(
@@ -156,10 +246,10 @@ class _AddSensorPageState extends State<AddSensorPage> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(
-                  Icons.add,
+                  Icons.refresh_outlined,
                   size: 29 * textScaleFactor,
                 ),
-                label: 'Add Sensor',
+                label: 'Refresh',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.logout_rounded),
@@ -214,8 +304,8 @@ class _AddSensorPageState extends State<AddSensorPage> {
                                 itemBuilder: (context, index) {
                                   return GestureDetector(
                                       onTap: () async {
-                                        print(index + 1);
-                                        Navigator.pop(context);
+                                        _DialogNewNameSensor(ListSensor[index],
+                                            ListMacAdd[index]);
                                       },
                                       child: Column(
                                         children: [

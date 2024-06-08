@@ -3,7 +3,7 @@ import 'package:earthworms/MainFunction/LoginPage.dart';
 // import 'package:earthworms/All/Sensor1Page.dart';
 // import 'package:earthworms/All/statisPage.dart';
 import 'package:earthworms/All/waterpumpPage.dart';
-import 'package:earthworms/NewHomePage/TimeSeries.dart';
+import 'package:earthworms/HomeandData/HtimeSeries.dart';
 import 'package:earthworms/TestFunc/Sensor2Responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -39,7 +39,7 @@ class _NewhomepageState extends State<Newhomepage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final StreamController<String> messageController =
       StreamController<String>.broadcast();
-  List<String> sensorData = [];
+ // List<String> sensorData = [];
 
   @override
   void initState() {
@@ -190,10 +190,10 @@ class _NewhomepageState extends State<Newhomepage> {
                               InkWell(
                                 onTap: () async {
                                   print('Sensor1');
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => TimeSeries()));
+                                  // Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //         builder: (context) => TimeSeries()));
                                 },
                                 child: Column(
                                   children: [

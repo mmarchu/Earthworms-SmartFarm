@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:earthworms/All/waterpumpPage.dart';
+import 'package:earthworms/HomeandData/HtimeSeries.dart';
+import 'package:earthworms/HomeandData/TemtimeSeries.dart';
 import 'package:earthworms/mqtt/mqttmanage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -131,7 +133,7 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    waterpumpPage()));
+                                                    HTimeSeriesPage()));
                                       },
                                       child: Padding(
                                         padding: EdgeInsets.only(
@@ -216,7 +218,7 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    waterpumpPage()));
+                                                    TemtimeSeriesPage()));
                                       },
                                       child: Padding(
                                         padding: EdgeInsets.only(
@@ -410,17 +412,18 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
                   ),
                 ),
                 Positioned(
-                    left: 16 * textScaleFactor,
-                    bottom: 16 * textScaleFactor,
+                    left: 40 * textScaleFactor,
+                    bottom: 30 * textScaleFactor,
                     child: FloatingActionButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
                       child: Icon(
                         Icons.arrow_back_ios_rounded,
-                        size: 20,
+                        size: 30,
                         color: Colors.white,
                       ),
+                      backgroundColor: Color(0xff0e4f55),
                     ))
               ],
             )),

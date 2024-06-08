@@ -28,7 +28,7 @@ class HomeWidget extends StatelessWidget {
           InkWell(
               onTap: () {
                 print(IndexSensor);
-                Navigator.pushReplacement(
+                Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
@@ -205,7 +205,7 @@ class HomeWidget extends StatelessWidget {
                                                     padding: EdgeInsets.only(
                                                         bottom: 20 *
                                                             textScaleFactor,
-                                                        top: 6 *
+                                                        top: 15 *
                                                             textScaleFactor),
                                                     child:
                                                         StreamBuilder<String>(
