@@ -19,6 +19,7 @@ String DBname = '';
 String DBlastname = '';
 String DBtoken = '';
 String DBemail = '';
+List<dynamic> DBSensorsDynamic = [];
 
 // Save the token
 Future<void> saveData(String key, String value) async {
@@ -47,9 +48,10 @@ class _LoginPageState extends State<LoginPage> {
     var url;
     if (Platform.isAndroid) {
       url = 'http://10.0.2.2:4000/api/auth/login';
+      //url = 'http://192.168.1.40:4000/api/auth/login';
     } else if (Platform.isIOS) {
-      //url = 'http://127.0.0.1:4000/api/auth/login';
-      url = 'http://192.168.1.40:4000/api/auth/login';
+      url = 'http://127.0.0.1:4000/api/auth/login';
+      //url = 'http://192.168.1.40:4000/api/auth/login';
       //url = 'http://172.20.10.2:4000/api/auth/login';
     }
 
@@ -87,6 +89,18 @@ class _LoginPageState extends State<LoginPage> {
       DBname = data['name'];
       DBlastname = data['lastname'];
       DBtoken = data['token'];
+      DBSensorsDynamic = data['sensors'];
+
+      // Extract sensor details into separate lists
+      List<String> sensorIdList =
+          DBSensorsDynamic.map((item) => item['sensor_id'].toString()).toList();
+      List<String> macAddressList =
+          DBSensorsDynamic.map((item) => item['mac_address'].toString())
+              .toList();
+      List<String> sensorNameList =
+          DBSensorsDynamic.map((item) => item['sensor_name'].toString())
+              .toList();
+
       ConMqtt();
       Navigator.pushReplacement(
           context,
@@ -95,9 +109,13 @@ class _LoginPageState extends State<LoginPage> {
               name: DBname,
               lastname: DBlastname,
               email: DBemail,
+              sensorIdList: sensorIdList,
+              macAddressList: macAddressList,
+              sensorNameList: sensorNameList,
             ),
           ));
       await saveData('Token', DBtoken);
+      await saveData('email', DBemail);
       print(DBtoken);
     } else {
       var snackBar = SnackBar(

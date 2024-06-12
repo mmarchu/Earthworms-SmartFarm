@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:earthworms/HomeandData/homepage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:earthworms/mqtt/mqttmanage.dart';
@@ -16,7 +17,7 @@ class AddSensorPage extends StatefulWidget {
   final String lastname;
   final String email;
   AddSensorPage(
-      {required this.name, required this.lastname, required this.email});
+      {required this.name, required this.lastname, required this.email, t});
 
   @override
   State<AddSensorPage> createState() => _AddSensorPageState();
@@ -31,7 +32,14 @@ Future<void> removeData(String key) async {
 //Func. Logout
 void _logout() async {
   await removeData('Token');
+  await removeData('email');
   print("Log out");
+}
+
+//Load data from sharePref
+Future<String?> loadData(String key) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString(key);
 }
 
 class _AddSensorPageState extends State<AddSensorPage> {
@@ -51,6 +59,64 @@ class _AddSensorPageState extends State<AddSensorPage> {
     'hhhhh'
   ];
   List<String> sensorData = [];
+
+  // Lode data after add sensor before back to homepage
+  Future<void> LodeDataToHomePage() async {
+    String? token = await loadData('Token');
+    String? email = await loadData('email');
+    var url;
+
+    if (Platform.isAndroid) {
+      //url = 'http://10.0.2.2:4000/api/auth/getoneuser';
+      url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+    } else if (Platform.isIOS) {
+      url = 'http://127.0.0.1:4000/api/auth/getoneuser';
+    }
+
+    // if (token == null) {
+    //   return 401;
+    // }
+    // if (email == null) {
+    //   return 401;
+    // }
+
+    final response = await http.post(Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charest=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({'email': email}));
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      DBemail = data['email'];
+      DBname = data['name'];
+      DBlastname = data['lastname'];
+      DBSensorsDynamic = data['sensors'];
+      List<String> sensorIdList =
+          DBSensorsDynamic.map((item) => item['sensor_id'].toString()).toList();
+      List<String> macAddressList =
+          DBSensorsDynamic.map((item) => item['mac_address'].toString())
+              .toList();
+      List<String> sensorNameList =
+          DBSensorsDynamic.map((item) => item['sensor_name'].toString())
+              .toList();
+
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) => HomePage(
+                    name: DBname,
+                    lastname: DBlastname,
+                    email: DBemail,
+                    sensorIdList: sensorIdList,
+                    macAddressList: macAddressList,
+                    sensorNameList: sensorNameList,
+                  )),
+          (Route<dynamic> Route) => false);
+    }
+    ;
+  }
 
   @override
   void initState() {
@@ -82,15 +148,15 @@ class _AddSensorPageState extends State<AddSensorPage> {
     if (response.statusCode == 200) {
       var snackBar = SnackBar(content: Text("Sensor added"));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-              builder: (context) => HomePage(
-                    name: widget.name,
-                    lastname: widget.lastname,
-                    email: widget.email,
-                  )),
-          (Route<dynamic> Route) => false);
+      // Navigator.pushAndRemoveUntil(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) => HomePage(
+      //               name: widget.name,
+      //               lastname: widget.lastname,
+      //               email: widget.email,
+      //             )),
+      //     (Route<dynamic> Route) => false);
     } else {
       var snackBar = SnackBar(content: Text("Can not Connect! Try again."));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -171,7 +237,7 @@ class _AddSensorPageState extends State<AddSensorPage> {
                               print("Name: $NewNameSensor");
                               print(widget.email);
                               print("Mac: $MacAdd");
-                              _addSensor(MacAdd, NewNameSensor);
+                              LodeDataToHomePage();
                             }
                           : null);
                 })

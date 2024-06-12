@@ -5,14 +5,22 @@ import 'package:earthworms/HomeandData/SensorDetailPage.dart';
 import 'package:flutter/material.dart';
 
 class HomeWidget extends StatelessWidget {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final StreamController<String> messageController =
       StreamController<String>.broadcast();
 
-  final String NumSensor;
-  final String IndexSensor;
+  final String NameSensor;
+  final String macAddress;
+  final String email;
+  final bool mode;
+  final bool power;
 
-  HomeWidget({required this.NumSensor, required this.IndexSensor, Key? key})
+  HomeWidget(
+      {required this.NameSensor,
+      required this.macAddress,
+      required this.email,
+      required this.mode,
+      required this.power,
+      Key? key})
       : super(key: key);
 
   @override
@@ -27,12 +35,20 @@ class HomeWidget extends StatelessWidget {
         children: [
           InkWell(
               onTap: () {
-                print(IndexSensor);
+                print(NameSensor);
+                print(macAddress);
+                print('mode: $mode');
+                print('power: $power');
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            SensorDetailPage(IndexSensor: IndexSensor)));
+                        builder: (context) => SensorDetailPage(
+                              nameSensor: NameSensor,
+                              macAddress: macAddress,
+                              email: email,
+                              mode: mode,
+                              power: power,
+                            )));
               },
               child: SizedBox(
                 width: 360 * textScaleFactor,
@@ -46,7 +62,7 @@ class HomeWidget extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: AutoSizeText(
-                          NumSensor,
+                          NameSensor,
                           //'jadshvbadhjsbfvhjdsfghjdfgdhsjfgdhjsfgdhsfgdhjsfgdhsjfgdhsjfgdhjfgdhjsfgdbgf',
                           style: TextStyle(
                             fontSize: 23 * textScaleFactor,

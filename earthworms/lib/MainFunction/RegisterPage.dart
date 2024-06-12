@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
-
 // ignore: must_be_immutable
 class RegisterPage extends StatefulWidget {
   @override
@@ -28,7 +27,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
     var url;
     if (Platform.isAndroid) {
-      //url = 'http://10.0.2.2:4000/api/auth/register';
+      url = 'http://10.0.2.2:4000/api/auth/register';
+      //url = 'http://192.168.1.40:4000/api/auth/register';
     } else if (Platform.isIOS) {
       url = 'http://127.0.0.1:4000/api/auth/register';
       //url = 'http://192.168.1.40:4000/api/auth/register';

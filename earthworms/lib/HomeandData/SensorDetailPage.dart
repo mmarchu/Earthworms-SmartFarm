@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:earthworms/All/waterpumpPage.dart';
 import 'package:earthworms/HomeandData/HtimeSeries.dart';
 import 'package:earthworms/HomeandData/TemtimeSeries.dart';
 import 'package:earthworms/mqtt/mqttmanage.dart';
@@ -9,10 +8,20 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/services.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 
+// ignore: must_be_immutable
 class SensorDetailPage extends StatefulWidget {
-  final String IndexSensor;
+  final String nameSensor;
+  final String macAddress;
+  final String email;
+  bool mode;
+  bool power;
 
-  SensorDetailPage({required this.IndexSensor});
+  SensorDetailPage(
+      {required this.nameSensor,
+      required this.macAddress,
+      required this.email,
+      required this.mode,
+      required this.power});
 
   @override
   State<SensorDetailPage> createState() => _SensorDetailPageState();
@@ -21,13 +30,15 @@ class SensorDetailPage extends StatefulWidget {
 class _SensorDetailPageState extends State<SensorDetailPage> {
   final StreamController<String> messageController =
       StreamController<String>.broadcast();
-  bool M_A = true;
-  bool power = false;
+  late bool New_mode;
+  late bool New_power;
 
   @override
   void initState() {
     super.initState();
     _updateMQTT();
+    New_mode = widget.mode;
+    New_power = widget.power;
   }
 
   //Get data from sensor by MQTT
@@ -44,7 +55,7 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
 
   void _publishMQTT() {
     final builder = MqttClientPayloadBuilder();
-    builder.addString('$M_A,$power');
+    builder.addString('$New_mode,$New_power');
     //print('$M_A,$power');
 
     const topic = 'waterpump';
@@ -79,7 +90,7 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
                             height: 140 * textScaleFactor,
                             child: Center(
                               child: AutoSizeText(
-                                widget.IndexSensor,
+                                widget.nameSensor,
                                 //'abcdefghigklmnopqrstuvwxyz1234567890987654321abcdefghijklmnopqrstuvwxyz',
                                 style: TextStyle(
                                   fontSize: 35 * textScaleFactor,
@@ -342,12 +353,12 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
                                                       left:
                                                           27 * textScaleFactor),
                                                   child: CupertinoSwitch(
-                                                    value: M_A,
+                                                    value: widget.mode,
                                                     onChanged: (value) {
                                                       setState(() {
-                                                        M_A = value;
+                                                        widget.mode = value;
                                                         if (value) {
-                                                          power = false;
+                                                          widget.power = false;
                                                         }
                                                       });
                                                       _publishMQTT();
@@ -385,11 +396,13 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
                                                       left:
                                                           18 * textScaleFactor),
                                                   child: CupertinoSwitch(
-                                                      value: power,
+                                                      value: widget.power,
                                                       onChanged: (value) {
                                                         setState(() {
-                                                          if (!M_A) {
-                                                            power = value;
+                                                          if (widget.mode ==
+                                                              false) {
+                                                            widget.power =
+                                                                value;
                                                           }
                                                         });
                                                         _publishMQTT();
@@ -411,6 +424,7 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
                     ),
                   ),
                 ),
+                // Back Bottom
                 Positioned(
                     left: 40 * textScaleFactor,
                     bottom: 30 * textScaleFactor,
@@ -418,13 +432,30 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
+                      heroTag: 'uniqueTag1',
                       child: Icon(
                         Icons.arrow_back_ios_rounded,
                         size: 30,
                         color: Colors.white,
                       ),
                       backgroundColor: Color(0xff0e4f55),
-                    ))
+                    )),
+                // Delete sensor Bottom
+                Positioned(
+                    right: 40 * textScaleFactor,
+                    bottom: 30 * textScaleFactor,
+                    child: FloatingActionButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      heroTag: 'uniqueTag2',
+                      child: Icon(
+                        Icons.delete,
+                        size: 30,
+                        color: Colors.white,
+                      ),
+                      backgroundColor: Color.fromARGB(255, 143, 48, 48),
+                    )),
               ],
             )),
       );

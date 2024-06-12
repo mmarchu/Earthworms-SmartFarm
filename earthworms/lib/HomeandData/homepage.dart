@@ -13,7 +13,16 @@ class HomePage extends StatefulWidget {
   final String name;
   final String lastname;
   final String email;
-  HomePage({required this.name, required this.lastname, required this.email});
+  final List<String> sensorIdList;
+  final List<String> macAddressList;
+  final List<String> sensorNameList;
+  HomePage(
+      {required this.name,
+      required this.lastname,
+      required this.email,
+      required this.sensorIdList,
+      required this.macAddressList,
+      required this.sensorNameList});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -28,25 +37,18 @@ Future<void> removeData(String key) async {
 //Func. Logout
 void _logout() async {
   await removeData('Token');
+  await removeData('email');
   print("Log out");
 }
 
 class _HomePageState extends State<HomePage> {
   final StreamController<String> messageController =
       StreamController<String>.broadcast();
-  bool M_A = true;
-  bool power = false;
+  // bool M_A = true;
+  // bool power = false;
+  List<bool> mode = [true, false, false, true, true, false, true];
+  List<bool> power = [false, true, true, false, false, false, false];
   TextEditingController lastnameController = TextEditingController();
-  List<String> ListSensor = [
-    'Sensor A',
-    'Sensor B',
-    'Sensor C',
-    'Sensor D',
-    'Sensor E',
-    'Sensor F',
-    'Sensor G',
-    'Sensor H'
-  ];
 
   //OnTapBottmBar
   void _OnTapBottomBar(int index) {
@@ -264,11 +266,14 @@ class _HomePageState extends State<HomePage> {
                             // ),
                             Expanded(
                               child: ListView.builder(
-                                itemCount: ListSensor.length,
+                                itemCount: widget.macAddressList.length,
                                 itemBuilder: (context, index) {
                                   return HomeWidget(
-                                    NumSensor: ListSensor[index],
-                                    IndexSensor: ListSensor[index],
+                                    NameSensor: widget.sensorNameList[index],
+                                    macAddress: widget.macAddressList[index],
+                                    email: widget.email,
+                                    mode: mode[index],
+                                    power: power[index],
                                   );
                                 },
                               ),

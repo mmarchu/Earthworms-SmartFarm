@@ -16,6 +16,7 @@ Future<void> main() async {
 String DBname = '';
 String DBlastname = '';
 String DBemail = '';
+List<dynamic> DBSensorsDynamic = [];
 
 class MainColors {
   final GreenTextFieldANDmainButton = Color.fromRGBO(42, 62, 54, 1);
@@ -31,10 +32,11 @@ Future<String?> loadData(String key) async {
 
 Future<int> CheckToken() async {
   String? token = await loadData('Token');
-
+  String? email = await loadData('email');
   var url;
   if (Platform.isAndroid) {
-    url = 'http://10.0.2.2:4000/api/auth/getoneuser';
+    //url = 'http://10.0.2.2:4000/api/auth/getoneuser';
+    url = 'http://192.168.1.40:4000/api/auth/getoneuser';
   } else if (Platform.isIOS) {
     url = 'http://127.0.0.1:4000/api/auth/getoneuser';
   }
@@ -45,16 +47,24 @@ Future<int> CheckToken() async {
     return 401;
   }
 
-  final response = await http.get(
-    Uri.parse(url),
-    headers: {'Authorization': 'Bearer $token'},
-  );
+  if (email == null) {
+    return 401;
+  }
+
+  final response = await http.post(Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charest=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({'email': email}));
 
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body);
     DBemail = data['email'];
     DBname = data['name'];
     DBlastname = data['lastname'];
+    DBSensorsDynamic = data['sensors'];
+
     return 200;
   } else {
     return response.statusCode;
@@ -85,11 +95,21 @@ class MyApp extends StatelessWidget {
                 return LoginPage();
               } else {
                 print('go to homepage');
+                List<String> sensorIdList =
+                    DBSensorsDynamic.map((item) => item['sensor_id'].toString())
+                        .toList();
+                List<String> macAddressList = DBSensorsDynamic.map(
+                    (item) => item['mac_address'].toString()).toList();
+                List<String> sensorNameList = DBSensorsDynamic.map(
+                    (item) => item['sensor_name'].toString()).toList();
                 ConMqtt();
                 return HomePage(
                   name: DBname,
                   lastname: DBlastname,
                   email: DBemail,
+                  sensorIdList: sensorIdList,
+                  macAddressList: macAddressList,
+                  sensorNameList: sensorNameList,
                 );
               }
             }
