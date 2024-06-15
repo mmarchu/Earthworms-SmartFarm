@@ -32,6 +32,7 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
       StreamController<String>.broadcast();
   late bool New_mode;
   late bool New_power;
+  late String Mac_Address;
 
   @override
   void initState() {
@@ -39,6 +40,7 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
     _updateMQTT();
     New_mode = widget.mode;
     New_power = widget.power;
+    Mac_Address = widget.macAddress;
   }
 
   //Get data from sensor by MQTT
@@ -55,7 +57,7 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
 
   void _publishMQTT() {
     final builder = MqttClientPayloadBuilder();
-    builder.addString('$New_mode,$New_power');
+    builder.addString('$Mac_Address,$New_mode,$New_power');
     //print('$M_A,$power');
 
     const topic = 'waterpump';
@@ -353,12 +355,12 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
                                                       left:
                                                           27 * textScaleFactor),
                                                   child: CupertinoSwitch(
-                                                    value: widget.mode,
+                                                    value: New_mode,
                                                     onChanged: (value) {
                                                       setState(() {
-                                                        widget.mode = value;
+                                                        New_mode = value;
                                                         if (value) {
-                                                          widget.power = false;
+                                                          New_power = false;
                                                         }
                                                       });
                                                       _publishMQTT();
@@ -396,13 +398,12 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
                                                       left:
                                                           18 * textScaleFactor),
                                                   child: CupertinoSwitch(
-                                                      value: widget.power,
+                                                      value: New_power,
                                                       onChanged: (value) {
                                                         setState(() {
-                                                          if (widget.mode ==
+                                                          if (New_mode ==
                                                               false) {
-                                                            widget.power =
-                                                                value;
+                                                            New_power = value;
                                                           }
                                                         });
                                                         _publishMQTT();
