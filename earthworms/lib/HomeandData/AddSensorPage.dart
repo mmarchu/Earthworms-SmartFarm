@@ -73,13 +73,6 @@ class _AddSensorPageState extends State<AddSensorPage> {
       url = 'http://127.0.0.1:4000/api/auth/getoneuser';
     }
 
-    // if (token == null) {
-    //   return 401;
-    // }
-    // if (email == null) {
-    //   return 401;
-    // }
-
     final response = await http.post(Uri.parse(url),
         headers: <String, String>{
           'Content-Type': 'application/json; charest=UTF-8',
@@ -148,6 +141,7 @@ class _AddSensorPageState extends State<AddSensorPage> {
     if (response.statusCode == 200) {
       var snackBar = SnackBar(content: Text("Sensor added"));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      LodeDataToHomePage();
       // Navigator.pushAndRemoveUntil(
       //     context,
       //     MaterialPageRoute(

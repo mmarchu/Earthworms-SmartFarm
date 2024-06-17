@@ -278,7 +278,6 @@ class _HomePageState extends State<HomePage> {
                                 },
                               ),
                             ),
-                            //HomeWidget(NumSensor: "Sensor 1")
                           ],
                         )),
                   ),

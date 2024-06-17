@@ -1,12 +1,18 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'package:earthworms/HomeandData/HtimeSeries.dart';
 import 'package:earthworms/HomeandData/TemtimeSeries.dart';
+import 'package:earthworms/HomeandData/homepage.dart';
+import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:earthworms/mqtt/mqttmanage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/services.dart';
 import 'package:mqtt_client/mqtt_client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 // ignore: must_be_immutable
 class SensorDetailPage extends StatefulWidget {
@@ -33,6 +39,63 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
   late bool New_mode;
   late bool New_power;
   late String Mac_Address;
+
+  //Load data from sharePref
+  Future<String?> loadData(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString(key);
+  }
+
+  // Lode data after add sensor before back to homepage
+  Future<void> LodeDataToHomePage() async {
+    String? token = await loadData('Token');
+    String? email = await loadData('email');
+    var url;
+
+    if (Platform.isAndroid) {
+      //url = 'http://10.0.2.2:4000/api/auth/getoneuser';
+      url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+    } else if (Platform.isIOS) {
+      url = 'http://127.0.0.1:4000/api/auth/getoneuser';
+    }
+
+    final response = await http.post(Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charest=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({'email': email}));
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      DBemail = data['email'];
+      DBname = data['name'];
+      DBlastname = data['lastname'];
+      DBSensorsDynamic = data['sensors'];
+      List<String> sensorIdList =
+          DBSensorsDynamic.map((item) => item['sensor_id'].toString()).toList();
+      List<String> macAddressList =
+          DBSensorsDynamic.map((item) => item['mac_address'].toString())
+              .toList();
+      List<String> sensorNameList =
+          DBSensorsDynamic.map((item) => item['sensor_name'].toString())
+              .toList();
+
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) => HomePage(
+                    name: DBname,
+                    lastname: DBlastname,
+                    email: DBemail,
+                    sensorIdList: sensorIdList,
+                    macAddressList: macAddressList,
+                    sensorNameList: sensorNameList,
+                  )),
+          (Route<dynamic> Route) => false);
+    }
+    ;
+  }
 
   @override
   void initState() {
@@ -431,11 +494,11 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
                     bottom: 30 * textScaleFactor,
                     child: FloatingActionButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        LodeDataToHomePage();
                       },
                       heroTag: 'uniqueTag1',
                       child: Icon(
-                        Icons.arrow_back_ios_rounded,
+                        Icons.home,
                         size: 30,
                         color: Colors.white,
                       ),
@@ -446,9 +509,40 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
                     right: 40 * textScaleFactor,
                     bottom: 30 * textScaleFactor,
                     child: FloatingActionButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
+                      onPressed: () => showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                                title: Text(
+                                  "Delete the Device",
+                                  style:
+                                      TextStyle(fontSize: 20 * textScaleFactor),
+                                ),
+                                actions: <Widget>[
+                                  TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, 'Cancel'),
+                                      child: Text(
+                                        "Cancel",
+                                        style: TextStyle(
+                                          color: Color(0xff0e4f55),
+                                        ),
+                                      )),
+                                  TextButton(
+                                      onPressed: () {
+                                        LodeDataToHomePage();
+                                        var snackBar = SnackBar(
+                                            content:
+                                                Text("Delete Successfully"));
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(snackBar);
+                                      },
+                                      child: Text(
+                                        "Delete",
+                                        style:
+                                            TextStyle(color: Color(0xff0e4f55)),
+                                      ))
+                                ],
+                              )),
                       heroTag: 'uniqueTag2',
                       child: Icon(
                         Icons.delete,

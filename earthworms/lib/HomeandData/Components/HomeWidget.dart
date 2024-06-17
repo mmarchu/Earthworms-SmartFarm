@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:earthworms/HomeandData/SensorDetailPage.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +21,25 @@ class HomeWidget extends StatelessWidget {
       required this.power,
       Key? key})
       : super(key: key);
+
+  // void _StatusPump(int mode) {
+  //   if (mode == true) {
+  //     Text(
+  //       "Auto",
+  //     style: TextStyle(
+  //       fontWeight: FontWeight.bold
+  //     ),
+  //     );
+  //   }else{
+  //     Text(
+  //       "Manual",
+  //     style: TextStyle(
+  //       fontWeight: FontWeight.bold
+  //     ),
+  //     );
+  //   }
+  //   ;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -221,7 +239,7 @@ class HomeWidget extends StatelessWidget {
                                                     padding: EdgeInsets.only(
                                                         bottom: 20 *
                                                             textScaleFactor,
-                                                        top: 15 *
+                                                        top: 13 *
                                                             textScaleFactor),
                                                     child:
                                                         StreamBuilder<String>(
@@ -257,10 +275,34 @@ class HomeWidget extends StatelessWidget {
                         width: 300,
                         height: 50,
                         child: DecoratedBox(
-                            decoration: BoxDecoration(
-                          color: Color.fromRGBO(250, 246, 229, 1),
-                          borderRadius: BorderRadius.circular(15),
-                        )),
+                          decoration: BoxDecoration(
+                            color: Color.fromRGBO(250, 246, 229, 1),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    left: 8 * textScaleFactor,
+                                    top: 5 * textScaleFactor,
+                                    bottom: 5 * textScaleFactor,
+                                    right: 8 * textScaleFactor),
+                                child: Image.asset("images/water-pump.png"),
+                              ),
+                              Text(
+                                "Water Pump Mode: ",
+                                style:
+                                    TextStyle(fontSize: 17 * textScaleFactor),
+                              ),
+                              Text(
+                                mode ? "Auto" : "Manual",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20 * textScaleFactor),
+                              )
+                            ],
+                          ),
+                        ),
                       )
                     ],
                   ),
