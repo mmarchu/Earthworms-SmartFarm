@@ -130,7 +130,7 @@ class _AddSensorPageState extends State<AddSensorPage> {
     final response = await http.post(Uri.parse(url),
         headers: <String, String>{
           'Content-Type': 'application/json; charesr=UTF-8',
-          'Authorization': 'Bearer $token'
+          //'Authorization': 'Bearer $token'
         },
         body: jsonEncode({'email': email, 'createSensor': 'false'}));
 
@@ -148,8 +148,24 @@ class _AddSensorPageState extends State<AddSensorPage> {
       }
       Navigator.pop(context);
     } else {
-      
       Navigator.pop(context);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Enter Information'),
+            content: Text('Sensor not found'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('Try Again'),
+                onPressed: () {
+                  SensorsListAPI();
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 
