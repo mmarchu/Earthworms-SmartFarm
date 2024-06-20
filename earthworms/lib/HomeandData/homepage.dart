@@ -56,7 +56,6 @@ class _HomePageState extends State<HomePage> {
       case 0:
         break;
       case 1:
-        _publishMQTT(widget.email);
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -118,20 +117,6 @@ class _HomePageState extends State<HomePage> {
       });
     });
   }
-
-//Public scan sensor
-  void _publishMQTT(String email) {
-    final builder = MqttClientPayloadBuilder();
-    builder.addString('true,$email');
-    const topic = 'scan_sensor';
-    client.publishMessage(topic, MqttQos.exactlyOnce, builder.payload!);
-  }
-
-  // void subTopic() {
-  //   const subTopicSensor = 'flora_detail';
-  //   print('Subscribing to $subTopicSensor topic');
-  //   client.subscribe(subTopicSensor, MqttQos.atMostOnce);
-  // }
 
   @override
   Widget build(BuildContext context) {

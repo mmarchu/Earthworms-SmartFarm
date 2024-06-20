@@ -7,7 +7,7 @@ import 'package:flutter/services.dart' show rootBundle;
 final client = MqttServerClient(
     'e076141ea6a943a5b775dae136735d83.s1.eu.hivemq.cloud', '8883');
 
-Future<int> ConMqtt() async {
+Future<int> ConMqtt(String email) async {
   client.port = 8883;
   client.logging(on: false);
   client.keepAlivePeriod = 60;
@@ -59,11 +59,11 @@ Future<int> ConMqtt() async {
   client.subscribe(subTopicSensor, MqttQos.atMostOnce);
 
   // Subscribe Water Pump
-  const subTopicScanSensor = 'scan_sensor';
-  print('Subscribing to $subTopicScanSensor topic');
+  const subTopicWaterPump = 'waterpump';
+  print('Subscribing to $subTopicWaterPump topic');
 
-  const subTopicSensorList = 'sensor_lists';
-  print('Subscribing to $subTopicSensorList topic');
+  final subTopicEmailSensor = '$email,flora_detail';
+  print('Subscribing to $subTopicEmailSensor topic');
 
   //client.subscribe(subTopicWater, MqttQos.atMostOnce);
   client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {

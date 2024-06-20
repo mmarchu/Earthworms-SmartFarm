@@ -95,14 +95,19 @@ class MyApp extends StatelessWidget {
                 return LoginPage();
               } else {
                 print('go to homepage');
-                List<String> sensorIdList =
-                    DBSensorsDynamic.map((item) => item['sensor_id'].toString())
-                        .toList();
-                List<String> macAddressList = DBSensorsDynamic.map(
-                    (item) => item['mac_address'].toString()).toList();
-                List<String> sensorNameList = DBSensorsDynamic.map(
-                    (item) => item['sensor_name'].toString()).toList();
-                ConMqtt();
+                List<String> sensorIdList = [];
+                List<String> macAddressList = [];
+                List<String> sensorNameList = [];
+
+                if (DBSensorsDynamic != null && DBSensorsDynamic is List) {
+                  sensorIdList = DBSensorsDynamic.map(
+                      (item) => item['sensor_id'].toString()).toList();
+                  macAddressList = DBSensorsDynamic.map(
+                      (item) => item['mac_address'].toString()).toList();
+                  sensorNameList = DBSensorsDynamic.map(
+                      (item) => item['sensor_name'].toString()).toList();
+                }
+                ConMqtt(DBemail);
                 return HomePage(
                   name: DBname,
                   lastname: DBlastname,

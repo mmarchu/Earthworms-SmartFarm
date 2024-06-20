@@ -16,7 +16,7 @@ class _StraemBuilderTestState extends State<StraemBuilderTest> {
   @override
   void initState() {
     super.initState();
-    ConMqtt();
+    //ConMqtt();
     _updateMQTT();
   }
 

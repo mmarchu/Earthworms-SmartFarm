@@ -45,19 +45,8 @@ Future<String?> loadData(String key) async {
 class _AddSensorPageState extends State<AddSensorPage> {
   TextEditingController NameSensor = TextEditingController();
   final ValueNotifier<bool> _isButtonEnabled = ValueNotifier<bool>(false);
-  final StreamController<String> messageController =
-      StreamController<String>.broadcast();
-  List<String> ListSensor = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-  List<String> ListMacAdd = [
-    'aaaaa',
-    'bbbbb',
-    'ccccc',
-    'ddddd',
-    'eeeee',
-    'fffff',
-    'ggggg',
-    'hhhhh'
-  ];
+  final StreamController<List<Map<String, String>>> _streamController =
+      StreamController();
   List<String> sensorData = [];
 
   // Lode data after add sensor before back to homepage
@@ -113,27 +102,87 @@ class _AddSensorPageState extends State<AddSensorPage> {
 
   @override
   void initState() {
-    messageController.stream.listen((data) {
-      setState(() {
-        sensorData.add(data);
-      });
-    });
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       DialogScanSenser(context);
     });
     NameSensor.addListener(_handleTextFieldChange);
+    SensorsListAPI();
   }
 
+  // API receive sensor list
+  Future<void> SensorsListAPI() async {
+    final email = widget.email;
+    String? token = await loadData('Token');
+    var url;
+    if (Platform.isAndroid) {
+      //IP Localhost
+      url = 'http://10.0.2.2:4000/api/sensor/create';
+      //IP HomeWifi
+      //url = 'http://192.168.1.40:4000/api/sensor/create';
+    } else if (Platform.isIOS) {
+      //IP Localhost
+      url = 'http://127.0.0.1:4000/api/sensor/create';
+      //IP HomeWifi
+      //url = 'http://192.168.1.40:4000/api/sensor/create';
+    }
+
+    final response = await http.post(Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charesr=UTF-8',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode({'email': email, 'createSensor': 'false'}));
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      if (data['data'] != null && data['data'] is List) {
+        List<Map<String, String>> sensorList = List<Map<String, String>>.from(
+            data['data'].map((item) => {
+                  'address': item['address'].toString(),
+                  'name': item['name'].toString()
+                }));
+        _streamController.add(sensorList);
+      } else {
+        throw Exception('Data format is incorrect');
+      }
+      Navigator.pop(context);
+    } else {
+      
+      Navigator.pop(context);
+    }
+  }
+
+  //Load Token
+  Future<String?> loadData(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString(key);
+  }
+
+  // API add sensor to board
   Future<void> _addSensor(String MacAdd, String NameSensor) async {
     final email = widget.email;
     final MacAddress = MacAdd;
     final SensorName = NameSensor;
+    String? token = await loadData('Token');
 
-    final response = await http.post(
-        Uri.parse("http://127.0.0.1:4000/api/auth/register"),
+    var url;
+    if (Platform.isAndroid) {
+      //IP Localhost
+      url = 'http://10.0.2.2:4000/api/auth/login';
+      //IP HomeWifi
+      //url = 'http://192.168.1.40:4000/api/auth/login';
+    } else if (Platform.isIOS) {
+      //IP Localhost
+      url = 'http://127.0.0.1:4000/api/auth/login';
+      //IP HomeWifi
+      //url = 'http://192.168.1.40:4000/api/auth/login';
+    }
+
+    final response = await http.post(Uri.parse(url),
         headers: <String, String>{
-          'Content-Type': 'application/json; charesr=UTF-8'
+          'Content-Type': 'application/json; charesr=UTF-8',
+          'Authorization': 'Bearer $token'
         },
         body: jsonEncode(
             {'email': email, 'MacAdd': MacAddress, 'SensorName': SensorName}));
@@ -170,9 +219,6 @@ class _AddSensorPageState extends State<AddSensorPage> {
         context: context,
         barrierDismissible: false,
         builder: (context) {
-          Future.delayed(Duration(seconds: 5), () {
-            Navigator.pop(context);
-          });
           return AlertDialog(
               title: Text("Scan Sensor"),
               content: Row(
@@ -192,14 +238,6 @@ class _AddSensorPageState extends State<AddSensorPage> {
                 ],
               ));
         });
-  }
-
-  //Public "true" for scan sensor
-  void _publishMQTT(String email) {
-    final builder = MqttClientPayloadBuilder();
-    builder.addString('true,$email');
-    const topic = 'scan_sensor';
-    client.publishMessage(topic, MqttQos.exactlyOnce, builder.payload!);
   }
 
   //Dialog Add Sensor
@@ -248,8 +286,8 @@ class _AddSensorPageState extends State<AddSensorPage> {
         Navigator.pop(context);
         break;
       case 1:
-        _publishMQTT(widget.email);
         DialogScanSenser(context);
+        SensorsListAPI();
         break;
       case 2:
         showCupertinoModalPopup<void>(
@@ -288,12 +326,13 @@ class _AddSensorPageState extends State<AddSensorPage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final smallestDimension =
+        screenWidth < screenHeight ? screenWidth : screenHeight;
+    final textScaleFactor = smallestDimension / 400;
+
     return LayoutBuilder(builder: (context, Constraints) {
-      final screenWidth = MediaQuery.of(context).size.width;
-      final screenHeight = MediaQuery.of(context).size.height;
-      final smallestDimension =
-          screenWidth < screenHeight ? screenWidth : screenHeight;
-      final textScaleFactor = smallestDimension / 400;
       return AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
         child: Scaffold(
@@ -320,7 +359,9 @@ class _AddSensorPageState extends State<AddSensorPage> {
             selectedItemColor: Color.fromRGBO(232, 225, 198, 1),
             unselectedItemColor: Colors.white,
             backgroundColor: Color(0xff0e4f55),
-            onTap: _OnTapBottomBar,
+            onTap: (index) {
+              _OnTapBottomBar(index);
+            },
           ),
           body: Stack(
             children: [
@@ -356,59 +397,73 @@ class _AddSensorPageState extends State<AddSensorPage> {
                   ),
                   child: Container(
                     color: Color.fromRGBO(250, 246, 229, 1),
-                    child: Column(
-                      children: [
-                        Expanded(
-                            child: ListView.builder(
-                                itemCount: ListSensor.length,
-                                itemBuilder: (context, index) {
-                                  return GestureDetector(
-                                      onTap: () async {
-                                        _DialogNewNameSensor(ListSensor[index],
-                                            ListMacAdd[index]);
-                                      },
-                                      child: Column(
-                                        children: [
-                                          SizedBox(
-                                            width: 360 * textScaleFactor,
-                                            height: 80 * textScaleFactor,
-                                            child: DecoratedBox(
-                                              decoration: BoxDecoration(
-                                                  color: Color.fromRGBO(
-                                                      232, 225, 198, 1),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20)),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 30 *
-                                                            textScaleFactor),
-                                                    child: Text(
-                                                      ListSensor[index],
-                                                      style: TextStyle(
-                                                          fontSize: 20 *
-                                                              textScaleFactor,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
-                                                  ),
-                                                ],
+                    child: StreamBuilder<List<Map<String, String>>>(
+                      stream: _streamController.stream,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(
+                              child: Text('Error: ${snapshot.error}'));
+                        } else if (!snapshot.hasData ||
+                            snapshot.data!.isEmpty) {
+                          return Center(child: Text('No data available'));
+                        } else {
+                          final sensorList = snapshot.data!;
+                          return ListView.builder(
+                            itemCount: sensorList.length,
+                            itemBuilder: (context, index) {
+                              final name = sensorList[index]['name'];
+                              return GestureDetector(
+                                onTap: () async {
+                                  _DialogNewNameSensor(
+                                      sensorList[index]['name']!,
+                                      sensorList[index]['address']!);
+                                },
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                      width: 360 * textScaleFactor,
+                                      height: 80 * textScaleFactor,
+                                      child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                            color: Color.fromRGBO(
+                                                232, 225, 198, 1),
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 30 * textScaleFactor),
+                                              child: Text(
+                                                name != null ? name : '{}',
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        20 * textScaleFactor,
+                                                    fontWeight:
+                                                        FontWeight.bold),
                                               ),
                                             ),
-                                          ),
-                                          SizedBox(
-                                            height: 10 * textScaleFactor,
-                                          )
-                                        ],
-                                      ));
-                                }))
-                      ],
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10 * textScaleFactor,
+                                    )
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      },
                     ),
                   ),
                 ),

@@ -47,12 +47,15 @@ class _LoginPageState extends State<LoginPage> {
 
     var url;
     if (Platform.isAndroid) {
+      //IP Localhost
       url = 'http://10.0.2.2:4000/api/auth/login';
+      //IP HomeWifi
       //url = 'http://192.168.1.40:4000/api/auth/login';
     } else if (Platform.isIOS) {
+      //IP Localhost
       url = 'http://127.0.0.1:4000/api/auth/login';
+      //IP HomeWifi
       //url = 'http://192.168.1.40:4000/api/auth/login';
-      //url = 'http://172.20.10.2:4000/api/auth/login';
     }
 
     showDialog(
@@ -92,16 +95,23 @@ class _LoginPageState extends State<LoginPage> {
       DBSensorsDynamic = data['sensors'];
 
       // Extract sensor details into separate lists
-      List<String> sensorIdList =
-          DBSensorsDynamic.map((item) => item['sensor_id'].toString()).toList();
-      List<String> macAddressList =
-          DBSensorsDynamic.map((item) => item['mac_address'].toString())
-              .toList();
-      List<String> sensorNameList =
-          DBSensorsDynamic.map((item) => item['sensor_name'].toString())
-              .toList();
+      List<String> sensorIdList = [];
+      List<String> macAddressList = [];
+      List<String> sensorNameList = [];
 
-      ConMqtt();
+      if (DBSensorsDynamic != null && DBSensorsDynamic is List) {
+        sensorIdList =
+            DBSensorsDynamic.map((item) => item['sensor_id'].toString())
+                .toList();
+        macAddressList =
+            DBSensorsDynamic.map((item) => item['mac_address'].toString())
+                .toList();
+        sensorNameList =
+            DBSensorsDynamic.map((item) => item['sensor_name'].toString())
+                .toList();
+      }
+
+      ConMqtt(DBemail);
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
