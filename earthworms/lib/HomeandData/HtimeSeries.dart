@@ -35,27 +35,31 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                                 left: 10 * textScaleFactor),
                             child: Row(
                               children: [
-                                IconButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  icon: Icon(
-                                    Icons.arrow_back_ios_rounded,
-                                    size: 35,
-                                    color: Colors.grey[800],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 10 * textScaleFactor),
-                                  child: Text(
-                                    "Humidity",
-                                    style: TextStyle(
-                                        fontSize: 28 * textScaleFactor,
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      icon: Icon(
+                                        Icons.arrow_back_ios_rounded,
+                                        size: 35,
                                         color: Colors.grey[800],
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                )
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 10 * textScaleFactor),
+                                      child: Text(
+                                        "Humidity",
+                                        style: TextStyle(
+                                            fontSize: 28 * textScaleFactor,
+                                            color: Colors.grey[800],
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ],
                             ))
                       ],

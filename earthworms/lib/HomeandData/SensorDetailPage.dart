@@ -156,7 +156,6 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
                             child: Center(
                               child: AutoSizeText(
                                 widget.nameSensor,
-                                //'abcdefghigklmnopqrstuvwxyz1234567890987654321abcdefghijklmnopqrstuvwxyz',
                                 style: TextStyle(
                                   fontSize: 35 * textScaleFactor,
                                   fontWeight: FontWeight.bold,
@@ -187,7 +186,6 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
                           Padding(
                             padding: EdgeInsets.symmetric(
                               horizontal: 20 * textScaleFactor,
-                              // vertical: 40 * textScaleFactor
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -511,6 +509,7 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
                     child: FloatingActionButton(
                       onPressed: () => showDialog<String>(
                           context: context,
+                          barrierDismissible: false,
                           builder: (BuildContext context) => AlertDialog(
                                 title: Text(
                                   "Delete the Device",

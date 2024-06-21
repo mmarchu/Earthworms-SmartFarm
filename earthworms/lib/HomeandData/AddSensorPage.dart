@@ -3,13 +3,11 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:earthworms/HomeandData/homepage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
-import 'package:earthworms/mqtt/mqttmanage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:mqtt_client/mqtt_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AddSensorPage extends StatefulWidget {
@@ -56,8 +54,8 @@ class _AddSensorPageState extends State<AddSensorPage> {
     var url;
 
     if (Platform.isAndroid) {
-      //url = 'http://10.0.2.2:4000/api/auth/getoneuser';
-      url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+      url = 'http://10.0.2.2:4000/api/auth/getoneuser';
+      //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
     } else if (Platform.isIOS) {
       url = 'http://127.0.0.1:4000/api/auth/getoneuser';
     }
@@ -130,7 +128,7 @@ class _AddSensorPageState extends State<AddSensorPage> {
     final response = await http.post(Uri.parse(url),
         headers: <String, String>{
           'Content-Type': 'application/json; charesr=UTF-8',
-          //'Authorization': 'Bearer $token'
+          'Authorization': 'Bearer $token'
         },
         body: jsonEncode({'email': email, 'createSensor': 'false'}));
 
@@ -151,14 +149,19 @@ class _AddSensorPageState extends State<AddSensorPage> {
       Navigator.pop(context);
       showDialog(
         context: context,
+        barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Enter Information'),
-            content: Text('Sensor not found'),
+            title: Text('Sensor not found'),
             actions: <Widget>[
               TextButton(
-                child: Text('Try Again'),
+                child: Text(
+                  'Try Again',
+                  style: TextStyle(color: Color(0xff0e4f55)),
+                ),
                 onPressed: () {
+                  Navigator.pop(context);
+                  DialogScanSenser(context);
                   SensorsListAPI();
                 },
               ),
@@ -200,22 +203,17 @@ class _AddSensorPageState extends State<AddSensorPage> {
           'Content-Type': 'application/json; charesr=UTF-8',
           'Authorization': 'Bearer $token'
         },
-        body: jsonEncode(
-            {'email': email, 'MacAdd': MacAddress, 'SensorName': SensorName}));
+        body: jsonEncode({
+          'createSensor': 'true',
+          'email': email,
+          'mac_address': MacAddress,
+          'sensor_name': SensorName
+        }));
 
     if (response.statusCode == 200) {
       var snackBar = SnackBar(content: Text("Sensor added"));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       LodeDataToHomePage();
-      // Navigator.pushAndRemoveUntil(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (context) => HomePage(
-      //               name: widget.name,
-      //               lastname: widget.lastname,
-      //               email: widget.email,
-      //             )),
-      //     (Route<dynamic> Route) => false);
     } else {
       var snackBar = SnackBar(content: Text("Can not Connect! Try again."));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -233,7 +231,7 @@ class _AddSensorPageState extends State<AddSensorPage> {
   void DialogScanSenser(BuildContext context) {
     showDialog(
         context: context,
-        barrierDismissible: false,
+        // chsend
         builder: (context) {
           return AlertDialog(
               title: Text("Scan Sensor"),
@@ -285,7 +283,8 @@ class _AddSensorPageState extends State<AddSensorPage> {
                               print("Name: $NewNameSensor");
                               print(widget.email);
                               print("Mac: $MacAdd");
-                              LodeDataToHomePage();
+                              //LodeDataToHomePage();
+                              _addSensor(MacAdd, NewNameSensor);
                             }
                           : null);
                 })

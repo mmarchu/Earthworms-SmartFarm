@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -33,29 +34,33 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
                             padding: EdgeInsets.only(
                                 top: 70 * textScaleFactor,
                                 left: 10 * textScaleFactor),
-                            child: Row(
+                            child: Column(
                               children: [
-                                IconButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  icon: Icon(
-                                    Icons.arrow_back_ios_rounded,
-                                    size: 35,
-                                    color: Colors.grey[800],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 10 * textScaleFactor),
-                                  child: Text(
-                                    "Temperature",
-                                    style: TextStyle(
-                                        fontSize: 28 * textScaleFactor,
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      icon: Icon(
+                                        Icons.arrow_back_ios_rounded,
+                                        size: 35,
                                         color: Colors.grey[800],
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                )
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 10 * textScaleFactor),
+                                      child: Text(
+                                        "Temperature",
+                                        style: TextStyle(
+                                            fontSize: 28 * textScaleFactor,
+                                            color: Colors.grey[800],
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ],
                             ))
                       ],
