@@ -99,6 +99,7 @@ class _LoginPageState extends State<LoginPage> {
       List<String> macAddressList = [];
       List<String> sensorNameList = [];
 
+      // ignore: unnecessary_null_comparison, unnecessary_type_check
       if (DBSensorsDynamic != null && DBSensorsDynamic is List) {
         sensorIdList =
             DBSensorsDynamic.map((item) => item['sensor_id'].toString())

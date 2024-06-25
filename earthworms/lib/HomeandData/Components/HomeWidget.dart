@@ -12,6 +12,8 @@ class HomeWidget extends StatelessWidget {
   final String email;
   final bool mode;
   final bool power;
+  List<String> humidity;
+  List<String> temp;
 
   HomeWidget(
       {required this.NameSensor,
@@ -19,27 +21,10 @@ class HomeWidget extends StatelessWidget {
       required this.email,
       required this.mode,
       required this.power,
+      required this.humidity,
+      required this.temp,
       Key? key})
       : super(key: key);
-
-  // void _StatusPump(int mode) {
-  //   if (mode == true) {
-  //     Text(
-  //       "Auto",
-  //     style: TextStyle(
-  //       fontWeight: FontWeight.bold
-  //     ),
-  //     );
-  //   }else{
-  //     Text(
-  //       "Manual",
-  //     style: TextStyle(
-  //       fontWeight: FontWeight.bold
-  //     ),
-  //     );
-  //   }
-  //   ;
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +66,6 @@ class HomeWidget extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: AutoSizeText(
                           NameSensor,
-                          //'jadshvbadhjsbfvhjdsfghjdfgdhsjfgdhjsfgdhsfgdhjsfgdhsjfgdhsjfgdhjfgdhjsfgdbgf',
                           style: TextStyle(
                             fontSize: 23 * textScaleFactor,
                             fontWeight: FontWeight.bold,
@@ -163,7 +147,8 @@ class HomeWidget extends StatelessWidget {
                                                       builder:
                                                           (context, snapshot) {
                                                         return Text(
-                                                          '${snapshot.data != null ? snapshot.data!.split(',')[1] : "N/A"}%',
+                                                          //'${snapshot.data != null ? snapshot.data!.split(',')[1] : "N/A"}%',
+                                                          '${humidity.isNotEmpty ? humidity.first : "N/A"}%',
                                                           style: TextStyle(
                                                             fontSize: 25 *
                                                                 textScaleFactor,
@@ -248,7 +233,8 @@ class HomeWidget extends StatelessWidget {
                                                       builder:
                                                           (context, snapshot) {
                                                         return Text(
-                                                          '${snapshot.data != null ? snapshot.data!.split(',')[2] : "N/A"}°C',
+                                                          //'${snapshot.data != null ? snapshot.data!.split(',')[2] : "N/A"}°C',
+                                                          '${temp.isNotEmpty ? temp.first : "N/A"}°C',
                                                           style: TextStyle(
                                                             fontSize: 25 *
                                                                 textScaleFactor,

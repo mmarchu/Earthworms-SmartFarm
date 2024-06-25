@@ -62,16 +62,16 @@ Future<int> ConMqtt(String email) async {
   const subTopicWaterPump = 'waterpump';
   print('Subscribing to $subTopicWaterPump topic');
 
-  final subTopicEmailSensor = '$email,flora_detail';
+  final subTopicEmailSensor = '$email/flora_detail';
   print('Subscribing to $subTopicEmailSensor topic');
 
   //client.subscribe(subTopicWater, MqttQos.atMostOnce);
-  client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
-    final recMess = c![0].payload as MqttPublishMessage;
-    final pump =
-        MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-    print('From ${c[0].topic}, value is $pump');
-  });
+  // client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
+  //   final recMess = c![0].payload as MqttPublishMessage;
+  //   final pump =
+  //       MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+  //   print('From ${c[0].topic}, value is $pump');
+  // });
 
   // client.published!.listen((MqttPublishMessage message) {
   //   print(

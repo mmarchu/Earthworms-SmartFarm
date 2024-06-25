@@ -1,13 +1,16 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:earthworms/HomeandData/AddSensorPage.dart';
 import 'package:earthworms/HomeandData/Components/HomeWidget.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
+import 'package:earthworms/TestFunc/Sensor2Responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:earthworms/mqtt/mqttmanage.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:rxdart/rxdart.dart';
 
 class HomePage extends StatefulWidget {
   final String name;
@@ -42,18 +45,21 @@ void _logout() async {
 }
 
 class _HomePageState extends State<HomePage> {
-  final StreamController<String> messageController =
-      StreamController<String>.broadcast();
-  // bool M_A = true;
-  // bool power = false;
+  //final StreamController<Map<String, List<String>>> _dataController = StreamController<Map<String, List<String>>>();
+  final BehaviorSubject<Map<String, List<String>>> _dataController =
+      BehaviorSubject<Map<String, List<String>>>();
   List<bool> mode = [true, false, false, true, true, false, true];
   List<bool> power = [false, true, true, false, false, false, false];
   TextEditingController lastnameController = TextEditingController();
+  final List<String> humidity = [];
+  final List<String> temp = [];
 
   //OnTapBottmBar
   void _OnTapBottomBar(int index) {
     switch (index) {
       case 0:
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => TimeSeriesPage()));
         break;
       case 1:
         Navigator.push(
@@ -108,14 +114,28 @@ class _HomePageState extends State<HomePage> {
 
 //Get data from sensor by MQTT
   Future<void> _updateMQTT() async {
-    Timer.periodic(Duration(seconds: 1), (timer) {
+    Timer.periodic(Duration(seconds: 5), (timer) {
       client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
         final recMess = c![0].payload as MqttPublishMessage;
         final pt =
             MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-        messageController.add(pt);
+        print(pt);
+        //_MQTTtoJsonList(pt);
       });
     });
+  }
+
+  void _MQTTtoJsonList(
+    String message,
+  ) {
+    final Map<String, dynamic> parsedData = jsonDecode(message);
+
+    List<String> humidity = parsedData['Humidity'].split(',');
+    List<String> temp = parsedData['Temp'].split(',');
+
+    _dataController.add({'Humidity': humidity, 'Temp': temp});
+    print(humidity);
+    print(temp);
   }
 
   @override
@@ -259,6 +279,13 @@ class _HomePageState extends State<HomePage> {
                                     email: widget.email,
                                     mode: mode[index],
                                     power: power[index],
+                                    humidity: _dataController.hasValue
+                                        ? _dataController.value['Humidity'] ??
+                                            []
+                                        : [],
+                                    temp: _dataController.hasValue
+                                        ? _dataController.value['Temp'] ?? []
+                                        : [],
                                   );
                                 },
                               ),

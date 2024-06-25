@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:earthworms/HomeandData/homepage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:earthworms/MainFunction/SessionToken.dart';
+import 'package:earthworms/NewHomePage/NewHomepage.dart';
 // import 'package:earthworms/NewHomePage/NewHomepage.dart';
 import 'package:earthworms/mqtt/mqttmanage.dart';
 import 'package:flutter/material.dart';
@@ -117,6 +118,8 @@ class MyApp extends StatelessWidget {
                   macAddressList: macAddressList,
                   sensorNameList: sensorNameList,
                 );
+                // return Newhomepage(
+                //     email: DBemail, name: DBname, lastname: DBlastname);
               }
             }
           },

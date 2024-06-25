@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
+import 'package:animated_button_bar/animated_button_bar.dart';
 
 class HTimeSeriesPage extends StatefulWidget {
   const HTimeSeriesPage({super.key});
@@ -9,6 +13,19 @@ class HTimeSeriesPage extends StatefulWidget {
 }
 
 class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
+  String _selectedPeriod = 'daily';
+  DateTime _selectedDate = DateTime.now();
+  DateTimeRange? _selectedDateRange;
+  List<dynamic> _data = [];
+
+  void _onPeriodChanged(String? value) {
+    setState(() {
+      _selectedPeriod = value!;
+    });
+    print(_selectedPeriod);
+    //_fetchData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, Constraints) {
@@ -79,6 +96,50 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                   ),
                   child: Container(
                     color: Color(0xff0e4f55),
+                    child: Column(
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            AnimatedButtonBar(
+                              radius: 16.0,
+                              padding: EdgeInsets.only(
+                                  top: 25 * textScaleFactor,
+                                  right: 20 * textScaleFactor,
+                                  left: 20 * textScaleFactor),
+                              invertedSelection: true,
+                              backgroundColor: Color.fromRGBO(250, 246, 229, 1),
+                              foregroundColor: Color(0xff0e4f55),
+                              borderColor: Colors.white,
+                              innerVerticalPadding: 12,
+                              children: [
+                                ButtonBarEntry(
+                                    child: Text(
+                                      'Day',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    onTap: () => _onPeriodChanged),
+                                ButtonBarEntry(
+                                    child: Text(
+                                      'Week',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    onTap: () => _onPeriodChanged),
+                                ButtonBarEntry(
+                                    child: Text(
+                                      'Month',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    onTap: () => _onPeriodChanged),
+                              ],
+                            )
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               )

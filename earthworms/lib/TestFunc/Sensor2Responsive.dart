@@ -1,122 +1,181 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
 
-class TimeSE1 extends StatefulWidget {
-  const TimeSE1({super.key});
-
-  @override
-  State<TimeSE1> createState() => _TimeSE1State();
+void main() {
+  runApp(MyApp());
 }
 
-class _TimeSE1State extends State<TimeSE1> {
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Time Series App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: TimeSeriesPage(),
+    );
+  }
+}
 
-  List<FlSpot> _dataPoints = [];
-  late String _apiUrl;
+class TimeSeriesPage extends StatefulWidget {
+  @override
+  _TimeSeriesPageState createState() => _TimeSeriesPageState();
+}
 
-  void _fetchData(String apiUrl) async {
-    final response = await http.get(Uri.parse(apiUrl));
+class _TimeSeriesPageState extends State<TimeSeriesPage> {
+  String _selectedPeriod = 'daily';
+  DateTime _selectedDate = DateTime.now();
+  DateTimeRange? _selectedDateRange;
+  List<dynamic> _data = [];
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body) as List<dynamic>;
-      setState(() {
-        _dataPoints = data
-            .map((point) => FlSpot(point['x'], point['y'].toDouble()))
-            .toList();
-      });
-    } else {
-      throw Exception('Failed to load data');
+  @override
+  void initState() {
+    super.initState();
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    String url =
+        'http://localhost:4000/data?period=$_selectedPeriod&date=$_selectedDate';
+    if (_selectedPeriod == 'weekly' && _selectedDateRange != null) {
+      url =
+          'http://localhost:4000/data?period=$_selectedPeriod&start=${_selectedDateRange!.start}&end=${_selectedDateRange!.end}';
+    } else if (_selectedPeriod == 'monthly') {
+      url =
+          'http://localhost:4000/data?period=$_selectedPeriod&date=${_selectedDate.year}-${_selectedDate.month}';
     }
+
+    final response = await http.get(Uri.parse(url));
+
+    // if (response.statusCode == 200) {
+    //   setState(() {
+    //     _data = json.decode(response.body);
+    //   });
+    // } else {
+    //   throw Exception('Failed to load data');
+    // }
+  }
+
+  void _onPeriodChanged(String? value) {
+    setState(() {
+      _selectedPeriod = value!;
+    });
+    _fetchData();
+  }
+
+  void _onDateChanged(DateTime date) {
+    setState(() {
+      _selectedDate = date;
+      _selectedDateRange = null;
+    });
+    _fetchData();
+  }
+
+  void _onDateRangeChanged(DateTimeRange dateRange) {
+    setState(() {
+      _selectedDateRange = dateRange;
+      _selectedDate = dateRange.start;
+    });
+    _fetchData();
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, Constraints) {
-      final screenWidth = MediaQuery.of(context).size.width;
-      final screenHeight = MediaQuery.of(context).size.height;
-      final smallestDimension =
-          screenWidth < screenHeight ? screenWidth : screenHeight;
-      // ignore: unused_local_variable
-      final textScaleFactor = smallestDimension / 400;
-      return AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.dark,
-        child: Column(
+    DateTime firstDate = DateTime.now().subtract(Duration(days: 30));
+    DateTime lastDate = DateTime.now();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Time Series App'),
+      ),
+      body: Column(
         children: [
-          AspectRatio(
-            aspectRatio: 1.5,
-            child: LineChart(
-              LineChartData(
-                lineBarsData: [
-                  LineChartBarData(
-                    spots: _dataPoints,
-                    isCurved: true,
-                    color: Colors.blue,
-                    barWidth: 4,
-                  ),
-                ],
-                titlesData: FlTitlesData(
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                    ),
-                    // showTitles: true,
-                    // getTitles: (value) {
-                    //   return value.toString();
-                    // },
-                  ),
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true
-                    ),
-                    // showTitles: true,
-                    // getTitles: (value) {
-                    //   return value.toString();
-                    // },
-                  ),
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    _apiUrl = 'http://localhost:4000/api/auth/day';
-                  });
-                  _fetchData(_apiUrl);
-                },
-                child: Text('Daily'),
-              ),
-              SizedBox(width: 10),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    _apiUrl = 'http://localhost:4000/api/auth/week';
-                  });
-                  _fetchData(_apiUrl);
-                },
-                child: Text('Weekly'),
-              ),
-              SizedBox(width: 10),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    _apiUrl = 'http://localhost:4000/api/auth/month';
-                  });
-                  _fetchData(_apiUrl);
-                },
-                child: Text('Monthly'),
-              ),
+          DropdownButton<String>(
+            value: _selectedPeriod,
+            onChanged: _onPeriodChanged,
+            items: [
+              DropdownMenuItem(value: 'daily', child: Text('Daily')),
+              DropdownMenuItem(value: 'weekly', child: Text('Weekly')),
+              DropdownMenuItem(value: 'monthly', child: Text('Monthly')),
             ],
+          ),
+          SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: () async {
+              if (_selectedPeriod == 'daily') {
+                DateTime? pickedDate = await showDatePicker(
+                  context: context,
+                  initialDate: _selectedDate,
+                  firstDate: firstDate,
+                  lastDate: lastDate,
+                );
+                if (pickedDate != null) {
+                  _onDateChanged(pickedDate);
+                }
+              } else if (_selectedPeriod == 'weekly') {
+                DateTime endOfWeek = _selectedDate.add(Duration(
+                    days: DateTime.daysPerWeek - _selectedDate.weekday));
+                if (endOfWeek.isAfter(lastDate)) {
+                  endOfWeek = lastDate;
+                }
+                DateTime? pickedDate = await showDatePicker(
+                  context: context,
+                  initialDate: _selectedDate,
+                  firstDate: DateTime.now(),
+                  lastDate:
+                      endOfWeek.subtract(Duration(days: 6)), // Limit to 7 days
+                  selectableDayPredicate: (DateTime day) {
+                    // Allow selection only if it's within 7 days
+                    int daysDifference = day.difference(_selectedDate).inDays;
+                    return daysDifference >= 0 && daysDifference <= 6;
+                  },
+                );
+                if (pickedDate != null) {
+                  _onDateChanged(pickedDate);
+                }
+              } else if (_selectedPeriod == 'monthly') {
+                DateTime? pickedDate = await showMonthPicker(
+                  context: context,
+                  initialDate: _selectedDate,
+                  firstDate: firstDate,
+                  lastDate: lastDate,
+                );
+                if (pickedDate != null) {
+                  _onDateChanged(pickedDate);
+                }
+              }
+            },
+            child: Text('Select Date'),
+          ),
+          Expanded(
+            child: _buildBarChart(),
           ),
         ],
       ),
     );
-    });
+  }
+
+  Widget _buildBarChart() {
+    return BarChart(
+      BarChartData(
+        alignment: BarChartAlignment.spaceAround,
+        barGroups: _data.map((item) {
+          return BarChartGroupData(
+            x: item['x'],
+            barRods: [
+              BarChartRodData(
+                toY: item['y'].toDouble(),
+                color: Colors.blue,
+                width: 15,
+              ),
+            ],
+          );
+        }).toList(),
+      ),
+    );
   }
 }

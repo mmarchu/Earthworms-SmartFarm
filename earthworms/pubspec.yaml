@@ -44,6 +44,9 @@ dependencies:
   mqtt_client: ^10.2.0
   auto_size_text: ^3.0.0
   loading_animation_widget: ^1.2.1
+  rxdart: ^0.28.0
+  month_picker_dialog: ^4.0.0
+  animated_button_bar: ^1.0.0
 
 
 dev_dependencies:

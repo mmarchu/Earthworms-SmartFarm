@@ -3,7 +3,6 @@ import 'package:earthworms/MainFunction/LoginPage.dart';
 // import 'package:earthworms/All/Sensor1Page.dart';
 // import 'package:earthworms/All/statisPage.dart';
 import 'package:earthworms/All/waterpumpPage.dart';
-import 'package:earthworms/HomeandData/HtimeSeries.dart';
 import 'package:earthworms/TestFunc/Sensor2Responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -39,7 +38,7 @@ class _NewhomepageState extends State<Newhomepage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final StreamController<String> messageController =
       StreamController<String>.broadcast();
- // List<String> sensorData = [];
+  // List<String> sensorData = [];
 
   @override
   void initState() {
@@ -53,6 +52,7 @@ class _NewhomepageState extends State<Newhomepage> {
         final recMess = c![0].payload as MqttPublishMessage;
         final pt =
             MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+        print(pt);
         messageController.add(pt);
       });
     });
@@ -758,10 +758,10 @@ class _NewhomepageState extends State<Newhomepage> {
                               InkWell(
                                 onTap: () {
                                   print('Stats Web');
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => TimeSE1()));
+                                  // Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //         builder: (context) => TimeSE1()));
                                 },
                                 child: Column(
                                   mainAxisAlignment:
