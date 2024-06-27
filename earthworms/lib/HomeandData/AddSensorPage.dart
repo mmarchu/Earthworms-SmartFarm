@@ -45,7 +45,9 @@ class _AddSensorPageState extends State<AddSensorPage> {
   final ValueNotifier<bool> _isButtonEnabled = ValueNotifier<bool>(false);
   final StreamController<List<Map<String, String>>> _streamController =
       StreamController();
-  List<String> sensorData = [];
+  //List<String> sensorData = [];
+  List<String> GPIO_Port = ['1', '2', '3', '4', '5'];
+  String SelectGPIO = '';
 
   // Lode data after add sensor before back to homepage
   Future<void> LodeDataToHomePage() async {
@@ -132,17 +134,35 @@ class _AddSensorPageState extends State<AddSensorPage> {
         },
         body: jsonEncode({'email': email, 'createSensor': 'false'}));
 
+    // final data = jsonDecode(response.body);
+    // if (data['data'] != null && data['data'] is List) {
+    //   List<Map<String, String>> sensorList =
+    //       List<Map<String, String>>.from(data['data'].map((item) => {
+    //             // 'status': int.parse(item['status'].toString()),
+    //             'address': item['address'].toString(),
+    //             'name': item['name'].toString()
+    //           }));
+    //   if (sensorList.any((item) => int.parse(item['status'].toString()) == 401)) {
+    //     print('Error');
+    //   } else {
+    //     print(sensorList);
+    //     _streamController.add(sensorList);
+    //   }
+    // }
+
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       if (data['data'] != null && data['data'] is List) {
-        List<Map<String, String>> sensorList = List<Map<String, String>>.from(
-            data['data'].map((item) => {
+        List<Map<String, String>> sensorList =
+            List<Map<String, String>>.from(data['data'].map((item) => {
+                  //'status': int.parse(item['status'].toString()),
                   'address': item['address'].toString(),
                   'name': item['name'].toString()
                 }));
+        print(sensorList);
         _streamController.add(sensorList);
       } else {
-        throw Exception('Data format is incorrect');
+        //throw Exception('Data format is incorrect');
       }
       Navigator.pop(context);
     } else {
@@ -160,9 +180,10 @@ class _AddSensorPageState extends State<AddSensorPage> {
                   style: TextStyle(color: Color(0xff0e4f55)),
                 ),
                 onPressed: () {
-                  Navigator.pop(context);
-                  DialogScanSenser(context);
-                  SensorsListAPI();
+                  // Navigator.pop(context);
+                  // DialogScanSenser(context);
+                  // SensorsListAPI();
+                  LodeDataToHomePage();
                 },
               ),
             ],
@@ -188,14 +209,14 @@ class _AddSensorPageState extends State<AddSensorPage> {
     var url;
     if (Platform.isAndroid) {
       //IP Localhost
-      url = 'http://10.0.2.2:4000/api/auth/login';
+      url = 'http://10.0.2.2:4000/api/sensor/create';
       //IP HomeWifi
-      //url = 'http://192.168.1.40:4000/api/auth/login';
+      //url = 'http://192.168.1.40:4000/api/sensor/create';
     } else if (Platform.isIOS) {
       //IP Localhost
-      url = 'http://127.0.0.1:4000/api/auth/login';
+      url = 'http://127.0.0.1:4000/api/sensor/create';
       //IP HomeWifi
-      //url = 'http://192.168.1.40:4000/api/auth/login';
+      //url = 'http://192.168.1.40:4000/api/sensor/create';
     }
 
     final response = await http.post(Uri.parse(url),
@@ -205,7 +226,7 @@ class _AddSensorPageState extends State<AddSensorPage> {
         },
         body: jsonEncode({
           'createSensor': 'true',
-          'email': email,
+          'user_id': email,
           'mac_address': MacAddress,
           'sensor_name': SensorName
         }));
@@ -214,6 +235,10 @@ class _AddSensorPageState extends State<AddSensorPage> {
       var snackBar = SnackBar(content: Text("Sensor added"));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       LodeDataToHomePage();
+    } else if (response.statusCode == 402) {
+      var snackBar = SnackBar(content: Text("Duplicate Sensor! Try again."));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      Navigator.pop(context);
     } else {
       var snackBar = SnackBar(content: Text("Can not Connect! Try again."));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -260,14 +285,29 @@ class _AddSensorPageState extends State<AddSensorPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Enter Information'),
-          content: TextField(
-            controller: NameSensor,
-            decoration: InputDecoration(hintText: "Enter your name of sensor"),
+          title: Text('Sensor name'),
+          content: Container(
+            height: 100,
+            child: Column(
+              children: [
+                TextField(
+                  controller: NameSensor,
+                  decoration:
+                      InputDecoration(hintText: "Enter your name of sensor"),
+                ),
+                // DropdownButton(
+                //   items: [
+                //     DropdownMenuItem(child: Text(GPIO_Port[index]))
+                //   ],)
+              ],
+            ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('CANCEL'),
+              child: Text(
+                'CANCEL',
+                style: TextStyle(color: Color(0xff0e4f55)),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -276,7 +316,11 @@ class _AddSensorPageState extends State<AddSensorPage> {
                 valueListenable: _isButtonEnabled,
                 builder: (context, isEnabled, child) {
                   return TextButton(
-                      child: Text('OK'),
+                      child: Text(
+                        'CONNECT',
+                        style: TextStyle(
+                            color: isEnabled ? Color(0xff0e4f55) : Colors.grey),
+                      ),
                       onPressed: isEnabled
                           ? () {
                               String NewNameSensor = NameSensor.text;
