@@ -27,17 +27,17 @@ Future<void> removeData(String key) async {
   prefs.remove(key);
 }
 
+//Load Token
+Future<String?> loadData(String key) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString(key);
+}
+
 //Func. Logout
 void _logout() async {
   await removeData('Token');
   await removeData('email');
   print("Log out");
-}
-
-//Load data from sharePref
-Future<String?> loadData(String key) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.getString(key);
 }
 
 class _AddSensorPageState extends State<AddSensorPage> {
@@ -134,22 +134,6 @@ class _AddSensorPageState extends State<AddSensorPage> {
         },
         body: jsonEncode({'email': email, 'createSensor': 'false'}));
 
-    // final data = jsonDecode(response.body);
-    // if (data['data'] != null && data['data'] is List) {
-    //   List<Map<String, String>> sensorList =
-    //       List<Map<String, String>>.from(data['data'].map((item) => {
-    //             // 'status': int.parse(item['status'].toString()),
-    //             'address': item['address'].toString(),
-    //             'name': item['name'].toString()
-    //           }));
-    //   if (sensorList.any((item) => int.parse(item['status'].toString()) == 401)) {
-    //     print('Error');
-    //   } else {
-    //     print(sensorList);
-    //     _streamController.add(sensorList);
-    //   }
-    // }
-
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       if (data['data'] != null && data['data'] is List) {
@@ -191,12 +175,6 @@ class _AddSensorPageState extends State<AddSensorPage> {
         },
       );
     }
-  }
-
-  //Load Token
-  Future<String?> loadData(String key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString(key);
   }
 
   // API add sensor to board
@@ -256,6 +234,7 @@ class _AddSensorPageState extends State<AddSensorPage> {
   void DialogScanSenser(BuildContext context) {
     showDialog(
         context: context,
+        barrierDismissible: false,
         // chsend
         builder: (context) {
           return AlertDialog(
@@ -474,6 +453,7 @@ class _AddSensorPageState extends State<AddSensorPage> {
                             itemCount: sensorList.length,
                             itemBuilder: (context, index) {
                               final name = sensorList[index]['name'];
+                              final Mac = sensorList[index]['address'];
                               return GestureDetector(
                                 onTap: () async {
                                   _DialogNewNameSensor(
@@ -484,7 +464,7 @@ class _AddSensorPageState extends State<AddSensorPage> {
                                   children: [
                                     SizedBox(
                                       width: 360 * textScaleFactor,
-                                      height: 80 * textScaleFactor,
+                                      height: 100 * textScaleFactor,
                                       child: DecoratedBox(
                                         decoration: BoxDecoration(
                                             color: Color.fromRGBO(
@@ -500,13 +480,30 @@ class _AddSensorPageState extends State<AddSensorPage> {
                                             Padding(
                                               padding: EdgeInsets.only(
                                                   left: 30 * textScaleFactor),
-                                              child: Text(
-                                                name != null ? name : '{}',
-                                                style: TextStyle(
-                                                    fontSize:
-                                                        20 * textScaleFactor,
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                              child: Column(
+                                                children: [
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 15 *
+                                                            textScaleFactor),
+                                                    child: Text(
+                                                      name != null ? name : '{}',
+                                                      style: TextStyle(
+                                                          fontSize: 30 *
+                                                              textScaleFactor,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    Mac != null ? Mac : '{}',
+                                                    style: TextStyle(
+                                                        fontSize: 10 *
+                                                            textScaleFactor,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                           ],

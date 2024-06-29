@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/services.dart';
 import 'package:mqtt_client/mqtt_client.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -36,6 +37,8 @@ class SensorDetailPage extends StatefulWidget {
 class _SensorDetailPageState extends State<SensorDetailPage> {
   final StreamController<String> messageController =
       StreamController<String>.broadcast();
+  final BehaviorSubject<Map<String, List<String>>> _dataController =
+      BehaviorSubject<Map<String, List<String>>>();
   late bool New_mode;
   late bool New_power;
   late String Mac_Address;
@@ -97,6 +100,7 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
     ;
   }
 
+
   @override
   void initState() {
     super.initState();
@@ -108,14 +112,50 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
 
   //Get data from sensor by MQTT
   Future<void> _updateMQTT() async {
-    Timer.periodic(Duration(seconds: 1), (timer) {
+    Timer.periodic(Duration(seconds: 5), (timer) {
       client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
         final recMess = c![0].payload as MqttPublishMessage;
         final pt =
             MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-        messageController.add(pt);
+        print(pt);
+        _MQTTtoJsonList(pt);
       });
     });
+  }
+
+  void _MQTTtoJsonList(String message) {
+    final List<dynamic> parsedData = jsonDecode(message);
+    List<String> macAddresses = [];
+    List<String> temperatures = [];
+    List<String> moisture = [];
+    List<String> lights = [];
+    List<String> conductivities = [];
+    List<String> batteries = [];
+
+    for (var item in parsedData) {
+      macAddresses.add(item['macAddress'].toString());
+      temperatures.add(item['temperature'].toString());
+      moisture.add(item['moisture'].toString());
+      lights.add(item['light'].toString());
+      conductivities.add(item['conductivity'].toString());
+      batteries.add(item['battery'].toString());
+    }
+
+    _dataController.add({
+      'MacAddress': macAddresses,
+      'Temperature': temperatures,
+      'Moisture': moisture,
+      'Light': lights,
+      'Conductivity': conductivities,
+      'Battery': batteries,
+    });
+
+    print(macAddresses);
+    print(temperatures);
+    print(moisture);
+    print(lights);
+    print(conductivities);
+    print(batteries);
   }
 
   void _publishMQTT() {
