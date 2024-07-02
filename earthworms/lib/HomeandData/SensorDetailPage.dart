@@ -21,6 +21,7 @@ class SensorDetailPage extends StatefulWidget {
   final String macAddress;
   final String email;
   final String sensorId;
+  final int index;
   bool mode;
   bool power;
 
@@ -29,6 +30,7 @@ class SensorDetailPage extends StatefulWidget {
       required this.macAddress,
       required this.email,
       required this.sensorId,
+      required this.index,
       required this.mode,
       required this.power});
 
@@ -37,8 +39,6 @@ class SensorDetailPage extends StatefulWidget {
 }
 
 class _SensorDetailPageState extends State<SensorDetailPage> {
-  final StreamController<String> messageController =
-      StreamController<String>.broadcast();
   final BehaviorSubject<Map<String, List<String>>> _dataController =
       BehaviorSubject<Map<String, List<String>>>();
   late bool New_mode;
@@ -150,7 +150,7 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
 
   //Get data from sensor by MQTT
   Future<void> _updateMQTT() async {
-    Timer.periodic(Duration(seconds: 5), (timer) {
+    Timer.periodic(Duration(seconds: 1), (timer) {
       client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
         final recMess = c![0].payload as MqttPublishMessage;
         final pt =
@@ -325,23 +325,32 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
                                               children: [
                                                 Padding(
                                                   padding: EdgeInsets.only(
-                                                      bottom:
-                                                          20 * textScaleFactor,
+                                                      bottom: 20 * textScaleFactor,
                                                       top: 6 * textScaleFactor),
-                                                  child: StreamBuilder<String>(
-                                                    stream: messageController
-                                                        .stream,
+                                                  child: StreamBuilder<
+                                                      Map<String,
+                                                          List<String>>>(
+                                                    stream:
+                                                        _dataController.stream,
                                                     builder:
                                                         (context, snapshot) {
-                                                      return Text(
-                                                        '${snapshot.data != null ? snapshot.data!.split(',')[1] : "N/A"}%',
-                                                        style: TextStyle(
-                                                          fontSize: 40 *
-                                                              textScaleFactor,
-                                                          fontWeight:
-                                                              FontWeight.normal,
-                                                        ),
-                                                      );
+                                                      if (snapshot.hasData) {
+                                                        List<String> humidity =snapshot.data!['Moisture'] ??[];
+                                                        return Text(
+                                                          '${humidity[widget.index].isNotEmpty ? humidity[widget.index] : "N/A"}%',
+                                                          style: TextStyle(
+                                                            fontSize: 40 * textScaleFactor,
+                                                            fontWeight: FontWeight.normal,
+                                                          ),
+                                                        );
+                                                      } else {
+                                                        return Text(
+                                                          'N/A%',
+                                                          style: TextStyle(
+                                                              fontSize: 40 * textScaleFactor,
+                                                              fontWeight: FontWeight.normal),
+                                                        );
+                                                      }
                                                     },
                                                   ),
                                                 ),
@@ -410,23 +419,32 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
                                               children: [
                                                 Padding(
                                                   padding: EdgeInsets.only(
-                                                      bottom:
-                                                          20 * textScaleFactor,
+                                                      bottom: 20 * textScaleFactor,
                                                       top: 6 * textScaleFactor),
-                                                  child: StreamBuilder<String>(
-                                                    stream: messageController
-                                                        .stream,
-                                                    builder:
-                                                        (context, snapshot) {
-                                                      return Text(
-                                                        '${snapshot.data != null ? snapshot.data!.split(',')[2] : "N/A"}°C',
-                                                        style: TextStyle(
-                                                          fontSize: 40 *
-                                                              textScaleFactor,
-                                                          fontWeight:
-                                                              FontWeight.normal,
-                                                        ),
-                                                      );
+                                                  child: StreamBuilder<
+                                                      Map<String, List<String>>>(
+                                                    stream: _dataController.stream,
+                                                    builder:(context, snapshot) {
+                                                      if (snapshot.hasData) {
+                                                        List<
+                                                            String> temp = snapshot
+                                                                    .data![
+                                                                'Temperature'] ??
+                                                            [];
+                                                        return Text(
+                                                          '${temp[widget.index].isNotEmpty ? temp[widget.index] : "N/A"}°C',
+                                                          style: TextStyle(
+                                                              fontSize: 40 * textScaleFactor,
+                                                              fontWeight:FontWeight.normal),
+                                                        );
+                                                      } else {
+                                                        return Text(
+                                                          'N/A°C',
+                                                          style: TextStyle(
+                                                              fontSize: 40 *textScaleFactor,
+                                                              fontWeight:FontWeight.normal),
+                                                        );
+                                                      }
                                                     },
                                                   ),
                                                 ),

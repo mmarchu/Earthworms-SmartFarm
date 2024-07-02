@@ -114,7 +114,7 @@ class _HomePageState extends State<HomePage> {
 
 //Get data from sensor by MQTT
   Future<void> _updateMQTT() async {
-    Timer.periodic(Duration(seconds: 5), (timer) {
+    Timer.periodic(Duration(seconds: 1), (timer) {
       client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
         final recMess = c![0].payload as MqttPublishMessage;
         final pt =
@@ -307,6 +307,7 @@ class _HomePageState extends State<HomePage> {
                                             print(widget.macAddressList[index]);
                                             print(mode[index]);
                                             print(power[index]);
+                                            print(index);
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
@@ -322,6 +323,7 @@ class _HomePageState extends State<HomePage> {
                                                           sensorId: widget
                                                                   .sensorIdList[
                                                               index],
+                                                          index: index,
                                                           mode: mode[index],
                                                           power: power[index],
                                                         )));
