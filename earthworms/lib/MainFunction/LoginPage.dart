@@ -53,9 +53,9 @@ class _LoginPageState extends State<LoginPage> {
       //url = 'http://192.168.1.40:4000/api/auth/login';
     } else if (Platform.isIOS) {
       //IP Localhost
-      url = 'http://127.0.0.1:4000/api/auth/login';
+      //url = 'http://127.0.0.1:4000/api/auth/login';
       //IP HomeWifi
-      //url = 'http://192.168.1.40:4000/api/auth/login';
+      url = 'http://192.168.1.40:4000/api/auth/login';
     }
 
     showDialog(

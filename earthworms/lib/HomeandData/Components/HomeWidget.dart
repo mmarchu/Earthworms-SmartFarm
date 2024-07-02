@@ -42,16 +42,16 @@ class HomeWidget extends StatelessWidget {
                 print(macAddress);
                 print('mode: $mode');
                 print('power: $power');
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SensorDetailPage(
-                              nameSensor: NameSensor,
-                              macAddress: macAddress,
-                              email: email,
-                              mode: mode,
-                              power: power,
-                            )));
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => SensorDetailPage(
+                //               nameSensor: NameSensor,
+                //               macAddress: macAddress,
+                //               email: email,
+                //               mode: mode,
+                //               power: power,
+                //             )));
               },
               child: SizedBox(
                 width: 360 * textScaleFactor,

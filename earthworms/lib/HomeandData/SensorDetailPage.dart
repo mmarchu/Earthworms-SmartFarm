@@ -20,6 +20,7 @@ class SensorDetailPage extends StatefulWidget {
   final String nameSensor;
   final String macAddress;
   final String email;
+  final String sensorId;
   bool mode;
   bool power;
 
@@ -27,6 +28,7 @@ class SensorDetailPage extends StatefulWidget {
       {required this.nameSensor,
       required this.macAddress,
       required this.email,
+      required this.sensorId,
       required this.mode,
       required this.power});
 
@@ -59,7 +61,9 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
       //url = 'http://10.0.2.2:4000/api/auth/getoneuser';
       url = 'http://192.168.1.40:4000/api/auth/getoneuser';
     } else if (Platform.isIOS) {
-      url = 'http://127.0.0.1:4000/api/auth/getoneuser';
+      //url = 'http://127.0.0.1:4000/api/auth/getoneuser';
+      //IP HomeWifi
+      url = 'http://192.168.1.40:4000/api/auth/getoneuser';
     }
 
     final response = await http.post(Uri.parse(url),
@@ -100,6 +104,40 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
     ;
   }
 
+  // Delete Sensor
+  Future<void> DeleteSensor() async {
+    String? token = await loadData('Token');
+
+    var url;
+
+    if (Platform.isAndroid) {
+      //IP Localhost
+      url = 'http://10.0.2.2:4000/api/sensor/create';
+      //IP HomeWifi
+      //url = 'http://192.168.1.40:4000/api/sensor/delete';
+    } else if (Platform.isIOS) {
+      //url = 'http://127.0.0.1:4000/api/sensor/delete';
+      //IP HomeWifi
+      url = 'http://192.168.1.40:4000/api/sensor/delete';
+    }
+
+    final response = await http.post(Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charest=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({'sensor_id': widget.sensorId}));
+
+    if (response.statusCode == 200) {
+      var snackBar = SnackBar(content: Text("delete successful"));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      LodeDataToHomePage();
+    } else {
+      var snackBar = SnackBar(content: Text("Can't Delete! Try again."));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      Navigator.pop(context);
+    }
+  }
 
   @override
   void initState() {
@@ -552,7 +590,7 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
                           barrierDismissible: false,
                           builder: (BuildContext context) => AlertDialog(
                                 title: Text(
-                                  "Delete the Device",
+                                  "Delete this Device",
                                   style:
                                       TextStyle(fontSize: 20 * textScaleFactor),
                                 ),
@@ -568,12 +606,7 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
                                       )),
                                   TextButton(
                                       onPressed: () {
-                                        LodeDataToHomePage();
-                                        var snackBar = SnackBar(
-                                            content:
-                                                Text("Delete Successfully"));
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(snackBar);
+                                        DeleteSensor();
                                       },
                                       child: Text(
                                         "Delete",

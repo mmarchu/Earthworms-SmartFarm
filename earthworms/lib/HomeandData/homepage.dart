@@ -305,16 +305,23 @@ class _HomePageState extends State<HomePage> {
                                           onTap: () {
                                             print(widget.sensorNameList[index]);
                                             print(widget.macAddressList[index]);
-                                            print('mode: $mode');
-                                            print('power: $power');
+                                            print(mode[index]);
+                                            print(power[index]);
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         SensorDetailPage(
-                                                          nameSensor: widget.sensorNameList[index],
-                                                          macAddress: widget.macAddressList[index],
+                                                          nameSensor: widget
+                                                                  .sensorNameList[
+                                                              index],
+                                                          macAddress: widget
+                                                                  .macAddressList[
+                                                              index],
                                                           email: widget.email,
+                                                          sensorId: widget
+                                                                  .sensorIdList[
+                                                              index],
                                                           mode: mode[index],
                                                           power: power[index],
                                                         )));

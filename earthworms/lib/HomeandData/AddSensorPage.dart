@@ -59,7 +59,9 @@ class _AddSensorPageState extends State<AddSensorPage> {
       url = 'http://10.0.2.2:4000/api/auth/getoneuser';
       //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
     } else if (Platform.isIOS) {
-      url = 'http://127.0.0.1:4000/api/auth/getoneuser';
+      //url = 'http://127.0.0.1:4000/api/auth/getoneuser';
+      //IP HomeWifi
+      url = 'http://192.168.1.40:4000/api/auth/getoneuser';
     }
 
     final response = await http.post(Uri.parse(url),
@@ -122,9 +124,9 @@ class _AddSensorPageState extends State<AddSensorPage> {
       //url = 'http://192.168.1.40:4000/api/sensor/create';
     } else if (Platform.isIOS) {
       //IP Localhost
-      url = 'http://127.0.0.1:4000/api/sensor/create';
+      //url = 'http://127.0.0.1:4000/api/sensor/create';
       //IP HomeWifi
-      //url = 'http://192.168.1.40:4000/api/sensor/create';
+      url = 'http://192.168.1.40:4000/api/sensor/create';
     }
 
     final response = await http.post(Uri.parse(url),
@@ -192,9 +194,9 @@ class _AddSensorPageState extends State<AddSensorPage> {
       //url = 'http://192.168.1.40:4000/api/sensor/create';
     } else if (Platform.isIOS) {
       //IP Localhost
-      url = 'http://127.0.0.1:4000/api/sensor/create';
+      //url = 'http://127.0.0.1:4000/api/sensor/create';
       //IP HomeWifi
-      //url = 'http://192.168.1.40:4000/api/sensor/create';
+      url = 'http://192.168.1.40:4000/api/sensor/create';
     }
 
     final response = await http.post(Uri.parse(url),
@@ -487,7 +489,9 @@ class _AddSensorPageState extends State<AddSensorPage> {
                                                         top: 15 *
                                                             textScaleFactor),
                                                     child: Text(
-                                                      name != null ? name : '{}',
+                                                      name != null
+                                                          ? name
+                                                          : '{}',
                                                       style: TextStyle(
                                                           fontSize: 30 *
                                                               textScaleFactor,

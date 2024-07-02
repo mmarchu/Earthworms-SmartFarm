@@ -62,8 +62,9 @@ Future<int> ConMqtt(String email) async {
   const subTopicWaterPump = 'waterpump';
   print('Subscribing to $subTopicWaterPump topic');
 
-  final subTopicEmailSensor = '$email/flora_detail';
+  final subTopicEmailSensor = '$email/flora';
   print('Subscribing to $subTopicEmailSensor topic');
+  client.subscribe(subTopicEmailSensor, MqttQos.atMostOnce);
 
   //client.subscribe(subTopicWater, MqttQos.atMostOnce);
   // client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
