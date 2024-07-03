@@ -40,7 +40,7 @@ void _logout() async {
   print("Log out");
 }
 
-class _AddSensorPageState extends State<AddSensorPage> {
+class _AddSensorPageState extends State<AddSensorPage> with WidgetsBindingObserver {
   TextEditingController NameSensor = TextEditingController();
   final ValueNotifier<bool> _isButtonEnabled = ValueNotifier<bool>(false);
   final StreamController<List<Map<String, String>>> _streamController =
@@ -48,6 +48,97 @@ class _AddSensorPageState extends State<AddSensorPage> {
   //List<String> sensorData = [];
   List<String> GPIO_Port = ['1', '2', '3', '4', '5'];
   String SelectGPIO = '';
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      DialogScanSenser(context);
+    });
+    NameSensor.addListener(_handleTextFieldChange);
+    SensorsListAPI();
+    _TokenChenkTimeout();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    // Remove observer when the state is disposed
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      print("Paused");
+    }
+    if (state == AppLifecycleState.resumed) {
+      CheckToken();
+    }
+  }
+
+  void _TokenChenkTimeout() {
+    Timer.periodic(Duration(minutes: 1), (timer) {
+      CheckToken();
+    });
+  }
+
+  Future<void> CheckToken() async {
+    String? token = await loadData('Token');
+    String? email = await loadData('email');
+    var url;
+
+    if (Platform.isAndroid) {
+      //url = 'http://10.0.2.2:4000/api/auth/getoneuser';
+      url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+    } else if (Platform.isIOS) {
+      //url = 'http://127.0.0.1:4000/api/auth/getoneuser';
+      //IP HomeWifi
+      url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+    }
+
+    final response = await http.post(Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charest=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({'email': email}));
+
+    if (response.statusCode == 401) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Session Timeout'),
+            actions: <Widget>[
+              Column(
+                children: [
+                  Text("Session expired. You will be redirected to Login page"),
+                  TextButton(
+                    child: Text(
+                      'OK',
+                      style: TextStyle(color: Color(0xff0e4f55)),
+                    ),
+                    onPressed: () {
+                      _logout();
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => LoginPage()),
+                          (Route<dynamic> Route) => false);
+                    },
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      print("ยังอยู่จ้าาOnAddSensorPage");
+    }
+  }
 
   // Lode data after add sensor before back to homepage
   Future<void> LodeDataToHomePage() async {
@@ -100,16 +191,6 @@ class _AddSensorPageState extends State<AddSensorPage> {
           (Route<dynamic> Route) => false);
     }
     ;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      DialogScanSenser(context);
-    });
-    NameSensor.addListener(_handleTextFieldChange);
-    SensorsListAPI();
   }
 
   // API receive sensor list
@@ -483,10 +564,12 @@ class _AddSensorPageState extends State<AddSensorPage> {
                                               padding: EdgeInsets.only(
                                                   left: 30 * textScaleFactor),
                                               child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   Padding(
                                                     padding: EdgeInsets.only(
-                                                        top: 15 *
+                                                        top: 16 *
                                                             textScaleFactor),
                                                     child: Text(
                                                       name != null
@@ -502,10 +585,10 @@ class _AddSensorPageState extends State<AddSensorPage> {
                                                   Text(
                                                     Mac != null ? Mac : '{}',
                                                     style: TextStyle(
-                                                        fontSize: 10 *
+                                                        fontSize: 15 *
                                                             textScaleFactor,
                                                         fontWeight:
-                                                            FontWeight.bold),
+                                                            FontWeight.normal),
                                                   ),
                                                 ],
                                               ),

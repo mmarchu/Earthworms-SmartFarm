@@ -38,12 +38,115 @@ class SensorDetailPage extends StatefulWidget {
   State<SensorDetailPage> createState() => _SensorDetailPageState();
 }
 
-class _SensorDetailPageState extends State<SensorDetailPage> {
+//Delete Token in SharePref
+Future<void> removeData(String key) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.remove(key);
+}
+
+void _logout() async {
+  await removeData('Token');
+  await removeData('email');
+  print("Log out");
+}
+
+class _SensorDetailPageState extends State<SensorDetailPage>
+    with WidgetsBindingObserver {
   final BehaviorSubject<Map<String, List<String>>> _dataController =
       BehaviorSubject<Map<String, List<String>>>();
   late bool New_mode;
   late bool New_power;
   late String Mac_Address;
+
+  @override
+  void initState() {
+    super.initState();
+    _updateMQTT();
+    New_mode = widget.mode;
+    New_power = widget.power;
+    Mac_Address = widget.macAddress;
+    _TokenChenkTimeout();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    // Remove observer when the state is disposed
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      print("Paused");
+    }
+    if (state == AppLifecycleState.resumed) {
+      CheckToken();
+    }
+  }
+
+  void _TokenChenkTimeout() {
+    Timer.periodic(Duration(minutes: 1), (timer) {
+      CheckToken();
+    });
+  }
+
+  Future<void> CheckToken() async {
+    String? token = await loadData('Token');
+    String? email = await loadData('email');
+    var url;
+
+    if (Platform.isAndroid) {
+      //url = 'http://10.0.2.2:4000/api/auth/getoneuser';
+      url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+    } else if (Platform.isIOS) {
+      //url = 'http://127.0.0.1:4000/api/auth/getoneuser';
+      //IP HomeWifi
+      url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+    }
+
+    final response = await http.post(Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charest=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({'email': email}));
+
+    if (response.statusCode == 401) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Session Timeout'),
+            actions: <Widget>[
+              Column(
+                children: [
+                  Text("Session expired. You will be redirected to Login page"),
+                  TextButton(
+                    child: Text(
+                      'OK',
+                      style: TextStyle(color: Color(0xff0e4f55)),
+                    ),
+                    onPressed: () {
+                      _logout();
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => LoginPage()),
+                          (Route<dynamic> Route) => false);
+                    },
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      print("ยังอยู่จ้าาOnDetailPage");
+    }
+  }
 
   //Load data from sharePref
   Future<String?> loadData(String key) async {
@@ -137,15 +240,6 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       Navigator.pop(context);
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _updateMQTT();
-    New_mode = widget.mode;
-    New_power = widget.power;
-    Mac_Address = widget.macAddress;
   }
 
   //Get data from sensor by MQTT
@@ -325,7 +419,8 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
                                               children: [
                                                 Padding(
                                                   padding: EdgeInsets.only(
-                                                      bottom: 20 * textScaleFactor,
+                                                      bottom:
+                                                          20 * textScaleFactor,
                                                       top: 6 * textScaleFactor),
                                                   child: StreamBuilder<
                                                       Map<String,
@@ -335,20 +430,29 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
                                                     builder:
                                                         (context, snapshot) {
                                                       if (snapshot.hasData) {
-                                                        List<String> humidity =snapshot.data!['Moisture'] ??[];
+                                                        List<String> humidity =
+                                                            snapshot.data![
+                                                                    'Moisture'] ??
+                                                                [];
                                                         return Text(
                                                           '${humidity[widget.index].isNotEmpty ? humidity[widget.index] : "N/A"}%',
                                                           style: TextStyle(
-                                                            fontSize: 40 * textScaleFactor,
-                                                            fontWeight: FontWeight.normal,
+                                                            fontSize: 40 *
+                                                                textScaleFactor,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .normal,
                                                           ),
                                                         );
                                                       } else {
                                                         return Text(
                                                           'N/A%',
                                                           style: TextStyle(
-                                                              fontSize: 40 * textScaleFactor,
-                                                              fontWeight: FontWeight.normal),
+                                                              fontSize: 40 *
+                                                                  textScaleFactor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .normal),
                                                         );
                                                       }
                                                     },
@@ -419,12 +523,16 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
                                               children: [
                                                 Padding(
                                                   padding: EdgeInsets.only(
-                                                      bottom: 20 * textScaleFactor,
+                                                      bottom:
+                                                          20 * textScaleFactor,
                                                       top: 6 * textScaleFactor),
                                                   child: StreamBuilder<
-                                                      Map<String, List<String>>>(
-                                                    stream: _dataController.stream,
-                                                    builder:(context, snapshot) {
+                                                      Map<String,
+                                                          List<String>>>(
+                                                    stream:
+                                                        _dataController.stream,
+                                                    builder:
+                                                        (context, snapshot) {
                                                       if (snapshot.hasData) {
                                                         List<
                                                             String> temp = snapshot
@@ -434,15 +542,21 @@ class _SensorDetailPageState extends State<SensorDetailPage> {
                                                         return Text(
                                                           '${temp[widget.index].isNotEmpty ? temp[widget.index] : "N/A"}°C',
                                                           style: TextStyle(
-                                                              fontSize: 40 * textScaleFactor,
-                                                              fontWeight:FontWeight.normal),
+                                                              fontSize: 40 *
+                                                                  textScaleFactor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .normal),
                                                         );
                                                       } else {
                                                         return Text(
                                                           'N/A°C',
                                                           style: TextStyle(
-                                                              fontSize: 40 *textScaleFactor,
-                                                              fontWeight:FontWeight.normal),
+                                                              fontSize: 40 *
+                                                                  textScaleFactor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .normal),
                                                         );
                                                       }
                                                     },

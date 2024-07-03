@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:earthworms/HomeandData/AddSensorPage.dart';
 import 'package:earthworms/HomeandData/SensorDetailPage.dart';
@@ -12,6 +13,7 @@ import 'package:earthworms/mqtt/mqttmanage.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   final String name;
@@ -45,7 +47,7 @@ void _logout() async {
   print("Log out");
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   final BehaviorSubject<Map<String, List<String>>> _dataController =
       BehaviorSubject<Map<String, List<String>>>();
   List<bool> mode = [true, false, false, true, true, false, true];
@@ -54,7 +56,94 @@ class _HomePageState extends State<HomePage> {
   final List<String> humidity = [];
   final List<String> temp = [];
 
-  //OnTapBottmBar
+  @override
+  void initState() {
+    super.initState();
+    _updateMQTT();
+    _TokenChenkTimeout();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      print("Paused");
+    }
+    if (state == AppLifecycleState.resumed) {
+      CheckToken();
+    }
+  }
+
+  @override
+  void dispose() {
+    // Remove observer when the state is disposed
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  void _TokenChenkTimeout() {
+    Timer.periodic(Duration(minutes: 1), (timer) {
+      CheckToken();
+    });
+  }
+
+  Future<void> CheckToken() async {
+    String? token = await loadData('Token');
+    String? email = await loadData('email');
+    var url;
+
+    if (Platform.isAndroid) {
+      //url = 'http://10.0.2.2:4000/api/auth/getoneuser';
+      url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+    } else if (Platform.isIOS) {
+      //url = 'http://127.0.0.1:4000/api/auth/getoneuser';
+      //IP HomeWifi
+      url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+    }
+
+    final response = await http.post(Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charest=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({'email': email}));
+
+    if (response.statusCode == 401) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Session Timeout'),
+            actions: <Widget>[
+              Column(
+                children: [
+                  Text("Session expired. You will be redirected to Login page"),
+                  TextButton(
+                    child: Text(
+                      'OK',
+                      style: TextStyle(color: Color(0xff0e4f55)),
+                    ),
+                    onPressed: () {
+                      _logout();
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => LoginPage()),
+                          (Route<dynamic> Route) => false);
+                    },
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      print("ยังอยู่จ้าาOnHomPage");
+    }
+  }
+
+//OnTapBottmBar
   void _OnTapBottomBar(int index) {
     switch (index) {
       case 0:
@@ -106,12 +195,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _updateMQTT();
-  }
-
 //Get data from sensor by MQTT
   Future<void> _updateMQTT() async {
     Timer.periodic(Duration(seconds: 1), (timer) {
@@ -119,13 +202,15 @@ class _HomePageState extends State<HomePage> {
         final recMess = c![0].payload as MqttPublishMessage;
         final pt =
             MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-        print(pt);
+        //print(pt);
         _MQTTtoJsonList(pt);
       });
     });
   }
 
+//Map Sensor data to List
   void _MQTTtoJsonList(String message) {
+  try {
     final List<dynamic> parsedData = jsonDecode(message);
     List<String> macAddresses = [];
     List<String> temperatures = [];
@@ -152,13 +237,17 @@ class _HomePageState extends State<HomePage> {
       'Battery': batteries,
     });
 
-    print(macAddresses);
-    print(temperatures);
-    print(moisture);
-    print(lights);
-    print(conductivities);
-    print(batteries);
+    // Uncomment the following lines for debugging
+    // print(macAddresses);
+    // print(temperatures);
+    // print(moisture);
+    // print(lights);
+    // print(conductivities);
+    // print(batteries);
+  } catch (e) {
+    print('Error processing JSON data: $e');
   }
+}
 
   @override
   Widget build(BuildContext context) {
