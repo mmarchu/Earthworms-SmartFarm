@@ -57,7 +57,7 @@ class _AddSensorPageState extends State<AddSensorPage> with WidgetsBindingObserv
     });
     NameSensor.addListener(_handleTextFieldChange);
     SensorsListAPI();
-    _TokenChenkTimeout();
+    //_TokenChenkTimeout();
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -78,11 +78,11 @@ class _AddSensorPageState extends State<AddSensorPage> with WidgetsBindingObserv
     }
   }
 
-  void _TokenChenkTimeout() {
-    Timer.periodic(Duration(minutes: 1), (timer) {
-      CheckToken();
-    });
-  }
+  // void _TokenChenkTimeout() {
+  //   Timer.periodic(Duration(minutes: 1), (timer) {
+  //     CheckToken();
+  //   });
+  // }
 
   Future<void> CheckToken() async {
     String? token = await loadData('Token');
@@ -93,9 +93,9 @@ class _AddSensorPageState extends State<AddSensorPage> with WidgetsBindingObserv
       //url = 'http://10.0.2.2:4000/api/auth/getoneuser';
       url = 'http://192.168.1.40:4000/api/auth/getoneuser';
     } else if (Platform.isIOS) {
-      //url = 'http://127.0.0.1:4000/api/auth/getoneuser';
+      url = 'http://127.0.0.1:4000/api/auth/getoneuser';
       //IP HomeWifi
-      url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+      //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
     }
 
     final response = await http.post(Uri.parse(url),
@@ -150,9 +150,9 @@ class _AddSensorPageState extends State<AddSensorPage> with WidgetsBindingObserv
       url = 'http://10.0.2.2:4000/api/auth/getoneuser';
       //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
     } else if (Platform.isIOS) {
-      //url = 'http://127.0.0.1:4000/api/auth/getoneuser';
+      url = 'http://127.0.0.1:4000/api/auth/getoneuser';
       //IP HomeWifi
-      url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+      //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
     }
 
     final response = await http.post(Uri.parse(url),
@@ -187,6 +187,8 @@ class _AddSensorPageState extends State<AddSensorPage> with WidgetsBindingObserv
                     sensorIdList: sensorIdList,
                     macAddressList: macAddressList,
                     sensorNameList: sensorNameList,
+                    GpioList: ['3'],
+                    modeList: [false],
                   )),
           (Route<dynamic> Route) => false);
     }
@@ -205,9 +207,9 @@ class _AddSensorPageState extends State<AddSensorPage> with WidgetsBindingObserv
       //url = 'http://192.168.1.40:4000/api/sensor/create';
     } else if (Platform.isIOS) {
       //IP Localhost
-      //url = 'http://127.0.0.1:4000/api/sensor/create';
+      url = 'http://127.0.0.1:4000/api/sensor/create';
       //IP HomeWifi
-      url = 'http://192.168.1.40:4000/api/sensor/create';
+      //url = 'http://192.168.1.40:4000/api/sensor/create';
     }
 
     final response = await http.post(Uri.parse(url),
@@ -275,9 +277,9 @@ class _AddSensorPageState extends State<AddSensorPage> with WidgetsBindingObserv
       //url = 'http://192.168.1.40:4000/api/sensor/create';
     } else if (Platform.isIOS) {
       //IP Localhost
-      //url = 'http://127.0.0.1:4000/api/sensor/create';
+      url = 'http://127.0.0.1:4000/api/sensor/create';
       //IP HomeWifi
-      url = 'http://192.168.1.40:4000/api/sensor/create';
+      //url = 'http://192.168.1.40:4000/api/sensor/create';
     }
 
     final response = await http.post(Uri.parse(url),

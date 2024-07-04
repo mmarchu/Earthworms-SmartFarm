@@ -53,9 +53,9 @@ class _LoginPageState extends State<LoginPage> {
       //url = 'http://192.168.1.40:4000/api/auth/login';
     } else if (Platform.isIOS) {
       //IP Localhost
-      //url = 'http://127.0.0.1:4000/api/auth/login';
+      url = 'http://127.0.0.1:4000/api/auth/login';
       //IP HomeWifi
-      url = 'http://192.168.1.40:4000/api/auth/login';
+      //url = 'http://192.168.1.40:4000/api/auth/login';
     }
 
     showDialog(
@@ -98,17 +98,24 @@ class _LoginPageState extends State<LoginPage> {
       List<String> sensorIdList = [];
       List<String> macAddressList = [];
       List<String> sensorNameList = [];
+      List<String> GpioList = [];
+      List<bool> modeList = [];
 
       // ignore: unnecessary_null_comparison, unnecessary_type_check
       if (DBSensorsDynamic != null && DBSensorsDynamic is List) {
         sensorIdList =
-            DBSensorsDynamic.map((item) => item['sensor_id'].toString())
+            DBSensorsDynamic.map((item) => item['id'].toString())
                 .toList();
         macAddressList =
-            DBSensorsDynamic.map((item) => item['mac_address'].toString())
+            DBSensorsDynamic.map((item) => item['macAddress'].toString())
                 .toList();
         sensorNameList =
-            DBSensorsDynamic.map((item) => item['sensor_name'].toString())
+            DBSensorsDynamic.map((item) => item['name'].toString())
+                .toList();
+        GpioList =
+            DBSensorsDynamic.map((item) => item['gpio'].toString()).toList();
+        modeList =
+            DBSensorsDynamic.map((item) => item['mode'].toString() == '1')
                 .toList();
       }
 
@@ -123,11 +130,18 @@ class _LoginPageState extends State<LoginPage> {
               sensorIdList: sensorIdList,
               macAddressList: macAddressList,
               sensorNameList: sensorNameList,
+              GpioList: GpioList,
+              modeList: modeList,
             ),
           ));
       await saveData('Token', DBtoken);
       await saveData('email', DBemail);
       print(DBtoken);
+      print(sensorIdList);
+      print(sensorNameList);
+      print(macAddressList);
+      print(GpioList);
+      print(modeList);
     } else {
       var snackBar = SnackBar(
           content: Text("Login Failed. Please check your Email and Password."));

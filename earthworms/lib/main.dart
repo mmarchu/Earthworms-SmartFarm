@@ -117,6 +117,8 @@ class MyApp extends StatelessWidget {
                   sensorIdList: sensorIdList,
                   macAddressList: macAddressList,
                   sensorNameList: sensorNameList,
+                  GpioList: ["3"],
+                  modeList: [true],
                 );
                 // return Newhomepage(
                 //     email: DBemail, name: DBname, lastname: DBlastname);

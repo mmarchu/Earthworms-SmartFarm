@@ -1,3 +1,4 @@
+import 'package:animated_button_bar/animated_button_bar.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +11,16 @@ class TemtimeSeriesPage extends StatefulWidget {
 }
 
 class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
+  String _selectedPeriod = 'daily';
+
+  void _onPeriodChanged(String? value) {
+    setState(() {
+      _selectedPeriod = value!;
+    });
+    print(_selectedPeriod);
+    //_fetchData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, Constraints) {
@@ -80,6 +91,50 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
                   ),
                   child: Container(
                     color: Color(0xff0e4f55),
+                    child: Column(
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            AnimatedButtonBar(
+                              radius: 16.0,
+                              padding: EdgeInsets.only(
+                                  top: 25 * textScaleFactor,
+                                  right: 20 * textScaleFactor,
+                                  left: 20 * textScaleFactor),
+                              invertedSelection: true,
+                              backgroundColor: Color.fromRGBO(250, 246, 229, 1),
+                              foregroundColor: Color(0xff0e4f55),
+                              borderColor: Colors.white,
+                              innerVerticalPadding: 12,
+                              children: [
+                                ButtonBarEntry(
+                                    child: Text(
+                                      'Day',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    onTap: () => _onPeriodChanged),
+                                ButtonBarEntry(
+                                    child: Text(
+                                      'Week',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    onTap: () => _onPeriodChanged),
+                                ButtonBarEntry(
+                                    child: Text(
+                                      'Month',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    onTap: () => _onPeriodChanged)
+                              ],
+                            )
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               )

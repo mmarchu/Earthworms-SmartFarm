@@ -22,13 +22,17 @@ class HomePage extends StatefulWidget {
   final List<String> sensorIdList;
   final List<String> macAddressList;
   final List<String> sensorNameList;
+  final List<String> GpioList;
+  final List<bool> modeList;
   HomePage(
       {required this.name,
       required this.lastname,
       required this.email,
       required this.sensorIdList,
       required this.macAddressList,
-      required this.sensorNameList});
+      required this.sensorNameList,
+      required this.GpioList,
+      required this.modeList});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -50,7 +54,6 @@ void _logout() async {
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   final BehaviorSubject<Map<String, List<String>>> _dataController =
       BehaviorSubject<Map<String, List<String>>>();
-  List<bool> mode = [true, false, false, true, true, false, true];
   List<bool> power = [false, true, true, false, false, false, false];
   TextEditingController lastnameController = TextEditingController();
   final List<String> humidity = [];
@@ -82,7 +85,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   void _TokenChenkTimeout() {
-    Timer.periodic(Duration(minutes: 1), (timer) {
+    Timer.periodic(Duration(minutes: 10), (timer) {
       CheckToken();
     });
   }
@@ -96,9 +99,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       //url = 'http://10.0.2.2:4000/api/auth/getoneuser';
       url = 'http://192.168.1.40:4000/api/auth/getoneuser';
     } else if (Platform.isIOS) {
-      //url = 'http://127.0.0.1:4000/api/auth/getoneuser';
+      url = 'http://127.0.0.1:4000/api/auth/getoneuser';
       //IP HomeWifi
-      url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+      //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
     }
 
     final response = await http.post(Uri.parse(url),
@@ -210,44 +213,44 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
 //Map Sensor data to List
   void _MQTTtoJsonList(String message) {
-  try {
-    final List<dynamic> parsedData = jsonDecode(message);
-    List<String> macAddresses = [];
-    List<String> temperatures = [];
-    List<String> moisture = [];
-    List<String> lights = [];
-    List<String> conductivities = [];
-    List<String> batteries = [];
+    try {
+      final List<dynamic> parsedData = jsonDecode(message);
+      List<String> macAddresses = [];
+      List<String> temperatures = [];
+      List<String> moisture = [];
+      List<String> lights = [];
+      List<String> conductivities = [];
+      List<String> batteries = [];
 
-    for (var item in parsedData) {
-      macAddresses.add(item['macAddress'].toString());
-      temperatures.add(item['temperature'].toString());
-      moisture.add(item['moisture'].toString());
-      lights.add(item['light'].toString());
-      conductivities.add(item['conductivity'].toString());
-      batteries.add(item['battery'].toString());
+      for (var item in parsedData) {
+        macAddresses.add(item['macAddress'].toString());
+        temperatures.add(item['temperature'].toString());
+        moisture.add(item['moisture'].toString());
+        lights.add(item['light'].toString());
+        conductivities.add(item['conductivity'].toString());
+        batteries.add(item['battery'].toString());
+      }
+
+      _dataController.add({
+        'MacAddress': macAddresses,
+        'Temperature': temperatures,
+        'Moisture': moisture,
+        'Light': lights,
+        'Conductivity': conductivities,
+        'Battery': batteries,
+      });
+
+      // Uncomment the following lines for debugging
+      // print(macAddresses);
+      // print(temperatures);
+      // print(moisture);
+      // print(lights);
+      // print(conductivities);
+      // print(batteries);
+    } catch (e) {
+      print('Error processing JSON data: $e');
     }
-
-    _dataController.add({
-      'MacAddress': macAddresses,
-      'Temperature': temperatures,
-      'Moisture': moisture,
-      'Light': lights,
-      'Conductivity': conductivities,
-      'Battery': batteries,
-    });
-
-    // Uncomment the following lines for debugging
-    // print(macAddresses);
-    // print(temperatures);
-    // print(moisture);
-    // print(lights);
-    // print(conductivities);
-    // print(batteries);
-  } catch (e) {
-    print('Error processing JSON data: $e');
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -394,7 +397,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                           onTap: () {
                                             print(widget.sensorNameList[index]);
                                             print(widget.macAddressList[index]);
-                                            print(mode[index]);
+                                            print(widget.modeList[index]);
                                             print(power[index]);
                                             print(index);
                                             Navigator.push(
@@ -413,8 +416,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                   .sensorIdList[
                                                               index],
                                                           index: index,
-                                                          mode: mode[index],
+                                                          mode: widget
+                                                              .modeList[index],
                                                           power: power[index],
+                                                          GpioList: widget
+                                                              .GpioList[index],
                                                         )));
                                           },
                                           child: SizedBox(
@@ -640,7 +646,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                   ),
                                                   SizedBox(
                                                       height:
-                                                          20 * textScaleFactor),
+                                                          17 * textScaleFactor),
                                                   SizedBox(
                                                     width: 300,
                                                     height: 50,
@@ -674,7 +680,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                     textScaleFactor),
                                                           ),
                                                           Text(
-                                                            mode[index]
+                                                            widget.modeList[
+                                                                    index]
                                                                 ? "Auto"
                                                                 : "Manual",
                                                             style: TextStyle(
@@ -687,7 +694,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                         ],
                                                       ),
                                                     ),
-                                                  )
+                                                  ),
                                                 ],
                                               ),
                                             ),

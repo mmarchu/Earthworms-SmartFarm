@@ -21,6 +21,7 @@ class SensorDetailPage extends StatefulWidget {
   final String macAddress;
   final String email;
   final String sensorId;
+  final String GpioList;
   final int index;
   bool mode;
   bool power;
@@ -30,6 +31,7 @@ class SensorDetailPage extends StatefulWidget {
       required this.macAddress,
       required this.email,
       required this.sensorId,
+      required this.GpioList,
       required this.index,
       required this.mode,
       required this.power});
@@ -65,7 +67,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
     New_mode = widget.mode;
     New_power = widget.power;
     Mac_Address = widget.macAddress;
-    _TokenChenkTimeout();
+    //_TokenChenkTimeout();
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -86,11 +88,11 @@ class _SensorDetailPageState extends State<SensorDetailPage>
     }
   }
 
-  void _TokenChenkTimeout() {
-    Timer.periodic(Duration(minutes: 1), (timer) {
-      CheckToken();
-    });
-  }
+  // void _TokenChenkTimeout() {
+  //   Timer.periodic(Duration(minutes: 1), (timer) {
+  //     CheckToken();
+  //   });
+  // }
 
   Future<void> CheckToken() async {
     String? token = await loadData('Token');
@@ -101,9 +103,9 @@ class _SensorDetailPageState extends State<SensorDetailPage>
       //url = 'http://10.0.2.2:4000/api/auth/getoneuser';
       url = 'http://192.168.1.40:4000/api/auth/getoneuser';
     } else if (Platform.isIOS) {
-      //url = 'http://127.0.0.1:4000/api/auth/getoneuser';
+      url = 'http://127.0.0.1:4000/api/auth/getoneuser';
       //IP HomeWifi
-      url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+      //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
     }
 
     final response = await http.post(Uri.parse(url),
@@ -164,9 +166,9 @@ class _SensorDetailPageState extends State<SensorDetailPage>
       //url = 'http://10.0.2.2:4000/api/auth/getoneuser';
       url = 'http://192.168.1.40:4000/api/auth/getoneuser';
     } else if (Platform.isIOS) {
-      //url = 'http://127.0.0.1:4000/api/auth/getoneuser';
+      url = 'http://127.0.0.1:4000/api/auth/getoneuser';
       //IP HomeWifi
-      url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+      //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
     }
 
     final response = await http.post(Uri.parse(url),
@@ -201,6 +203,8 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                     sensorIdList: sensorIdList,
                     macAddressList: macAddressList,
                     sensorNameList: sensorNameList,
+                    GpioList: ["3"],
+                    modeList: [false],
                   )),
           (Route<dynamic> Route) => false);
     }
@@ -219,9 +223,9 @@ class _SensorDetailPageState extends State<SensorDetailPage>
       //IP HomeWifi
       //url = 'http://192.168.1.40:4000/api/sensor/delete';
     } else if (Platform.isIOS) {
-      //url = 'http://127.0.0.1:4000/api/sensor/delete';
+      url = 'http://127.0.0.1:4000/api/sensor/delete';
       //IP HomeWifi
-      url = 'http://192.168.1.40:4000/api/sensor/delete';
+      //url = 'http://192.168.1.40:4000/api/sensor/delete';
     }
 
     final response = await http.post(Uri.parse(url),
@@ -574,7 +578,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                             ),
                           ),
                           SizedBox(
-                            height: 25 * textScaleFactor,
+                            height: 20 * textScaleFactor,
                           ),
                           // water pump
                           SizedBox(
@@ -686,9 +690,117 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                         ],
                                       ),
                                     ],
-                                  )
+                                  ),
                                 ],
                               ),
+                            ),
+                          ),
+                          SizedBox(height: 20 * textScaleFactor),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20 * textScaleFactor),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                //Battery
+                                SizedBox(
+                                  width: 175 * textScaleFactor,
+                                  height: 100 * textScaleFactor,
+                                  child: DecoratedBox(
+                                      decoration: BoxDecoration(
+                                          color:
+                                              Color.fromRGBO(232, 225, 198, 1),
+                                          borderRadius:
+                                              BorderRadius.circular(25)),
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                top: 8 * textScaleFactor),
+                                            child: Image.asset(
+                                              "images/full-battery.png",
+                                              height: 35 * textScaleFactor,
+                                              width: 37 * textScaleFactor,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                //bottom: 20 * textScaleFactor,
+                                                top: 1 * textScaleFactor),
+                                            child: StreamBuilder<
+                                                Map<String, List<String>>>(
+                                              stream: _dataController.stream,
+                                              builder: (context, snapshot) {
+                                                if (snapshot.hasData) {
+                                                  List<String> battery =
+                                                      snapshot.data![
+                                                              'Battery'] ??
+                                                          [];
+                                                  return Text(
+                                                    '${battery[widget.index].isNotEmpty ? battery[widget.index] : "N/A"}%',
+                                                    style: TextStyle(
+                                                      fontSize:
+                                                          30 * textScaleFactor,
+                                                      fontWeight:
+                                                          FontWeight.normal,
+                                                    ),
+                                                  );
+                                                } else {
+                                                  return Text(
+                                                    'N/A%',
+                                                    style: TextStyle(
+                                                        fontSize: 30 *
+                                                            textScaleFactor,
+                                                        fontWeight:
+                                                            FontWeight.normal),
+                                                  );
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      )),
+                                ),
+                                //GPIO Port
+                                SizedBox(
+                                  width: 175 * textScaleFactor,
+                                  height: 100 * textScaleFactor,
+                                  child: DecoratedBox(
+                                      decoration: BoxDecoration(
+                                          color:
+                                              Color.fromRGBO(232, 225, 198, 1),
+                                          borderRadius:
+                                              BorderRadius.circular(25)),
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                top: 12 * textScaleFactor),
+                                            child: Text(
+                                              "GPIO Port",
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      25 * textScaleFactor,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                //bottom: 20 * textScaleFactor,
+                                                top: 1 * textScaleFactor),
+                                            child: Text(
+                                              widget.GpioList,
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      30 * textScaleFactor,
+                                                  fontWeight:
+                                                      FontWeight.normal),
+                                            ),
+                                          ),
+                                        ],
+                                      )),
+                                )
+                              ],
                             ),
                           )
                         ],
