@@ -203,8 +203,8 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                     sensorIdList: sensorIdList,
                     macAddressList: macAddressList,
                     sensorNameList: sensorNameList,
-                    GpioList: ["3"],
-                    modeList: [false],
+                    GpioList: ["3", "2"],
+                    modeList: [false, true],
                   )),
           (Route<dynamic> Route) => false);
     }

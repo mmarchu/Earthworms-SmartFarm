@@ -18,7 +18,6 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
       _selectedPeriod = value!;
     });
     print(_selectedPeriod);
-    //_fetchData();
   }
 
   @override
@@ -109,12 +108,13 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
                               innerVerticalPadding: 12,
                               children: [
                                 ButtonBarEntry(
-                                    child: Text(
-                                      'Day',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    onTap: () => _onPeriodChanged),
+                                  child: Text(
+                                    'Day',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  onTap: () => _onPeriodChanged,
+                                ),
                                 ButtonBarEntry(
                                     child: Text(
                                       'Week',

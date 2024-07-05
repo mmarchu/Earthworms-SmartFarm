@@ -4,23 +4,6 @@ import 'dart:convert';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Time Series App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: TimeSeriesPage(),
-    );
-  }
-}
-
 class TimeSeriesPage extends StatefulWidget {
   @override
   _TimeSeriesPageState createState() => _TimeSeriesPageState();

@@ -40,7 +40,8 @@ void _logout() async {
   print("Log out");
 }
 
-class _AddSensorPageState extends State<AddSensorPage> with WidgetsBindingObserver {
+class _AddSensorPageState extends State<AddSensorPage>
+    with WidgetsBindingObserver {
   TextEditingController NameSensor = TextEditingController();
   final ValueNotifier<bool> _isButtonEnabled = ValueNotifier<bool>(false);
   final StreamController<List<Map<String, String>>> _streamController =
@@ -187,8 +188,8 @@ class _AddSensorPageState extends State<AddSensorPage> with WidgetsBindingObserv
                     sensorIdList: sensorIdList,
                     macAddressList: macAddressList,
                     sensorNameList: sensorNameList,
-                    GpioList: ['3'],
-                    modeList: [false],
+                    GpioList: ['3', '2'],
+                    modeList: [false, true],
                   )),
           (Route<dynamic> Route) => false);
     }
