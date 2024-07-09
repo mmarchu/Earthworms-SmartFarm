@@ -100,23 +100,22 @@ class _LoginPageState extends State<LoginPage> {
       List<String> sensorNameList = [];
       List<String> GpioList = [];
       List<bool> modeList = [];
+      List<bool> powerList = [];
 
       // ignore: unnecessary_null_comparison, unnecessary_type_check
       if (DBSensorsDynamic != null && DBSensorsDynamic is List) {
         sensorIdList =
-            DBSensorsDynamic.map((item) => item['id'].toString())
-                .toList();
+            DBSensorsDynamic.map((item) => item['id'].toString()).toList();
         macAddressList =
-            DBSensorsDynamic.map((item) => item['macAddress'].toString())
-                .toList();
+            DBSensorsDynamic.map((item) => item['macAddress'].toString()).toList();
         sensorNameList =
-            DBSensorsDynamic.map((item) => item['name'].toString())
-                .toList();
+            DBSensorsDynamic.map((item) => item['name'].toString()).toList();
         GpioList =
             DBSensorsDynamic.map((item) => item['gpio'].toString()).toList();
         modeList =
-            DBSensorsDynamic.map((item) => item['mode'].toString() == '1')
-                .toList();
+            DBSensorsDynamic.map((item) => item['mode'].toString() == '1').toList();
+        powerList = 
+            DBSensorsDynamic.map((item) => item['power'].toString() == '1').toList();
       }
 
       ConMqtt(DBemail);
@@ -132,6 +131,7 @@ class _LoginPageState extends State<LoginPage> {
               sensorNameList: sensorNameList,
               GpioList: GpioList,
               modeList: modeList,
+              powerList: powerList,
             ),
           ));
       await saveData('Token', DBtoken);

@@ -24,6 +24,7 @@ class HomePage extends StatefulWidget {
   final List<String> sensorNameList;
   final List<String> GpioList;
   final List<bool> modeList;
+  final List<bool> powerList;
   HomePage(
       {required this.name,
       required this.lastname,
@@ -32,7 +33,9 @@ class HomePage extends StatefulWidget {
       required this.macAddressList,
       required this.sensorNameList,
       required this.GpioList,
-      required this.modeList});
+      required this.modeList,
+      required this.powerList
+      });
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -54,7 +57,6 @@ void _logout() async {
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   final BehaviorSubject<Map<String, List<String>>> _dataController =
       BehaviorSubject<Map<String, List<String>>>();
-  List<bool> power = [false, true, true, false, false, false, false];
   TextEditingController lastnameController = TextEditingController();
   final List<String> humidity = [];
   final List<String> temp = [];
@@ -398,7 +400,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                             print(widget.sensorNameList[index]);
                                             print(widget.macAddressList[index]);
                                             print(widget.modeList[index]);
-                                            print(power[index]);
+                                            print(widget.modeList[index]);
                                             print(index);
                                             Navigator.push(
                                                 context,
@@ -418,7 +420,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                           index: index,
                                                           mode: widget
                                                               .modeList[index],
-                                                          power: power[index],
+                                                          power: widget.powerList[index],
                                                           GpioList: widget
                                                               .GpioList[index],
                                                         )));

@@ -99,15 +99,27 @@ class MyApp extends StatelessWidget {
                 List<String> sensorIdList = [];
                 List<String> macAddressList = [];
                 List<String> sensorNameList = [];
+                List<String> GpioList = [];
+                List<bool> modeList = [];
+                List<bool> powerList = [];
 
                 // ignore: unnecessary_null_comparison, unnecessary_type_check
                 if (DBSensorsDynamic != null && DBSensorsDynamic is List) {
-                  sensorIdList = DBSensorsDynamic.map(
-                      (item) => item['sensor_id'].toString()).toList();
+                  sensorIdList =
+                      DBSensorsDynamic.map((item) => item['id'].toString())
+                          .toList();
                   macAddressList = DBSensorsDynamic.map(
-                      (item) => item['mac_address'].toString()).toList();
-                  sensorNameList = DBSensorsDynamic.map(
-                      (item) => item['sensor_name'].toString()).toList();
+                      (item) => item['macAddress'].toString()).toList();
+                  sensorNameList =
+                      DBSensorsDynamic.map((item) => item['name'].toString())
+                          .toList();
+                  GpioList =
+                      DBSensorsDynamic.map((item) => item['gpio'].toString())
+                          .toList();
+                  modeList = DBSensorsDynamic.map(
+                      (item) => item['mode'].toString() == '1').toList();
+                  powerList = DBSensorsDynamic.map(
+                      (item) => item['power'].toString() == '1').toList();
                 }
                 ConMqtt(DBemail);
                 return HomePage(
@@ -117,8 +129,9 @@ class MyApp extends StatelessWidget {
                   sensorIdList: sensorIdList,
                   macAddressList: macAddressList,
                   sensorNameList: sensorNameList,
-                  GpioList: ["3", "2"],
-                  modeList: [true, true],
+                  GpioList: GpioList,
+                  modeList: modeList,
+                  powerList: powerList,
                 );
                 // return Newhomepage(
                 //     email: DBemail, name: DBname, lastname: DBlastname);

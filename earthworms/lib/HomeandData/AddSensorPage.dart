@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:earthworms/HomeandData/homepage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
@@ -170,14 +171,19 @@ class _AddSensorPageState extends State<AddSensorPage>
       DBlastname = data['lastname'];
       DBSensorsDynamic = data['sensors'];
       List<String> sensorIdList =
-          DBSensorsDynamic.map((item) => item['sensor_id'].toString()).toList();
+          DBSensorsDynamic.map((item) => item['id'].toString()).toList();
       List<String> macAddressList =
-          DBSensorsDynamic.map((item) => item['mac_address'].toString())
+          DBSensorsDynamic.map((item) => item['macAddress'].toString())
               .toList();
       List<String> sensorNameList =
-          DBSensorsDynamic.map((item) => item['sensor_name'].toString())
+          DBSensorsDynamic.map((item) => item['name'].toString())
               .toList();
-
+      List<String> GpioList =
+          DBSensorsDynamic.map((item) => item['gpio'].toString()).toList();
+      List<bool> modeList =
+          DBSensorsDynamic.map((item) => item['mode'].toString() == '1').toList();
+      List<bool> powerList = 
+            DBSensorsDynamic.map((item) => item['power'].toString() == '1').toList().toList();
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
@@ -188,8 +194,9 @@ class _AddSensorPageState extends State<AddSensorPage>
                     sensorIdList: sensorIdList,
                     macAddressList: macAddressList,
                     sensorNameList: sensorNameList,
-                    GpioList: ['3', '2'],
-                    modeList: [false, true],
+                    GpioList: GpioList,
+                    modeList: modeList,
+                    powerList: powerList,
                   )),
           (Route<dynamic> Route) => false);
     }
