@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dropdown_button2/dropdown_button2.dart' as DropdownButton2;
 
 class AddSensorPage extends StatefulWidget {
   final String name;
@@ -47,9 +48,9 @@ class _AddSensorPageState extends State<AddSensorPage>
   final ValueNotifier<bool> _isButtonEnabled = ValueNotifier<bool>(false);
   final StreamController<List<Map<String, String>>> _streamController =
       StreamController();
-  //List<String> sensorData = [];
-  List<String> GPIO_Port = ['1', '2', '3', '4', '5'];
-  String SelectGPIO = '';
+  List<dynamic> GPIOlist = [];
+  List<int> GPIO_Port = [];
+  int? SelectedGPIO;
 
   @override
   void initState() {
@@ -79,12 +80,6 @@ class _AddSensorPageState extends State<AddSensorPage>
       CheckToken();
     }
   }
-
-  // void _TokenChenkTimeout() {
-  //   Timer.periodic(Duration(minutes: 1), (timer) {
-  //     CheckToken();
-  //   });
-  // }
 
   Future<void> CheckToken() async {
     String? token = await loadData('Token');
@@ -176,14 +171,16 @@ class _AddSensorPageState extends State<AddSensorPage>
           DBSensorsDynamic.map((item) => item['macAddress'].toString())
               .toList();
       List<String> sensorNameList =
-          DBSensorsDynamic.map((item) => item['name'].toString())
-              .toList();
+          DBSensorsDynamic.map((item) => item['name'].toString()).toList();
       List<String> GpioList =
           DBSensorsDynamic.map((item) => item['gpio'].toString()).toList();
       List<bool> modeList =
-          DBSensorsDynamic.map((item) => item['mode'].toString() == '1').toList();
-      List<bool> powerList = 
-            DBSensorsDynamic.map((item) => item['power'].toString() == '1').toList().toList();
+          DBSensorsDynamic.map((item) => item['mode'].toString() == '1')
+              .toList();
+      List<bool> powerList =
+          DBSensorsDynamic.map((item) => item['power'].toString() == '1')
+              .toList()
+              .toList();
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
@@ -241,6 +238,13 @@ class _AddSensorPageState extends State<AddSensorPage>
       } else {
         //throw Exception('Data format is incorrect');
       }
+
+      final Map<String, dynamic> jsonData = jsonDecode(response.body);
+
+      // Extract gpio_id values and convert to List<int>
+      GPIO_Port = List<int>.from(
+          jsonData['gpio'].map((item) => item['gpio_id'] as int));
+      print(GPIO_Port);
       Navigator.pop(context);
     } else {
       Navigator.pop(context);
@@ -260,6 +264,7 @@ class _AddSensorPageState extends State<AddSensorPage>
                   // Navigator.pop(context);
                   // DialogScanSenser(context);
                   // SensorsListAPI();
+                  //CheckToken();
                   LodeDataToHomePage();
                 },
               ),
@@ -271,7 +276,7 @@ class _AddSensorPageState extends State<AddSensorPage>
   }
 
   // API add sensor to board
-  Future<void> _addSensor(String MacAdd, String NameSensor) async {
+  Future<void> _addSensor(String MacAdd, String NameSensor, int? Gpio_selected) async {
     final email = widget.email;
     final MacAddress = MacAdd;
     final SensorName = NameSensor;
@@ -299,7 +304,8 @@ class _AddSensorPageState extends State<AddSensorPage>
           'createSensor': 'true',
           'user_id': email,
           'mac_address': MacAddress,
-          'sensor_name': SensorName
+          'sensor_name': SensorName,
+          'gpio_id': Gpio_selected
         }));
 
     if (response.statusCode == 200) {
@@ -353,61 +359,94 @@ class _AddSensorPageState extends State<AddSensorPage>
 
   //Dialog Add Sensor
   void _DialogNewNameSensor(String Name, String MacAdd) {
+    void _resetValues() {
+      NameSensor.clear(); // Clear text field
+      SelectedGPIO = null; // Clear selected port
+      _isButtonEnabled.value = false; // Disable button
+    }
+
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Sensor name'),
-          content: Container(
-            height: 100,
-            child: Column(
-              children: [
-                TextField(
-                  controller: NameSensor,
-                  decoration:
-                      InputDecoration(hintText: "Enter your name of sensor"),
-                ),
-                // DropdownButton(
-                //   items: [
-                //     DropdownMenuItem(child: Text(GPIO_Port[index]))
-                //   ],)
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(
-                'CANCEL',
-                style: TextStyle(color: Color(0xff0e4f55)),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            ValueListenableBuilder(
-                valueListenable: _isButtonEnabled,
-                builder: (context, isEnabled, child) {
-                  return TextButton(
-                      child: Text(
-                        'CONNECT',
-                        style: TextStyle(
-                            color: isEnabled ? Color(0xff0e4f55) : Colors.grey),
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                title: Text('Sensor name'),
+                content: Container(
+                  height: 100,
+                  child: Column(
+                    children: [
+                      TextField(
+                        controller: NameSensor,
+                        decoration: InputDecoration(
+                            hintText: "Enter your name of sensor"),
+                        onChanged: (value) {
+                          setState(() {
+                            _isButtonEnabled.value =
+                                value.isNotEmpty && SelectedGPIO != null;
+                          });
+                        },
                       ),
-                      onPressed: isEnabled
-                          ? () {
-                              String NewNameSensor = NameSensor.text;
-                              print("Name: $NewNameSensor");
-                              print(widget.email);
-                              print("Mac: $MacAdd");
-                              //LodeDataToHomePage();
-                              _addSensor(MacAdd, NewNameSensor);
-                            }
-                          : null);
-                })
-          ],
-        );
-      },
-    );
+                      DropdownButton<int>(
+                        hint: Text('Select GPIO port'),
+                        value: SelectedGPIO,
+                        onChanged: (int? newValue) {
+                          setState(() {
+                            SelectedGPIO = newValue;
+                            _isButtonEnabled.value =
+                                NameSensor.text.isNotEmpty &&
+                                    SelectedGPIO != null;
+                          });
+                        },
+                        items: GPIO_Port.map<DropdownMenuItem<int>>((int value) {
+                          return DropdownMenuItem<int>(
+                            value: value,
+                            child: Text(value.toString()),
+                          );
+                        }).toList(),
+                      )
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                      'CANCEL',
+                      style: TextStyle(color: Color(0xff0e4f55)),
+                    ),
+                    onPressed: () {
+                      _resetValues();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  ValueListenableBuilder(
+                      valueListenable: _isButtonEnabled,
+                      builder: (context, isEnabled, child) {
+                        return TextButton(
+                            child: Text(
+                              'CONNECT',
+                              style: TextStyle(
+                                  color: isEnabled
+                                      ? Color(0xff0e4f55)
+                                      : Colors.grey),
+                            ),
+                            onPressed: isEnabled
+                                ? () {
+                                    String NewNameSensor = NameSensor.text;
+                                    print("Name: $NewNameSensor");
+                                    print(widget.email);
+                                    print("Mac: $MacAdd");
+                                    print("GPIO: $SelectedGPIO");
+                                    //LodeDataToHomePage();
+                                    _addSensor(MacAdd, NewNameSensor, SelectedGPIO);
+                                  }
+                                : null);
+                      })
+                ],
+              );
+            },
+          );
+        });
   }
 
   //Conditions BottomBar

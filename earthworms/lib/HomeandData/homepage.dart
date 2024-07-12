@@ -34,8 +34,7 @@ class HomePage extends StatefulWidget {
       required this.sensorNameList,
       required this.GpioList,
       required this.modeList,
-      required this.powerList
-      });
+      required this.powerList});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -420,7 +419,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                           index: index,
                                                           mode: widget
                                                               .modeList[index],
-                                                          power: widget.powerList[index],
+                                                          power: widget
+                                                              .powerList[index],
                                                           GpioList: widget
                                                               .GpioList[index],
                                                         )));
@@ -532,17 +532,30 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                                   builder: (context, snapshot) {
                                                                                     if (snapshot.hasData) {
                                                                                       List<String> humidity = snapshot.data!['Moisture'] ?? [];
+                                                                                      if (humidity.isNotEmpty && humidity[index].isNotEmpty) {
+                                                                                        return Text(
+                                                                                          '${humidity[index]}%',
+                                                                                          style: TextStyle(
+                                                                                            fontSize: 25 * textScaleFactor,
+                                                                                            fontWeight: FontWeight.normal,
+                                                                                          ),
+                                                                                        );
+                                                                                      } else {
+                                                                                        return Text(
+                                                                                          'N/A%',
+                                                                                          style: TextStyle(
+                                                                                            fontSize: 25 * textScaleFactor,
+                                                                                            fontWeight: FontWeight.normal,
+                                                                                          ),
+                                                                                        );
+                                                                                      }
+                                                                                    } else {
                                                                                       return Text(
-                                                                                        '${humidity[index].isNotEmpty ? humidity[index] : "N/A"}%',
+                                                                                        'N/A%',
                                                                                         style: TextStyle(
                                                                                           fontSize: 25 * textScaleFactor,
                                                                                           fontWeight: FontWeight.normal,
                                                                                         ),
-                                                                                      );
-                                                                                    } else {
-                                                                                      return Text(
-                                                                                        'N/A%',
-                                                                                        style: TextStyle(fontSize: 25 * textScaleFactor, fontWeight: FontWeight.normal),
                                                                                       );
                                                                                     }
                                                                                   },
@@ -623,14 +636,30 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                                   builder: (context, snapshot) {
                                                                                     if (snapshot.hasData) {
                                                                                       List<String> temp = snapshot.data!['Temperature'] ?? [];
-                                                                                      return Text(
-                                                                                        '${temp[index].isNotEmpty ? temp[index] : "N/A"}°C',
-                                                                                        style: TextStyle(fontSize: 25 * textScaleFactor, fontWeight: FontWeight.normal),
-                                                                                      );
+                                                                                      if (temp.isNotEmpty && temp[index].isNotEmpty) {
+                                                                                        return Text(
+                                                                                          '${temp[index]}%',
+                                                                                          style: TextStyle(
+                                                                                            fontSize: 25 * textScaleFactor,
+                                                                                            fontWeight: FontWeight.normal,
+                                                                                          ),
+                                                                                        );
+                                                                                      } else {
+                                                                                        return Text(
+                                                                                          'N/A%',
+                                                                                          style: TextStyle(
+                                                                                            fontSize: 25 * textScaleFactor,
+                                                                                            fontWeight: FontWeight.normal,
+                                                                                          ),
+                                                                                        );
+                                                                                      }
                                                                                     } else {
                                                                                       return Text(
-                                                                                        'N/A°C',
-                                                                                        style: TextStyle(fontSize: 25 * textScaleFactor, fontWeight: FontWeight.normal),
+                                                                                        'N/A%',
+                                                                                        style: TextStyle(
+                                                                                          fontSize: 25 * textScaleFactor,
+                                                                                          fontWeight: FontWeight.normal,
+                                                                                        ),
                                                                                       );
                                                                                     }
                                                                                   },

@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/services.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -58,6 +59,8 @@ class _SensorDetailPageState extends State<SensorDetailPage>
       BehaviorSubject<Map<String, List<String>>>();
   late bool New_mode;
   late bool New_power;
+  late bool defaultMode;
+  late bool defaultPower;
   late String Mac_Address;
 
   @override
@@ -67,7 +70,8 @@ class _SensorDetailPageState extends State<SensorDetailPage>
     New_mode = widget.mode;
     New_power = widget.power;
     Mac_Address = widget.macAddress;
-    //_TokenChenkTimeout();
+    defaultMode = widget.mode;
+    defaultPower = widget.power;
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -87,12 +91,6 @@ class _SensorDetailPageState extends State<SensorDetailPage>
       CheckToken();
     }
   }
-
-  // void _TokenChenkTimeout() {
-  //   Timer.periodic(Duration(minutes: 1), (timer) {
-  //     CheckToken();
-  //   });
-  // }
 
   Future<void> CheckToken() async {
     String? token = await loadData('Token');
@@ -311,6 +309,60 @@ class _SensorDetailPageState extends State<SensorDetailPage>
     client.publishMessage(topic, MqttQos.exactlyOnce, builder.payload!);
   }
 
+  Future<void> _updateWaterPump(bool mode, bool power) async {
+    final modeValue = mode ? 1 : 0;
+    final powerValue = power ? 1 : 0;
+    var url;
+    if (Platform.isAndroid) {
+      url = 'http://10.0.2.2:4000/api/auth/getoneuser';
+      //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+    } else if (Platform.isIOS) {
+      url = 'http://127.0.0.1:4000/api/auth/getoneuser';
+      //IP HomeWifi
+      //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SizedBox(
+            width: 300,
+            height: 100,
+            child: Center(
+              child: LoadingAnimationWidget.halfTriangleDot(
+                color: Color(0xff0e4f55),
+                size: 50,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    final response = await http.post(Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charest=UTF-8'
+        },
+        body: jsonEncode({'power': powerValue, 'mode': modeValue}));
+
+    Navigator.pop(context);
+
+    if (response.statusCode == 200) {
+      print('Pump mode response 200');
+      var snackBar = SnackBar(content: Text("Successful"));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else {
+      setState(() {
+        New_mode = defaultMode;
+        New_power = defaultPower;
+      });
+      var snackBar = SnackBar(content: Text("Try Again!"));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, Constraints) {
@@ -366,9 +418,17 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                       color: Color.fromRGBO(250, 246, 229, 1),
                       child: Column(
                         children: [
-                          SizedBox(
-                            height: 25 * textScaleFactor,
-                            child: Text(widget.macAddress),
+                          Padding(
+                            padding: EdgeInsets.all(10.0 * textScaleFactor),
+                            child: SizedBox(
+                              height: 25 * textScaleFactor,
+                              child: Text(
+                                widget.macAddress,
+                                style: TextStyle(
+                                    fontSize: 20 * textScaleFactor,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(
@@ -449,8 +509,36 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                             snapshot.data![
                                                                     'Moisture'] ??
                                                                 [];
+                                                        if (humidity
+                                                                .isNotEmpty &&
+                                                            humidity[widget
+                                                                    .index]
+                                                                .isNotEmpty) {
+                                                          return Text(
+                                                            '${humidity[widget.index]}%',
+                                                            style: TextStyle(
+                                                              fontSize: 40 *
+                                                                  textScaleFactor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .normal,
+                                                            ),
+                                                          );
+                                                        } else {
+                                                          return Text(
+                                                            'N/A%',
+                                                            style: TextStyle(
+                                                              fontSize: 40 *
+                                                                  textScaleFactor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .normal,
+                                                            ),
+                                                          );
+                                                        }
+                                                      } else {
                                                         return Text(
-                                                          '${humidity[widget.index].isNotEmpty ? humidity[widget.index] : "N/A"}%',
+                                                          'N/A%',
                                                           style: TextStyle(
                                                             fontSize: 40 *
                                                                 textScaleFactor,
@@ -458,16 +546,6 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                                 FontWeight
                                                                     .normal,
                                                           ),
-                                                        );
-                                                      } else {
-                                                        return Text(
-                                                          'N/A%',
-                                                          style: TextStyle(
-                                                              fontSize: 40 *
-                                                                  textScaleFactor,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .normal),
                                                         );
                                                       }
                                                     },
@@ -554,24 +632,41 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                                     .data![
                                                                 'Temperature'] ??
                                                             [];
-                                                        return Text(
-                                                          '${temp[widget.index].isNotEmpty ? temp[widget.index] : "N/A"}°C',
-                                                          style: TextStyle(
+                                                        if (temp.isNotEmpty &&
+                                                            temp[widget.index]
+                                                                .isNotEmpty) {
+                                                          return Text(
+                                                            '${temp[widget.index]}%',
+                                                            style: TextStyle(
                                                               fontSize: 40 *
                                                                   textScaleFactor,
                                                               fontWeight:
                                                                   FontWeight
-                                                                      .normal),
-                                                        );
+                                                                      .normal,
+                                                            ),
+                                                          );
+                                                        } else {
+                                                          return Text(
+                                                            'N/A%',
+                                                            style: TextStyle(
+                                                              fontSize: 40 *
+                                                                  textScaleFactor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .normal,
+                                                            ),
+                                                          );
+                                                        }
                                                       } else {
                                                         return Text(
-                                                          'N/A°C',
+                                                          'N/A%',
                                                           style: TextStyle(
-                                                              fontSize: 40 *
-                                                                  textScaleFactor,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .normal),
+                                                            fontSize: 40 *
+                                                                textScaleFactor,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .normal,
+                                                          ),
                                                         );
                                                       }
                                                     },
@@ -649,7 +744,10 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                           New_power = false;
                                                         }
                                                       });
-                                                      _publishMQTT();
+                                                      //_publishMQTT();
+                                                      print(New_mode);
+                                                      _updateWaterPump(
+                                                          New_mode, New_power);
                                                     },
                                                   ),
                                                 ),
@@ -692,7 +790,11 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                             New_power = value;
                                                           }
                                                         });
-                                                        _publishMQTT();
+                                                        //_publishMQTT();
+                                                        print(New_power);
+                                                        _updateWaterPump(
+                                                            New_mode,
+                                                            New_power);
                                                       }),
                                                 )
                                               ],
@@ -747,23 +849,38 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                       snapshot.data![
                                                               'Battery'] ??
                                                           [];
+                                                  if (battery.isNotEmpty &&
+                                                      battery[widget.index]
+                                                          .isNotEmpty) {
+                                                    return Text(
+                                                      '${battery[widget.index]}%',
+                                                      style: TextStyle(
+                                                        fontSize: 30 *
+                                                            textScaleFactor,
+                                                        fontWeight:
+                                                            FontWeight.normal,
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    return Text(
+                                                      'N/A%',
+                                                      style: TextStyle(
+                                                        fontSize: 30 *
+                                                            textScaleFactor,
+                                                        fontWeight:
+                                                            FontWeight.normal,
+                                                      ),
+                                                    );
+                                                  }
+                                                } else {
                                                   return Text(
-                                                    '${battery[widget.index].isNotEmpty ? battery[widget.index] : "N/A"}%',
+                                                    'N/A%',
                                                     style: TextStyle(
                                                       fontSize:
                                                           30 * textScaleFactor,
                                                       fontWeight:
                                                           FontWeight.normal,
                                                     ),
-                                                  );
-                                                } else {
-                                                  return Text(
-                                                    'N/A%',
-                                                    style: TextStyle(
-                                                        fontSize: 30 *
-                                                            textScaleFactor,
-                                                        fontWeight:
-                                                            FontWeight.normal),
                                                   );
                                                 }
                                               },
