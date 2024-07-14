@@ -4,13 +4,11 @@ import 'dart:io';
 import 'package:earthworms/HomeandData/homepage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:dropdown_button2/dropdown_button2.dart' as DropdownButton2;
 
 class AddSensorPage extends StatefulWidget {
   final String name;

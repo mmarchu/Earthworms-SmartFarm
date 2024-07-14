@@ -312,14 +312,15 @@ class _SensorDetailPageState extends State<SensorDetailPage>
   Future<void> _updateWaterPump(bool mode, bool power) async {
     final modeValue = mode ? 1 : 0;
     final powerValue = power ? 1 : 0;
+    String? token = await loadData('Token');
     var url;
     if (Platform.isAndroid) {
-      url = 'http://10.0.2.2:4000/api/auth/getoneuser';
-      //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+      url = 'http://10.0.2.2:4000/api/gpio/update';
+      //url = 'http://192.168.1.40:4000/api/gpio/update';
     } else if (Platform.isIOS) {
-      url = 'http://127.0.0.1:4000/api/auth/getoneuser';
+      url = 'http://127.0.0.1:4000/api/gpio/update';
       //IP HomeWifi
-      //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+      //url = 'http://192.168.1.40:4000/api/gpio/update';
     }
 
     showDialog(
@@ -343,9 +344,14 @@ class _SensorDetailPageState extends State<SensorDetailPage>
 
     final response = await http.post(Uri.parse(url),
         headers: <String, String>{
-          'Content-Type': 'application/json; charest=UTF-8'
+          'Content-Type': 'application/json; charest=UTF-8',
+          'Authorization': 'Bearer $token',
         },
-        body: jsonEncode({'power': powerValue, 'mode': modeValue}));
+        body: jsonEncode({
+          'gpio_id': widget.GpioList,
+          'mode': modeValue,
+          'power': powerValue
+        }));
 
     Navigator.pop(context);
 
@@ -358,6 +364,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
         New_mode = defaultMode;
         New_power = defaultPower;
       });
+      print('Pump mode response 400');
       var snackBar = SnackBar(content: Text("Try Again!"));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }

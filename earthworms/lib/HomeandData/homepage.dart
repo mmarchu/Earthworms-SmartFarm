@@ -6,6 +6,7 @@ import 'package:earthworms/HomeandData/AddSensorPage.dart';
 import 'package:earthworms/HomeandData/SensorDetailPage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:earthworms/TestFunc/Sensor2Responsive.dart';
+import 'package:earthworms/TestFunc/datepick.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -152,7 +153,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     switch (index) {
       case 0:
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => TimeSeriesPage()));
+            context, MaterialPageRoute(builder: (context) => DateSelector()));
         break;
       case 1:
         Navigator.push(
@@ -400,7 +401,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                             print(widget.macAddressList[index]);
                                             print(widget.modeList[index]);
                                             print(widget.modeList[index]);
-                                            print(index);
+                                            print("index: $index");
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(

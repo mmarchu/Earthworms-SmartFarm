@@ -2,6 +2,8 @@ import 'package:animated_button_bar/animated_button_bar.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
 
 class TemtimeSeriesPage extends StatefulWidget {
   const TemtimeSeriesPage({super.key});
@@ -11,13 +13,74 @@ class TemtimeSeriesPage extends StatefulWidget {
 }
 
 class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
-  String _selectedPeriod = 'daily';
+// Select Day
+  void _selectDay(BuildContext context) async {
+    final DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+    );
 
-  void _onPeriodChanged(String? value) {
-    setState(() {
-      _selectedPeriod = value!;
-    });
-    print(_selectedPeriod);
+    if (selectedDate != null) {
+      final json = {
+        "period": "daily",
+        "date": DateFormat('yyyy-MM-dd').format(selectedDate),
+      };
+      print(json);
+      //_sendToApi(json);
+    }
+  }
+
+//Select Week
+  void _selectWeek(BuildContext context) async {
+    final DateTime? selectedStartDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+    );
+
+    if (selectedStartDate != null) {
+      final DateTime selectedEndDate = selectedStartDate.add(Duration(days: 6));
+      final json = {
+        "period": "weekly",
+        "start": DateFormat('yyyy-MM-dd').format(selectedStartDate),
+        "end": DateFormat('yyyy-MM-dd').format(selectedEndDate),
+      };
+      print(json);
+      //_sendToApi(json);
+    }
+  }
+
+//Select Month
+  void _selectMonth(BuildContext context) async {
+    final DateTime? selectedDate = await showMonthPicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+    );
+
+    if (selectedDate != null) {
+      final json = {
+        "period": "monthly",
+        "date": DateFormat('yyyy-MM').format(selectedDate),
+      };
+      print(json);
+      //_sendToApi(json);
+    }
+  }
+
+//Send Today to Api when open this page
+  void _sendTodayToApi() {
+    final today = DateTime.now();
+    final json = {
+      "period": "daily",
+      "date": DateFormat('yyyy-MM-dd').format(today),
+    };
+    print(json);
+    //_sendToApi(json);
   }
 
   @override
@@ -113,7 +176,7 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold),
                                   ),
-                                  onTap: () => _onPeriodChanged,
+                                  onTap: () => _selectDay(context),
                                 ),
                                 ButtonBarEntry(
                                     child: Text(
@@ -121,14 +184,14 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
-                                    onTap: () => _onPeriodChanged),
+                                    onTap: () => _selectWeek(context)),
                                 ButtonBarEntry(
                                     child: Text(
                                       'Month',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
-                                    onTap: () => _onPeriodChanged)
+                                    onTap: () => _selectMonth(context))
                               ],
                             )
                           ],

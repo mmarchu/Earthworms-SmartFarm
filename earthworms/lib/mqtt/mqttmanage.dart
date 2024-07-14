@@ -58,47 +58,9 @@ Future<int> ConMqtt(String email) async {
   print('Subscribing to $subTopicSensor topic');
   client.subscribe(subTopicSensor, MqttQos.atMostOnce);
 
-  // Subscribe Water Pump
-  const subTopicWaterPump = 'waterpump';
-  print('Subscribing to $subTopicWaterPump topic');
-
   final subTopicEmailSensor = '$email/flora';
   print('Subscribing to $subTopicEmailSensor topic');
   client.subscribe(subTopicEmailSensor, MqttQos.atMostOnce);
-
-  //client.subscribe(subTopicWater, MqttQos.atMostOnce);
-  // client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
-  //   final recMess = c![0].payload as MqttPublishMessage;
-  //   final pump =
-  //       MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-  //   print('From ${c[0].topic}, value is $pump');
-  // });
-
-  // client.published!.listen((MqttPublishMessage message) {
-  //   print(
-  //       'Published topic: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
-  // });
-
-  // const pubTopic = 'flora_detail';
-  // final builder = MqttClientPayloadBuilder();
-  // builder.addString('Hello from mqtt_client');
-
-  // print('Subscribing to the $pubTopic topic');
-  // client.subscribe(pubTopic, MqttQos.exactlyOnce);
-
-  // print('Publishing our topic');
-  // client.publishMessage(pubTopic, MqttQos.exactlyOnce, builder.payload!);
-
-  // print('Sleeping....');
-  // await MqttUtilities.asyncSleep(80);
-
-  // print('Unsubscribing');
-  // client.unsubscribe(subTopic);
-  // client.unsubscribe(pubTopic);
-
-  // await MqttUtilities.asyncSleep(2);
-  // print('Disconnecting');
-  // client.disconnect();
 
   return 0;
 }
