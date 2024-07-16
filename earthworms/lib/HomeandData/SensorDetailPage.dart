@@ -583,7 +583,9 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    TemtimeSeriesPage()));
+                                                    TemtimeSeriesPage(
+                                                      sensorId: widget.sensorId,
+                                                    )));
                                       },
                                       child: Padding(
                                         padding: EdgeInsets.only(
@@ -781,7 +783,9 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                     fontSize:
                                                         20 * textScaleFactor,
                                                     fontWeight: FontWeight.bold,
-                                                    color: Colors.grey[800],
+                                                    color: New_mode
+                                                        ? Colors.grey
+                                                        : Colors.grey[800],
                                                   ),
                                                 ),
                                                 Padding(
@@ -790,19 +794,22 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                           18 * textScaleFactor),
                                                   child: CupertinoSwitch(
                                                       value: New_power,
-                                                      onChanged: (value) {
-                                                        setState(() {
-                                                          if (New_mode ==
-                                                              false) {
-                                                            New_power = value;
-                                                          }
-                                                        });
-                                                        //_publishMQTT();
-                                                        print(New_power);
-                                                        _updateWaterPump(
-                                                            New_mode,
-                                                            New_power);
-                                                      }),
+                                                      onChanged: New_mode
+                                                          ? null
+                                                          : (value) {
+                                                              setState(() {
+                                                                if (New_mode ==
+                                                                    false) {
+                                                                  New_power =
+                                                                      value;
+                                                                }
+                                                              });
+                                                              //_publishMQTT();
+                                                              print(New_power);
+                                                              _updateWaterPump(
+                                                                  New_mode,
+                                                                  New_power);
+                                                            }),
                                                 )
                                               ],
                                             ),

@@ -6,24 +6,42 @@ import 'package:intl/intl.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 
 class TemtimeSeriesPage extends StatefulWidget {
-  const TemtimeSeriesPage({super.key});
+  final String sensorId;
+  TemtimeSeriesPage({required this.sensorId});
 
   @override
   State<TemtimeSeriesPage> createState() => _TemtimeSeriesPageState();
 }
 
 class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
+  @override
+  void initState() {
+    _sendTodayToApi();
+    super.initState();
+  }
+
 // Select Day
   void _selectDay(BuildContext context) async {
     final DateTime? selectedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime.now(),
-    );
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2024),
+        lastDate: DateTime.now(),
+        builder: (context, child) {
+          return Theme(
+              data: ThemeData.light().copyWith(
+                colorScheme: ColorScheme.light(
+                    primary: Color(0xff0e4f55)), // selection color
+                buttonTheme: ButtonThemeData(
+                  textTheme: ButtonTextTheme.primary, // button text color
+                ),
+              ),
+              child: child!);
+        });
 
     if (selectedDate != null) {
       final json = {
+        "sensor_id": widget.sensorId,
         "period": "daily",
         "date": DateFormat('yyyy-MM-dd').format(selectedDate),
       };
@@ -35,15 +53,26 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
 //Select Week
   void _selectWeek(BuildContext context) async {
     final DateTime? selectedStartDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime.now(),
-    );
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2024),
+        lastDate: DateTime.now(),
+        builder: (context, child) {
+          return Theme(
+              data: ThemeData.light().copyWith(
+                colorScheme: ColorScheme.light(
+                    primary: Color(0xff0e4f55)), // selection color
+                buttonTheme: ButtonThemeData(
+                  textTheme: ButtonTextTheme.primary, // button text color
+                ),
+              ),
+              child: child!);
+        });
 
     if (selectedStartDate != null) {
       final DateTime selectedEndDate = selectedStartDate.add(Duration(days: 6));
       final json = {
+        "sensor_id": widget.sensorId,
         "period": "weekly",
         "start": DateFormat('yyyy-MM-dd').format(selectedStartDate),
         "end": DateFormat('yyyy-MM-dd').format(selectedEndDate),
@@ -56,14 +85,30 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
 //Select Month
   void _selectMonth(BuildContext context) async {
     final DateTime? selectedDate = await showMonthPicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime.now(),
-    );
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2024),
+        lastDate: DateTime.now(),
+        headerColor: Color(0xff0e4f55),
+        selectedMonthTextColor: Color.fromRGBO(250, 246, 229, 1),
+        unselectedMonthTextColor: Color(0xff0e4f55),
+        selectedMonthBackgroundColor: Color(0xff0e4f55),
+        confirmWidget: Text(
+          "Next",
+          style: TextStyle(
+            color: Color(0xff0e4f55),
+          ),
+        ),
+        cancelWidget: Text(
+          "Cancel",
+          style: TextStyle(
+            color: Color(0xff0e4f55),
+          ),
+        ));
 
     if (selectedDate != null) {
       final json = {
+        "sensor_id": widget.sensorId,
         "period": "monthly",
         "date": DateFormat('yyyy-MM').format(selectedDate),
       };
@@ -76,6 +121,7 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
   void _sendTodayToApi() {
     final today = DateTime.now();
     final json = {
+      "sensor_id": widget.sensorId,
       "period": "daily",
       "date": DateFormat('yyyy-MM-dd').format(today),
     };
