@@ -98,8 +98,8 @@ class _SensorDetailPageState extends State<SensorDetailPage>
     var url;
 
     if (Platform.isAndroid) {
-      //url = 'http://10.0.2.2:4000/api/auth/getoneuser';
-      url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+      url = 'http://10.0.2.2:4000/api/auth/getoneuser';
+      //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
     } else if (Platform.isIOS) {
       url = 'http://127.0.0.1:4000/api/auth/getoneuser';
       //IP HomeWifi
@@ -161,8 +161,8 @@ class _SensorDetailPageState extends State<SensorDetailPage>
     var url;
 
     if (Platform.isAndroid) {
-      //url = 'http://10.0.2.2:4000/api/auth/getoneuser';
-      url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+      url = 'http://10.0.2.2:4000/api/auth/getoneuser';
+      //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
     } else if (Platform.isIOS) {
       url = 'http://127.0.0.1:4000/api/auth/getoneuser';
       //IP HomeWifi
@@ -355,10 +355,26 @@ class _SensorDetailPageState extends State<SensorDetailPage>
 
     Navigator.pop(context);
 
+    void showSnackBar(BuildContext context) {
+      final snackBar = SnackBar(
+        content: Text(
+          'Successful',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        duration: Duration(seconds: 2),
+        backgroundColor: Color.fromRGBO(239, 165, 38, 1),
+        //shape: StadiumBorder(),
+        behavior: SnackBarBehavior.floating,
+        width: 300,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+
     if (response.statusCode == 200) {
       print('Pump mode response 200');
       var snackBar = SnackBar(content: Text("Successful"));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      //showSnackBar(context);
     } else {
       setState(() {
         New_mode = defaultMode;
@@ -461,7 +477,9 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    HTimeSeriesPage()));
+                                                    HTimeSeriesPage(
+                                                        sensorId:
+                                                            widget.sensorId)));
                                       },
                                       child: Padding(
                                         padding: EdgeInsets.only(

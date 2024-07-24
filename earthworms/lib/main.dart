@@ -36,8 +36,8 @@ Future<int> CheckToken() async {
   String? email = await loadData('email');
   var url;
   if (Platform.isAndroid) {
-    //url = 'http://10.0.2.2:4000/api/auth/getoneuser';
-    url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+    url = 'http://10.0.2.2:4000/api/auth/getoneuser';
+    //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
   } else if (Platform.isIOS) {
     url = 'http://127.0.0.1:4000/api/auth/getoneuser';
   }

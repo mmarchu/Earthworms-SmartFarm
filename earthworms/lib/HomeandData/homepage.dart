@@ -5,6 +5,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:earthworms/HomeandData/AddSensorPage.dart';
 import 'package:earthworms/HomeandData/SensorDetailPage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
+import 'package:earthworms/TestFunc/AutoScale.dart';
 import 'package:earthworms/TestFunc/Sensor2Responsive.dart';
 import 'package:earthworms/TestFunc/datepick.dart';
 import 'package:flutter/material.dart';
@@ -87,7 +88,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   void _TokenChenkTimeout() {
-    Timer.periodic(Duration(minutes: 10), (timer) {
+    Timer.periodic(Duration(minutes: 5), (timer) {
       CheckToken();
     });
   }
@@ -98,8 +99,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     var url;
 
     if (Platform.isAndroid) {
-      //url = 'http://10.0.2.2:4000/api/auth/getoneuser';
-      url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+      url = 'http://10.0.2.2:4000/api/auth/getoneuser';
+      //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
     } else if (Platform.isIOS) {
       url = 'http://127.0.0.1:4000/api/auth/getoneuser';
       //IP HomeWifi
@@ -113,7 +114,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         },
         body: jsonEncode({'email': email}));
 
-    if (response.statusCode == 401) {
+    if (response.statusCode == 200) {
+      print("ยังอยู่จ้าาOnHomPage");
+    } else {
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -143,8 +146,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           );
         },
       );
-    } else {
-      print("ยังอยู่จ้าาOnHomPage");
     }
   }
 
@@ -152,8 +153,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void _OnTapBottomBar(int index) {
     switch (index) {
       case 0:
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => DateSelector()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => CalendarRangePicker()));
         break;
       case 1:
         Navigator.push(
@@ -680,7 +681,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                       height:
                                                           17 * textScaleFactor),
                                                   SizedBox(
-                                                    width: 300,
+                                                    width: 350,
                                                     height: 50,
                                                     child: DecoratedBox(
                                                       decoration: BoxDecoration(
@@ -691,11 +692,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                 .circular(15),
                                                       ),
                                                       child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
                                                         children: [
                                                           Padding(
                                                             padding: EdgeInsets.only(
-                                                                left: 8 *
-                                                                    textScaleFactor,
                                                                 top: 5 *
                                                                     textScaleFactor,
                                                                 bottom: 5 *

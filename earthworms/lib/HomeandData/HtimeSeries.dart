@@ -1,40 +1,319 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:animated_button_bar/animated_button_bar.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:flutter/cupertino.dart';
-
-import 'package:animated_button_bar/animated_button_bar.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HTimeSeriesPage extends StatefulWidget {
-  const HTimeSeriesPage({super.key});
+  final String sensorId;
+  HTimeSeriesPage({required this.sensorId});
 
   @override
   State<HTimeSeriesPage> createState() => _HTimeSeriesPageState();
 }
 
-class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
-  String _selectedPeriod = 'daily';
-  DateTime _selectedDate = DateTime.now();
-  DateTimeRange? _selectedDateRange;
-  List<dynamic> _data = [];
+Future<String?> loadData(String key) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString(key);
+}
 
-  void _onPeriodChanged(String? value) {
+class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
+  String selectedPeriod = '';
+  List<dynamic> _data = [];
+  late String period;
+
+  @override
+  void initState() {
+    _sendTodayToApi();
+    super.initState();
+  }
+
+  // Select Day
+  void _selectDay(BuildContext context) async {
+    final DateTime? selectedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2024),
+        lastDate: DateTime.now(),
+        builder: (context, child) {
+          return Theme(
+              data: ThemeData.light().copyWith(
+                colorScheme: ColorScheme.light(
+                    primary: Color(0xff0e4f55)), // selection color
+                buttonTheme: ButtonThemeData(
+                  textTheme: ButtonTextTheme.primary, // button text color
+                ),
+              ),
+              child: child!);
+        });
+
+    if (selectedDate != null) {
+      final json = {
+        "sensor_id": widget.sensorId,
+        "period": "daily",
+        "date": DateFormat('yyyy-MM-dd').format(selectedDate),
+      };
+      final displayDate = DateFormat('dd-MM-yyyy').format(selectedDate);
+      print(json);
+      _sendDataToApi(json, 'Day');
+    }
+  }
+
+  // Select Week
+  void _selectWeek(BuildContext context) async {
+    final DateTime? selectedStartDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2024),
+        lastDate: DateTime.now(),
+        builder: (context, child) {
+          return Theme(
+              data: ThemeData.light().copyWith(
+                colorScheme: ColorScheme.light(
+                    primary: Color(0xff0e4f55)), // selection color
+                buttonTheme: ButtonThemeData(
+                  textTheme: ButtonTextTheme.primary, // button text color
+                ),
+              ),
+              child: child!);
+        });
+
+    if (selectedStartDate != null) {
+      final DateTime selectedEndDate = selectedStartDate.add(Duration(days: 6));
+      final json = {
+        "sensor_id": widget.sensorId,
+        "period": "weekly",
+        "start": DateFormat('yyyy-MM-dd').format(selectedStartDate),
+        "end": DateFormat('yyyy-MM-dd').format(selectedEndDate),
+      };
+      print(json);
+      _sendDataToApi(json, 'Week');
+    }
+  }
+
+  // Select Month
+  void _selectMonth(BuildContext context) async {
+    final DateTime? selectedDate = await showMonthPicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2024),
+        lastDate: DateTime.now(),
+        headerColor: Color(0xff0e4f55),
+        selectedMonthTextColor: Color.fromRGBO(250, 246, 229, 1),
+        unselectedMonthTextColor: Color(0xff0e4f55),
+        selectedMonthBackgroundColor: Color(0xff0e4f55),
+        confirmWidget: Text(
+          "Next",
+          style: TextStyle(
+            color: Color(0xff0e4f55),
+          ),
+        ),
+        cancelWidget: Text(
+          "Cancel",
+          style: TextStyle(
+            color: Color(0xff0e4f55),
+          ),
+        ));
+
+    if (selectedDate != null) {
+      final json = {
+        "sensor_id": widget.sensorId,
+        "period": "monthly",
+        "date": DateFormat('yyyy-MM').format(selectedDate),
+      };
+      print(json);
+      _sendDataToApi(json, 'Month');
+    }
+  }
+
+  // Send Today to Api when open this page
+  void _sendTodayToApi() {
+    final today = DateTime.now();
+    final json = {
+      "sensor_id": widget.sensorId,
+      "period": "daily",
+      "date": DateFormat('yyyy-MM-dd').format(today),
+    };
+    print(json);
+    _sendDataToApi(json, 'Day');
+    _updateSelectedBottom('Select Day');
+  }
+
+  Future<void> _sendDataToApi(final json, String _period) async {
+    String? token = await loadData('Token');
+    var url;
+
+    if (Platform.isAndroid) {
+      url = 'http://192.168.1.40:4000/api/timeSeries/get';
+    } else if (Platform.isIOS) {
+      url = 'http://127.0.0.1:4000/api/timeSeries/get';
+      // IP HomeWifi
+      // url = 'http://192.168.1.40:4000/api/timeSeries/get';
+    }
+
+    final response = await http.post(Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(json));
+
+    if (response.statusCode == 200) {
+      var decodedData = jsonDecode(response.body);
+      print('Decoded Data: $decodedData');
+      setState(() {
+        _data = decodedData;
+        period = _period;
+      });
+    } else {
+      print('${response.statusCode}: ${response.reasonPhrase}');
+    }
+  }
+
+  // Update bottom period
+  void _updateSelectedBottom(String newText) {
     setState(() {
-      _selectedPeriod = value!;
+      selectedPeriod = newText;
     });
-    print(_selectedPeriod);
-    //_fetchData();
+  }
+
+  // Widget _buildBarChart() {
+  //   return Container(
+  //     height: 490,
+  //     width: 425,
+  //     child: BarChart(
+  //       BarChartData(
+  //         alignment: BarChartAlignment.spaceAround,
+  //         maxY: 45, // Set the maximum value for Y-axis if needed
+  //         barGroups: _data.asMap().entries.map((entry) {
+  //           int index = entry.key;
+  //           var item = entry.value;
+
+  //           return BarChartGroupData(
+  //             x: index, // Use the index as the X value for the chart
+  //             barRods: [
+  //               BarChartRodData(
+  //                 toY: item['y_temp'].toDouble(),
+  //                 color: Color(0xff0e4f55),
+  //                 width: 5,
+  //               ),
+  //             ],
+  //           );
+  //         }).toList(),
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  Widget _buildBarChart() {
+    return Container(
+      height: 495,
+      width: 410,
+      child: BarChart(
+        BarChartData(
+          alignment: BarChartAlignment.spaceAround,
+          gridData: FlGridData(show: true),
+          maxY: 100,
+          barGroups: _data.asMap().entries.map((entry) {
+            int index = entry.key;
+            var item = entry.value;
+
+            return BarChartGroupData(
+              x: index,
+              barRods: [
+                BarChartRodData(
+                  toY: item['y_humid'].toDouble(),
+                  color: Color(0xff0e4f55),
+                  width: 7,
+                ),
+              ],
+            );
+          }).toList(),
+          titlesData: FlTitlesData(
+            leftTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 50,
+              ),
+            ),
+            rightTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: false, // Hide right side titles
+              ),
+            ),
+            topTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: false,
+              ),
+            ),
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                  showTitles: true,
+                  reservedSize: 30,
+                  getTitlesWidget: (value, meta) {
+                    final TitleDay = {
+                      0: '0',
+                      6: '6',
+                      12: '12',
+                      18: '18',
+                      23: '23'
+                    };
+                    final TitleWeek = {
+                      0: 'Sun',
+                      1: 'Mon',
+                      2: 'Tue',
+                      3: 'Wed',
+                      4: 'Thu',
+                      5: 'Fri',
+                      6: 'Sat'
+                    };
+                    final TitleMonth = {0: '1'};
+                    String title = '';
+                    if (period == 'Day') {
+                      title = TitleDay[value.toInt()] ?? '';
+                    } else if (period == 'Week') {
+                      title = TitleWeek[value.toInt()] ?? '';
+                    } else {
+                      title = TitleMonth[value.toInt()] ?? '';
+                    }
+                    return SideTitleWidget(
+                      axisSide: meta.axisSide,
+                      child: Text(
+                        title,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                        ),
+                      ),
+                    );
+                  }),
+            ),
+          ),
+          borderData: FlBorderData(
+            show: true,
+            border: Border.all(
+                color: Colors.transparent, // Transparent border
+                width: 0),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, Constraints) {
+    return LayoutBuilder(builder: (context, constraints) {
       final screenWidth = MediaQuery.of(context).size.width;
       final screenHeight = MediaQuery.of(context).size.height;
       final smallestDimension =
           screenWidth < screenHeight ? screenWidth : screenHeight;
       final textScaleFactor = smallestDimension / 400;
+
       return AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
         child: Scaffold(
@@ -48,38 +327,49 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                     Row(
                       children: [
                         Padding(
-                            padding: EdgeInsets.only(
-                                top: 70 * textScaleFactor,
-                                left: 10 * textScaleFactor),
-                            child: Row(
-                              children: [
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      icon: Icon(
-                                        Icons.arrow_back_ios_rounded,
-                                        size: 35,
-                                        color: Colors.grey[800],
-                                      ),
+                          padding: EdgeInsets.only(
+                              top: 70 * textScaleFactor,
+                              left: 10 * textScaleFactor),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    icon: Icon(
+                                      Icons.arrow_back_ios_rounded,
+                                      size: 35,
+                                      color: Colors.grey[800],
                                     ),
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          left: 10 * textScaleFactor),
-                                      child: Text(
-                                        "Humidity",
-                                        style: TextStyle(
-                                            fontSize: 28 * textScaleFactor,
-                                            color: Colors.grey[800],
-                                            fontWeight: FontWeight.bold),
-                                      ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        left: 10 * textScaleFactor),
+                                    child: Text(
+                                      "Humidity",
+                                      style: TextStyle(
+                                          fontSize: 28 * textScaleFactor,
+                                          color: Colors.grey[800],
+                                          fontWeight: FontWeight.bold),
                                     ),
-                                  ],
-                                ),
-                              ],
-                            ))
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(height: 20 * textScaleFactor),
+                    Row(
+                      children: [
+                        Center(
+                          child: Column(
+                            children: [_buildBarChart()],
+                          ),
+                        )
                       ],
                     )
                   ],
@@ -115,35 +405,73 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                               innerVerticalPadding: 12,
                               children: [
                                 ButtonBarEntry(
-                                    child: Text(
-                                      'Day',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    onTap: () => _onPeriodChanged),
+                                  child: Text(
+                                    'Day',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  onTap: () =>
+                                      _updateSelectedBottom('Select Day'),
+                                ),
                                 ButtonBarEntry(
-                                    child: Text(
-                                      'Week',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    onTap: () => _onPeriodChanged),
+                                  child: Text(
+                                    'Week',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  onTap: () =>
+                                      _updateSelectedBottom('Select Week'),
+                                ),
                                 ButtonBarEntry(
-                                    child: Text(
-                                      'Month',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    onTap: () => _onPeriodChanged),
+                                  child: Text(
+                                    'Month',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  onTap: () =>
+                                      _updateSelectedBottom('Select Month'),
+                                )
                               ],
-                            )
+                            ),
+                            SizedBox(height: 20),
+                            InkWell(
+                              onTap: () {
+                                if (selectedPeriod == 'Select Day') {
+                                  _selectDay(context);
+                                } else if (selectedPeriod == 'Select Week') {
+                                  _selectWeek(context);
+                                } else if (selectedPeriod == 'Select Month') {
+                                  _selectMonth(context);
+                                }
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(20),
+                                margin: EdgeInsets.symmetric(horizontal: 25),
+                                decoration: BoxDecoration(
+                                  color: Color.fromRGBO(239, 165, 38, 1),
+                                  borderRadius: BorderRadius.circular(20),
+                                  border:
+                                      Border.all(color: Colors.white, width: 1),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    selectedPeriod,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
-                        )
+                        ),
                       ],
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
