@@ -199,20 +199,33 @@ class _SensorDetailPageState extends State<SensorDetailPage>
               .toList();
 
       Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-              builder: (context) => HomePage(
-                    name: DBname,
-                    lastname: DBlastname,
-                    email: DBemail,
-                    sensorIdList: sensorIdList,
-                    macAddressList: macAddressList,
-                    sensorNameList: sensorNameList,
-                    GpioList: GpioList,
-                    modeList: modeList,
-                    powerList: powerList,
-                  )),
-          (Route<dynamic> Route) => false);
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => HomePage(
+            name: DBname,
+            lastname: DBlastname,
+            email: DBemail,
+            sensorIdList: sensorIdList,
+            macAddressList: macAddressList,
+            sensorNameList: sensorNameList,
+            GpioList: GpioList,
+            modeList: modeList,
+            powerList: powerList,
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(-1.0, 0.0);
+            const end = Offset.zero;
+            const curve = Curves.easeInOut;
+            var tween =
+                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+            var offsetAnimation = animation.drive(tween);
+
+            return SlideTransition(position: offsetAnimation, child: child);
+          },
+          transitionDuration: const Duration(milliseconds: 95),
+        ),
+        (Route<dynamic> route) => false,
+      );
     }
     ;
   }
@@ -298,15 +311,6 @@ class _SensorDetailPageState extends State<SensorDetailPage>
     print(lights);
     print(conductivities);
     print(batteries);
-  }
-
-  void _publishMQTT() {
-    final builder = MqttClientPayloadBuilder();
-    builder.addString('$Mac_Address,$New_mode,$New_power');
-    //print('$M_A,$power');
-
-    const topic = 'waterpump';
-    client.publishMessage(topic, MqttQos.exactlyOnce, builder.payload!);
   }
 
   Future<void> _updateWaterPump(bool mode, bool power) async {

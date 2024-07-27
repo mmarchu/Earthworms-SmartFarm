@@ -26,6 +26,7 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
   String selectedPeriod = '';
   List<dynamic> _data = [];
   late String period;
+  String dateSelect = '';
 
   @override
   void initState() {
@@ -58,8 +59,10 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
         "period": "daily",
         "date": DateFormat('yyyy-MM-dd').format(selectedDate),
       };
-      final displayDate = DateFormat('dd-MM-yyyy').format(selectedDate);
-      print(json);
+      final displayDate = DateFormat('dd - MM - yyyy').format(selectedDate);
+      print(displayDate);
+      _updateDateData(displayDate);
+      //print(json);
       _sendDataToApi(json, 'Day');
     }
   }
@@ -139,6 +142,9 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
       "period": "daily",
       "date": DateFormat('yyyy-MM-dd').format(today),
     };
+    final displayDate = DateFormat('dd - MM - yyyy').format(today);
+    print(displayDate);
+    _updateDateData(displayDate);
     print(json);
     _sendDataToApi(json, 'Day');
     _updateSelectedBottom('Select Day');
@@ -182,34 +188,12 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
     });
   }
 
-  // Widget _buildBarChart() {
-  //   return Container(
-  //     height: 490,
-  //     width: 425,
-  //     child: BarChart(
-  //       BarChartData(
-  //         alignment: BarChartAlignment.spaceAround,
-  //         maxY: 45, // Set the maximum value for Y-axis if needed
-  //         barGroups: _data.asMap().entries.map((entry) {
-  //           int index = entry.key;
-  //           var item = entry.value;
-  //           return BarChartGroupData(
-  //             x: index, // Use the index as the X value for the chart
-  //             barRods: [
-  //               BarChartRodData(
-  //                 toY: item['y_temp'].toDouble(),
-  //                 color: Color(0xff0e4f55),
-  //                 width: 5,
-  //               ),
-  //             ],
-  //           );
-  //         }).toList(),
-  //       ),
-  //     ),
-  //   );
-  // }
+  void _updateDateData(String newDate) {
+    setState(() {
+      dateSelect = newDate;
+    });
+  }
 
-  // Bar Chart
   Widget _buildBarChart() {
     return Container(
       height: 495,
@@ -222,6 +206,7 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
           barGroups: _data.asMap().entries.map((entry) {
             int index = entry.key;
             var item = entry.value;
+
             return BarChartGroupData(
               x: index,
               barRods: [
@@ -237,7 +222,7 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
             leftTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
-                reservedSize: 45,
+                reservedSize: 50,
               ),
             ),
             rightTitles: AxisTitles(
@@ -394,7 +379,7 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
                             AnimatedButtonBar(
                               radius: 16.0,
                               padding: EdgeInsets.only(
-                                  top: 25 * textScaleFactor,
+                                  top: 20 * textScaleFactor,
                                   right: 20 * textScaleFactor,
                                   left: 20 * textScaleFactor),
                               invertedSelection: true,
@@ -404,14 +389,15 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
                               innerVerticalPadding: 12,
                               children: [
                                 ButtonBarEntry(
-                                  child: Text(
-                                    'Day',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  onTap: () =>
-                                      _updateSelectedBottom('Select Day'),
-                                ),
+                                    child: Text(
+                                      'Day',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    onTap: () {
+                                      _updateSelectedBottom('Select Day');
+                                      _sendTodayToApi();
+                                    }),
                                 ButtonBarEntry(
                                   child: Text(
                                     'Week',
@@ -432,7 +418,30 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
                                 )
                               ],
                             ),
-                            SizedBox(height: 20),
+                            SizedBox(height: 20 * textScaleFactor),
+                            SizedBox(
+                              width: 355 * textScaleFactor,
+                              height: 43 * textScaleFactor,
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                    color: Color.fromRGBO(250, 246, 229, 1),
+                                    borderRadius: BorderRadius.circular(20)),
+                                child: Center(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '< $dateSelect >',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 18 * textScaleFactor),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 20 * textScaleFactor),
                             InkWell(
                               onTap: () {
                                 if (selectedPeriod == 'Select Day') {
