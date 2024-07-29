@@ -34,7 +34,7 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
     super.initState();
   }
 
-  // Select Day
+// Select Day
   void _selectDay(BuildContext context) async {
     final DateTime? selectedDate = await showDatePicker(
         context: context,
@@ -67,7 +67,7 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
     }
   }
 
-  // Select Week
+// Select Week
   void _selectWeek(BuildContext context) async {
     final DateTime? selectedStartDate = await showDatePicker(
         context: context,
@@ -99,7 +99,7 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
     }
   }
 
-  // Select Month
+// Select Month
   void _selectMonth(BuildContext context) async {
     final DateTime? selectedDate = await showMonthPicker(
         context: context,
@@ -129,12 +129,15 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
         "period": "monthly",
         "date": DateFormat('yyyy-MM').format(selectedDate),
       };
-      print(json);
+      final displayDate = DateFormat.MMMM('en_US').format(selectedDate);
+      print(displayDate);
+      _updateDateData(displayDate);
+      //print(json);
       _sendDataToApi(json, 'Month');
     }
   }
 
-  // Send Today to Api when open this page
+// Send Today to Api when open this page
   void _sendTodayToApi() {
     final today = DateTime.now();
     final json = {
@@ -145,17 +148,33 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
     final displayDate = DateFormat('dd - MM - yyyy').format(today);
     print(displayDate);
     _updateDateData(displayDate);
-    print(json);
     _sendDataToApi(json, 'Day');
     _updateSelectedBottom('Select Day');
   }
 
+// Send This month to Api
+  void _SendThisMonthToApi() {
+    final today = DateTime.now();
+    final json = {
+      "sensor_id": widget.sensorId,
+      "period": "monthly",
+      "date": DateFormat('yyyy-MM').format(today),
+    };
+    final displayDate = DateFormat.MMMM('en_US').format(today);
+    print(displayDate);
+    _updateDateData(displayDate);
+    _sendDataToApi(json, 'Month');
+  }
+
+// Api Get Data
   Future<void> _sendDataToApi(final json, String _period) async {
     String? token = await loadData('Token');
     var url;
 
     if (Platform.isAndroid) {
       url = 'http://192.168.1.40:4000/api/timeSeries/get';
+      //local
+      url = 'http://10.0.2.2:4000/api/timeSeries/get';
     } else if (Platform.isIOS) {
       url = 'http://127.0.0.1:4000/api/timeSeries/get';
       // IP HomeWifi
@@ -181,23 +200,25 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
     }
   }
 
-  // Update bottom period
+// Update bottom period
   void _updateSelectedBottom(String newText) {
     setState(() {
       selectedPeriod = newText;
     });
   }
 
+// update display Date
   void _updateDateData(String newDate) {
     setState(() {
       dateSelect = newDate;
     });
   }
 
-  Widget _buildBarChart() {
+// BarChart
+  Widget _buildBarChart(double width, double height) {
     return Container(
-      height: 495,
-      width: 410,
+      height: height,
+      width: width,
       child: BarChart(
         BarChartData(
           alignment: BarChartAlignment.spaceAround,
@@ -256,7 +277,16 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                       5: 'Fri',
                       6: 'Sat'
                     };
-                    final TitleMonth = {0: '1'};
+                    final TitleMonth = {
+                      0: '1',
+                      4: '5',
+                      8: '9',
+                      12: '13',
+                      16: '17',
+                      20: '21',
+                      24: '25',
+                      28: '29'
+                    };
                     String title = '';
                     if (period == 'Day') {
                       title = TitleDay[value.toInt()] ?? '';
@@ -312,7 +342,7 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                       children: [
                         Padding(
                           padding: EdgeInsets.only(
-                              top: 70 * textScaleFactor,
+                              top: 55 * textScaleFactor,
                               left: 10 * textScaleFactor),
                           child: Column(
                             children: [
@@ -351,7 +381,14 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                       children: [
                         Center(
                           child: Column(
-                            children: [_buildBarChart()],
+                            children: [
+                              if (Platform.isAndroid)
+                                _buildBarChart(375 * textScaleFactor,
+                                    445 * textScaleFactor)
+                              else if (Platform.isIOS)
+                                _buildBarChart(380 * textScaleFactor,
+                                    480 * textScaleFactor)
+                            ],
                           ),
                         )
                       ],
@@ -408,14 +445,15 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                                       _updateSelectedBottom('Select Week'),
                                 ),
                                 ButtonBarEntry(
-                                  child: Text(
-                                    'Month',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  onTap: () =>
-                                      _updateSelectedBottom('Select Month'),
-                                )
+                                    child: Text(
+                                      'Month',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    onTap: () {
+                                      _updateSelectedBottom('Select Month');
+                                      _SendThisMonthToApi();
+                                    })
                               ],
                             ),
                             SizedBox(height: 20 * textScaleFactor),

@@ -61,6 +61,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   TextEditingController lastnameController = TextEditingController();
   final List<String> humidity = [];
   final List<String> temp = [];
+  late String email;
+  late String topic;
 
   @override
   void initState() {
@@ -68,6 +70,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     _updateMQTT();
     _TokenChenkTimeout();
     WidgetsBinding.instance.addObserver(this);
+    email = widget.email;
+    topic = '$email/flora';
   }
 
   @override
@@ -84,11 +88,16 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void dispose() {
     // Remove observer when the state is disposed
     WidgetsBinding.instance.removeObserver(this);
+    try {
+      client.disconnect();
+    } catch (e) {
+      print(e);
+    }
     super.dispose();
   }
 
   void _TokenChenkTimeout() {
-    Timer.periodic(Duration(minutes: 5), (timer) {
+    Timer.periodic(Duration(minutes: 1), (timer) {
       CheckToken();
     });
   }
@@ -109,7 +118,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     final response = await http.post(Uri.parse(url),
         headers: <String, String>{
-          'Content-Type': 'application/json; charest=UTF-8',
+          'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',
         },
         body: jsonEncode({'email': email}));
@@ -117,6 +126,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     if (response.statusCode == 200) {
       print("ยังอยู่จ้าาOnHomPage");
     } else {
+      if (!mounted) return;
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -137,7 +147,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                       Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(builder: (context) => LoginPage()),
-                          (Route<dynamic> Route) => false);
+                          (Route<dynamic> route) => false);
                     },
                   ),
                 ],

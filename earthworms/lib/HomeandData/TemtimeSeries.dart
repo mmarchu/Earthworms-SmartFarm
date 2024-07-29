@@ -194,10 +194,10 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
     });
   }
 
-  Widget _buildBarChart() {
+  Widget _buildBarChart(double width, double height) {
     return Container(
-      height: 495,
-      width: 410,
+      height: height,
+      width: width,
       child: BarChart(
         BarChartData(
           alignment: BarChartAlignment.spaceAround,
@@ -256,7 +256,16 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
                       5: 'Fri',
                       6: 'Sat'
                     };
-                    final TitleMonth = {0: '1'};
+                    final TitleMonth = {
+                      0: '1',
+                      4: '5',
+                      8: '9',
+                      12: '13',
+                      16: '17',
+                      20: '21',
+                      24: '25',
+                      28: '29'
+                    };
                     String title = '';
                     if (period == 'Day') {
                       title = TitleDay[value.toInt()] ?? '';
@@ -312,7 +321,7 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
                       children: [
                         Padding(
                           padding: EdgeInsets.only(
-                              top: 70 * textScaleFactor,
+                              top: 55 * textScaleFactor,
                               left: 10 * textScaleFactor),
                           child: Column(
                             children: [
@@ -351,7 +360,14 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
                       children: [
                         Center(
                           child: Column(
-                            children: [_buildBarChart()],
+                            children: [
+                              if (Platform.isAndroid)
+                                _buildBarChart(375 * textScaleFactor,
+                                    445 * textScaleFactor)
+                              else if (Platform.isIOS)
+                                _buildBarChart(380 * textScaleFactor,
+                                    480 * textScaleFactor)
+                            ],
                           ),
                         )
                       ],
