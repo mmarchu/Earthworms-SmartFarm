@@ -6,8 +6,6 @@ import 'package:earthworms/HomeandData/AddSensorPage.dart';
 import 'package:earthworms/HomeandData/SensorDetailPage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:earthworms/TestFunc/AutoScale.dart';
-// import 'package:earthworms/TestFunc/Sensor2Responsive.dart';
-// import 'package:earthworms/TestFunc/datepick.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -48,6 +46,12 @@ Future<void> removeData(String key) async {
   prefs.remove(key);
 }
 
+//Load Token
+Future<String?> loadData(String key) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString(key);
+}
+
 //Func. Logout
 void _logout() async {
   await removeData('Token');
@@ -86,18 +90,18 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    // Remove observer when the state is disposed
     WidgetsBinding.instance.removeObserver(this);
-    try {
-      client.disconnect();
-    } catch (e) {
-      print(e);
-    }
     super.dispose();
   }
 
+//Unsubscribe mqtt topic
+  void unsubscribe(String topic) {
+    client.unsubscribe(topic);
+    print("Un Subscribe topic: $topic");
+  }
+
   void _TokenChenkTimeout() {
-    Timer.periodic(Duration(minutes: 1), (timer) {
+    Timer.periodic(Duration(minutes: 5), (timer) {
       CheckToken();
     });
   }
@@ -174,6 +178,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                       name: widget.name,
                       lastname: widget.lastname,
                       email: widget.email,
+                      topic: topic,
                     )));
         break;
       case 2:
@@ -195,6 +200,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     CupertinoDialogAction(
                         onPressed: () {
                           _logout();
+                          unsubscribe(topic);
                           Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
@@ -253,13 +259,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         'Battery': batteries,
       });
 
-      // Uncomment the following lines for debugging
-      // print(macAddresses);
-      // print(temperatures);
-      // print(moisture);
-      // print(lights);
-      // print(conductivities);
-      // print(batteries);
+      print(macAddresses);
+      print(temperatures);
+      print(moisture);
+      print(lights);
+      print(conductivities);
+      print(batteries);
     } catch (e) {
       print('Error processing JSON data: $e');
     }
@@ -390,20 +395,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                               child: ListView.builder(
                                 itemCount: widget.macAddressList.length,
                                 itemBuilder: (context, index) {
-                                  // return HomeWidget(
-                                  //   NameSensor: widget.sensorNameList[index],
-                                  //   macAddress: widget.macAddressList[index],
-                                  //   email: widget.email,
-                                  //   mode: mode[index],
-                                  //   power: power[index],
-                                  //   humidity: _dataController.hasValue
-                                  //       ? _dataController.value['Humidity'] ??
-                                  //           []
-                                  //       : [],
-                                  //   temp: _dataController.hasValue
-                                  //       ? _dataController.value['Temp'] ?? []
-                                  //       : [],
-                                  // );
                                   return Column(
                                     children: [
                                       InkWell(
@@ -650,7 +641,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                                       List<String> temp = snapshot.data!['Temperature'] ?? [];
                                                                                       if (temp.isNotEmpty && temp[index].isNotEmpty) {
                                                                                         return Text(
-                                                                                          '${temp[index]}%',
+                                                                                          '${temp[index]}°C',
                                                                                           style: TextStyle(
                                                                                             fontSize: 25 * textScaleFactor,
                                                                                             fontWeight: FontWeight.normal,
@@ -658,7 +649,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                                         );
                                                                                       } else {
                                                                                         return Text(
-                                                                                          'N/A%',
+                                                                                          'N/A°C',
                                                                                           style: TextStyle(
                                                                                             fontSize: 25 * textScaleFactor,
                                                                                             fontWeight: FontWeight.normal,
@@ -667,7 +658,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                                       }
                                                                                     } else {
                                                                                       return Text(
-                                                                                        'N/A%',
+                                                                                        'N/A°C',
                                                                                         style: TextStyle(
                                                                                           fontSize: 25 * textScaleFactor,
                                                                                           fontWeight: FontWeight.normal,

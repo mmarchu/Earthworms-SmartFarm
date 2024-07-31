@@ -9,13 +9,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:earthworms/mqtt/mqttmanage.dart';
 
 class AddSensorPage extends StatefulWidget {
   final String name;
   final String lastname;
   final String email;
+  final String topic;
   AddSensorPage(
-      {required this.name, required this.lastname, required this.email, t});
+      {required this.name,
+      required this.lastname,
+      required this.email,
+      required this.topic});
 
   @override
   State<AddSensorPage> createState() => _AddSensorPageState();
@@ -67,6 +72,12 @@ class _AddSensorPageState extends State<AddSensorPage>
     // Remove observer when the state is disposed
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+// Unsubscribe mqtt topic
+  void unsubscribe(String topic) {
+    client.unsubscribe(topic);
+    print("Un Subscribe topic: $topic");
   }
 
   @override
@@ -135,7 +146,7 @@ class _AddSensorPageState extends State<AddSensorPage>
     }
   }
 
-  // Lode data after add sensor before back to homepage
+// Lode data after add sensor before back to homepage
   Future<void> LodeDataToHomePage() async {
     String? token = await loadData('Token');
     String? email = await loadData('email');
@@ -198,7 +209,7 @@ class _AddSensorPageState extends State<AddSensorPage>
     ;
   }
 
-  // API receive sensor list
+// API receive sensor list
   Future<void> SensorsListAPI() async {
     final email = widget.email;
     String? token = await loadData('Token');
@@ -273,8 +284,9 @@ class _AddSensorPageState extends State<AddSensorPage>
     }
   }
 
-  // API add sensor to board
-  Future<void> _addSensor(String MacAdd, String NameSensor, int? Gpio_selected) async {
+// API add sensor to board
+  Future<void> _addSensor(
+    String MacAdd, String NameSensor, int? Gpio_selected) async {
     final email = widget.email;
     final MacAddress = MacAdd;
     final SensorName = NameSensor;
@@ -321,13 +333,13 @@ class _AddSensorPageState extends State<AddSensorPage>
     }
   }
 
-  //เช็คว่ามีการใส่ชื่อไปหรือป่าว
+//เช็คว่ามีการใส่ชื่อไปหรือป่าว
   void _handleTextFieldChange() {
     final isFilled = NameSensor.text.isNotEmpty;
     _isButtonEnabled.value = isFilled;
   }
 
-  // Dialog Scan Senor
+// Dialog Scan Senor
   void DialogScanSenser(BuildContext context) {
     showDialog(
         context: context,
@@ -355,8 +367,8 @@ class _AddSensorPageState extends State<AddSensorPage>
         });
   }
 
-  //Dialog Add Sensor
-  void _DialogNewNameSensor(String Name, String MacAdd) {
+// Dialog Add Sensor
+  void _DialogNewNameSensor(String MacAdd) {
     void _resetValues() {
       NameSensor.clear(); // Clear text field
       SelectedGPIO = null; // Clear selected port
@@ -365,6 +377,7 @@ class _AddSensorPageState extends State<AddSensorPage>
 
     showDialog(
         context: context,
+        barrierDismissible: false,
         builder: (BuildContext context) {
           return StatefulBuilder(
             builder: (context, setState) {
@@ -396,7 +409,8 @@ class _AddSensorPageState extends State<AddSensorPage>
                                     SelectedGPIO != null;
                           });
                         },
-                        items: GPIO_Port.map<DropdownMenuItem<int>>((int value) {
+                        items:
+                            GPIO_Port.map<DropdownMenuItem<int>>((int value) {
                           return DropdownMenuItem<int>(
                             value: value,
                             child: Text(value.toString()),
@@ -436,7 +450,8 @@ class _AddSensorPageState extends State<AddSensorPage>
                                     print("Mac: $MacAdd");
                                     print("GPIO: $SelectedGPIO");
                                     //LodeDataToHomePage();
-                                    _addSensor(MacAdd, NewNameSensor, SelectedGPIO);
+                                    _addSensor(
+                                        MacAdd, NewNameSensor, SelectedGPIO);
                                   }
                                 : null);
                       })
@@ -447,7 +462,7 @@ class _AddSensorPageState extends State<AddSensorPage>
         });
   }
 
-  //Conditions BottomBar
+// Conditions BottomBar
   Future<void> _OnTapBottomBar(int index) async {
     switch (index) {
       case 0:
@@ -476,6 +491,7 @@ class _AddSensorPageState extends State<AddSensorPage>
                     CupertinoDialogAction(
                         onPressed: () {
                           _logout();
+                          unsubscribe(widget.topic);
                           Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
@@ -587,7 +603,7 @@ class _AddSensorPageState extends State<AddSensorPage>
                               return GestureDetector(
                                 onTap: () async {
                                   _DialogNewNameSensor(
-                                      sensorList[index]['name']!,
+                                      //sensorList[index]['name']!,
                                       sensorList[index]['address']!);
                                 },
                                 child: Column(

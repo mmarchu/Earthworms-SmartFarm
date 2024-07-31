@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 import 'package:earthworms/HomeandData/HtimeSeries.dart';
 import 'package:earthworms/HomeandData/TemtimeSeries.dart';
@@ -47,6 +48,12 @@ Future<void> removeData(String key) async {
   prefs.remove(key);
 }
 
+//Load Token
+Future<String?> loadData(String key) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString(key);
+}
+
 void _logout() async {
   await removeData('Token');
   await removeData('email');
@@ -62,6 +69,8 @@ class _SensorDetailPageState extends State<SensorDetailPage>
   late bool defaultMode;
   late bool defaultPower;
   late String Mac_Address;
+  TextEditingController UpdateNameSensor = TextEditingController();
+  final ValueNotifier<bool> _isButtonEnabled = ValueNotifier<bool>(false);
 
   @override
   void initState() {
@@ -80,16 +89,6 @@ class _SensorDetailPageState extends State<SensorDetailPage>
     // Remove observer when the state is disposed
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
-      print("Paused");
-    }
-    if (state == AppLifecycleState.resumed) {
-      CheckToken();
-    }
   }
 
   Future<void> CheckToken() async {
@@ -148,13 +147,13 @@ class _SensorDetailPageState extends State<SensorDetailPage>
     }
   }
 
-  //Load data from sharePref
+// Load data from sharePref
   Future<String?> loadData(String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(key);
   }
 
-  // Lode data after add sensor before back to homepage
+// Lode data after add sensor before back to homepage
   Future<void> LodeDataToHomePage() async {
     String? token = await loadData('Token');
     String? email = await loadData('email');
@@ -230,7 +229,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
     ;
   }
 
-  // Delete Sensor
+// Delete Sensor
   Future<void> DeleteSensor() async {
     String? token = await loadData('Token');
 
@@ -265,7 +264,138 @@ class _SensorDetailPageState extends State<SensorDetailPage>
     }
   }
 
-  //Get data from sensor by MQTT
+// DialogBox UpdateNameSensor
+  void _DialogUpdateSensorName() {
+    void _resetValues() {
+      UpdateNameSensor.clear();
+      _isButtonEnabled.value = false;
+    }
+
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Sensor'),
+              content: Container(
+                height: 50,
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: UpdateNameSensor,
+                      decoration: InputDecoration(
+                          hintText: "Enter a new name of sensor"),
+                      onChanged: (value) {
+                        setState(() {
+                          _isButtonEnabled.value =
+                              value.isNotEmpty && value.isEmpty != null;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    _resetValues();
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    'CANCEL',
+                    style: TextStyle(color: Color(0xff0e4f55)),
+                  ),
+                ),
+                ValueListenableBuilder(
+                    valueListenable: _isButtonEnabled,
+                    builder: (context, isEnabled, child) {
+                      return TextButton(
+                          child: Text(
+                            'UPDATE',
+                            style: TextStyle(
+                                color: isEnabled
+                                    ? Color(0xff0e4f55)
+                                    : Colors.grey),
+                          ),
+                          onPressed: isEnabled
+                              ? () {
+                                  String NewNameSensor = UpdateNameSensor.text;
+                                  _updateSensorName(NewNameSensor);
+                                }
+                              : null);
+                    })
+              ],
+            );
+          });
+        });
+  }
+
+// Update Sensor Name
+  Future<void> _updateSensorName(String NewName) async {
+    String? token = await loadData('Token');
+    var url;
+
+    if (Platform.isAndroid) {
+      //IP Localhost
+      url = 'http://10.0.2.2:4000/api/sensor/update';
+      //IP HomeWifi
+      //url = 'http://192.168.1.40:4000/api/sensor/update';
+    } else if (Platform.isIOS) {
+      url = 'http://127.0.0.1:4000/api/sensor/update';
+      //IP HomeWifi
+      //url = 'http://192.168.1.40:4000/api/sensor/update';
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SizedBox(
+            width: 300,
+            height: 100,
+            child: Center(
+              child: LoadingAnimationWidget.halfTriangleDot(
+                color: Color(0xff0e4f55),
+                size: 50,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    final response = await http.post(Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charest=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+        body:
+            jsonEncode({"sensor_id": widget.sensorId, "sensor_name": NewName}));
+
+    Navigator.pop(context);
+
+    if (response.statusCode == 200) {
+      print(NewName);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => SensorDetailPage(
+                  nameSensor: NewName,
+                  macAddress: widget.macAddress,
+                  email: widget.email,
+                  sensorId: widget.sensorId,
+                  GpioList: widget.GpioList,
+                  index: widget.index,
+                  mode: widget.mode,
+                  power: widget.power)));
+    } else {
+      print("Error");
+    }
+  }
+
+// Get data from sensor by MQTT
   Future<void> _updateMQTT() async {
     Timer.periodic(Duration(seconds: 1), (timer) {
       client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
@@ -313,6 +443,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
     print(batteries);
   }
 
+// WaterPump Function
   Future<void> _updateWaterPump(bool mode, bool power) async {
     final modeValue = mode ? 1 : 0;
     final powerValue = power ? 1 : 0;
@@ -359,20 +490,20 @@ class _SensorDetailPageState extends State<SensorDetailPage>
 
     Navigator.pop(context);
 
-    void showSnackBar(BuildContext context) {
-      final snackBar = SnackBar(
-        content: Text(
-          'Successful',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        duration: Duration(seconds: 2),
-        backgroundColor: Color.fromRGBO(239, 165, 38, 1),
-        //shape: StadiumBorder(),
-        behavior: SnackBarBehavior.floating,
-        width: 300,
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }
+    // void showSnackBar(BuildContext context) {
+    //   final snackBar = SnackBar(
+    //     content: Text(
+    //       'Successful',
+    //       style: TextStyle(fontWeight: FontWeight.bold),
+    //     ),
+    //     duration: Duration(seconds: 2),
+    //     backgroundColor: Color.fromRGBO(239, 165, 38, 1),
+    //     //shape: StadiumBorder(),
+    //     behavior: SnackBarBehavior.floating,
+    //     width: 300,
+    //   );
+    //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    // }
 
     if (response.statusCode == 200) {
       print('Pump mode response 200');
@@ -414,21 +545,26 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                       Padding(
                           padding: EdgeInsets.only(top: 20 * textScaleFactor),
                           child: SizedBox(
-                            width: ScreenWidth,
-                            height: 140 * textScaleFactor,
-                            child: Center(
-                              child: AutoSizeText(
-                                widget.nameSensor,
-                                style: TextStyle(
-                                  fontSize: 35 * textScaleFactor,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color.fromRGBO(250, 246, 229, 1),
+                              width: ScreenWidth,
+                              height: 140 * textScaleFactor,
+                              child: GestureDetector(
+                                onTap: () {
+                                  print('123456');
+                                  _DialogUpdateSensorName();
+                                },
+                                child: Center(
+                                  child: AutoSizeText(
+                                    widget.nameSensor,
+                                    style: TextStyle(
+                                      fontSize: 35 * textScaleFactor,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color.fromRGBO(250, 246, 229, 1),
+                                    ),
+                                    maxLines: 2,
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
-                                maxLines: 2,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ))
+                              )))
                     ],
                   ),
                 ),
@@ -596,7 +732,6 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                     decoration: BoxDecoration(
                                       color: Color.fromRGBO(232, 225, 198, 1),
                                       borderRadius: BorderRadius.circular(25),
-                                      //boxShadow: [BoxShadow(blurRadius: 1)]
                                     ),
                                     child: InkWell(
                                       onTap: () async {

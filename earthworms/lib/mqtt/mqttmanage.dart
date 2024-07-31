@@ -90,3 +90,7 @@ void onConnected() {
 void pong() {
   print('Ping response client callback invoked');
 }
+
+void disconnect() {
+  client.disconnect();
+}
