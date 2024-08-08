@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 import 'package:earthworms/HomeandData/HtimeSeries.dart';
 import 'package:earthworms/HomeandData/TemtimeSeries.dart';
@@ -147,12 +146,6 @@ class _SensorDetailPageState extends State<SensorDetailPage>
     }
   }
 
-// Load data from sharePref
-  Future<String?> loadData(String key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString(key);
-  }
-
 // Lode data after add sensor before back to homepage
   Future<void> LodeDataToHomePage() async {
     String? token = await loadData('Token');
@@ -288,8 +281,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                           hintText: "Enter a new name of sensor"),
                       onChanged: (value) {
                         setState(() {
-                          _isButtonEnabled.value =
-                              value.isNotEmpty && value.isEmpty != null;
+                          _isButtonEnabled.value = value.isNotEmpty;
                         });
                       },
                     ),
@@ -490,21 +482,6 @@ class _SensorDetailPageState extends State<SensorDetailPage>
 
     Navigator.pop(context);
 
-    // void showSnackBar(BuildContext context) {
-    //   final snackBar = SnackBar(
-    //     content: Text(
-    //       'Successful',
-    //       style: TextStyle(fontWeight: FontWeight.bold),
-    //     ),
-    //     duration: Duration(seconds: 2),
-    //     backgroundColor: Color.fromRGBO(239, 165, 38, 1),
-    //     //shape: StadiumBorder(),
-    //     behavior: SnackBarBehavior.floating,
-    //     width: 300,
-    //   );
-    //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    // }
-
     if (response.statusCode == 200) {
       print('Pump mode response 200');
       var snackBar = SnackBar(content: Text("Successful"));
@@ -538,20 +515,35 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                 Container(
                   height: ScreenHeight,
                   color: Color(0xff0e4f55),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Stack(
                     children: [
-                      Padding(
-                          padding: EdgeInsets.only(top: 20 * textScaleFactor),
-                          child: SizedBox(
-                              width: ScreenWidth,
-                              height: 140 * textScaleFactor,
-                              child: GestureDetector(
-                                onTap: () {
-                                  print('123456');
-                                  _DialogUpdateSensorName();
-                                },
+                      Positioned(
+                        top: 30 * textScaleFactor,
+                        right: 25 * textScaleFactor,
+                        child: TextButton(
+                          onPressed: () {
+                            _DialogUpdateSensorName();
+                          },
+                          child: Text(
+                            'edit',
+                            style: TextStyle(
+                              fontSize: 20 * textScaleFactor,
+                              color: Color.fromRGBO(250, 246, 229, 1),
+                              decoration: TextDecoration.underline,
+                              decorationColor: Color.fromRGBO(250, 246, 229, 1),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                              padding:
+                                  EdgeInsets.only(top: 70 * textScaleFactor),
+                              child: SizedBox(
+                                width: ScreenWidth - 25,
+                                height: 60 * textScaleFactor,
                                 child: Center(
                                   child: AutoSizeText(
                                     widget.nameSensor,
@@ -564,7 +556,9 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
-                              )))
+                              )),
+                        ],
+                      ),
                     ],
                   ),
                 ),
