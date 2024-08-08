@@ -507,525 +507,552 @@ class _SensorDetailPageState extends State<SensorDetailPage>
           ScreenWidth < ScreenHeight ? ScreenWidth : ScreenHeight;
       final textScaleFactor = smallestDimension / 400;
       return AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light,
-        child: Scaffold(
+          value: SystemUiOverlayStyle.light,
+          child: Scaffold(
             backgroundColor: Color.fromRGBO(250, 246, 229, 1),
-            body: Stack(
-              children: [
-                Container(
-                  height: ScreenHeight,
-                  color: Color(0xff0e4f55),
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        top: 30 * textScaleFactor,
-                        right: 25 * textScaleFactor,
-                        child: TextButton(
-                          onPressed: () {
-                            _DialogUpdateSensorName();
-                          },
-                          child: Text(
-                            'edit',
-                            style: TextStyle(
-                              fontSize: 20 * textScaleFactor,
-                              color: Color.fromRGBO(250, 246, 229, 1),
-                              decoration: TextDecoration.underline,
-                              decorationColor: Color.fromRGBO(250, 246, 229, 1),
+            body: Container(
+                child: SingleChildScrollView(
+              child: Stack(
+                children: [
+                  Container(
+                    height: ScreenHeight,
+                    color: Color(0xff0e4f55),
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          top: 30 * textScaleFactor,
+                          right: 25 * textScaleFactor,
+                          child: TextButton(
+                            onPressed: () {
+                              _DialogUpdateSensorName();
+                            },
+                            child: Text(
+                              'edit',
+                              style: TextStyle(
+                                fontSize: 20 * textScaleFactor,
+                                color: Color.fromRGBO(250, 246, 229, 1),
+                                decoration: TextDecoration.underline,
+                                decorationColor:
+                                    Color.fromRGBO(250, 246, 229, 1),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                              padding:
-                                  EdgeInsets.only(top: 70 * textScaleFactor),
-                              child: SizedBox(
-                                width: ScreenWidth - 25,
-                                height: 60 * textScaleFactor,
-                                child: Center(
-                                  child: AutoSizeText(
-                                    widget.nameSensor,
-                                    style: TextStyle(
-                                      fontSize: 35 * textScaleFactor,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color.fromRGBO(250, 246, 229, 1),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                                padding:
+                                    EdgeInsets.only(top: 70 * textScaleFactor),
+                                child: SizedBox(
+                                  width: ScreenWidth - 25,
+                                  height: 60 * textScaleFactor,
+                                  child: Center(
+                                    child: AutoSizeText(
+                                      widget.nameSensor,
+                                      style: TextStyle(
+                                        fontSize: 35 * textScaleFactor,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color.fromRGBO(250, 246, 229, 1),
+                                      ),
+                                      maxLines: 2,
+                                      textAlign: TextAlign.center,
                                     ),
-                                    maxLines: 2,
-                                    textAlign: TextAlign.center,
                                   ),
-                                ),
-                              )),
-                        ],
-                      ),
-                    ],
+                                )),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Positioned(
-                  top: ScreenHeight * 0.15,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(27),
-                        topRight: Radius.circular(27)),
-                    child: Container(
-                      color: Color.fromRGBO(250, 246, 229, 1),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.all(10.0 * textScaleFactor),
-                            child: SizedBox(
-                              height: 25 * textScaleFactor,
-                              child: Text(
-                                widget.macAddress,
-                                style: TextStyle(
-                                    fontSize: 20 * textScaleFactor,
-                                    fontWeight: FontWeight.w500),
+                  Positioned(
+                    top: ScreenHeight * 0.15,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(27),
+                          topRight: Radius.circular(27)),
+                      child: Container(
+                        color: Color.fromRGBO(250, 246, 229, 1),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.all(10.0 * textScaleFactor),
+                              child: SizedBox(
+                                height: 25 * textScaleFactor,
+                                child: Text(
+                                  widget.macAddress,
+                                  style: TextStyle(
+                                      fontSize: 20 * textScaleFactor,
+                                      fontWeight: FontWeight.w500),
+                                ),
                               ),
                             ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 20 * textScaleFactor,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                //Humidity
-                                SizedBox(
-                                  width: 175 * textScaleFactor,
-                                  height: 140 * textScaleFactor,
-                                  child: DecoratedBox(
-                                    decoration: BoxDecoration(
-                                      color: Color.fromRGBO(232, 225, 198, 1),
-                                      borderRadius: BorderRadius.circular(25),
-                                      //boxShadow: [BoxShadow(blurRadius: 1)]
-                                    ),
-                                    child: InkWell(
-                                      onTap: () async {
-                                        print("Humidity");
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    HTimeSeriesPage(
-                                                        sensorId:
-                                                            widget.sensorId)));
-                                      },
-                                      child: Padding(
-                                        padding: EdgeInsets.only(
-                                          top: 15 * textScaleFactor,
-                                          left: 15 * textScaleFactor,
-                                          right: 15 * textScaleFactor,
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Padding(
-                                                  padding: EdgeInsets.only(
-                                                      top: 8 * textScaleFactor),
-                                                  child: Text(
-                                                    "Humidity",
-                                                    style: TextStyle(
-                                                        fontSize: 19 *
-                                                            textScaleFactor,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                ),
-                                                Image.asset(
-                                                  "images/humidity.png",
-                                                  height: 40 * textScaleFactor,
-                                                  width: 40 * textScaleFactor,
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Padding(
-                                                  padding: EdgeInsets.only(
-                                                      bottom:
-                                                          20 * textScaleFactor,
-                                                      top: 6 * textScaleFactor),
-                                                  child: StreamBuilder<
-                                                      Map<String,
-                                                          List<String>>>(
-                                                    stream:
-                                                        _dataController.stream,
-                                                    builder:
-                                                        (context, snapshot) {
-                                                      if (snapshot.hasData) {
-                                                        List<String> humidity =
-                                                            snapshot.data![
-                                                                    'Moisture'] ??
-                                                                [];
-                                                        if (humidity
-                                                                .isNotEmpty &&
-                                                            humidity[widget
-                                                                    .index]
-                                                                .isNotEmpty) {
-                                                          return Text(
-                                                            '${humidity[widget.index]}%',
-                                                            style: TextStyle(
-                                                              fontSize: 40 *
-                                                                  textScaleFactor,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .normal,
-                                                            ),
-                                                          );
-                                                        } else {
-                                                          return Text(
-                                                            'N/A%',
-                                                            style: TextStyle(
-                                                              fontSize: 40 *
-                                                                  textScaleFactor,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .normal,
-                                                            ),
-                                                          );
-                                                        }
-                                                      } else {
-                                                        return Text(
-                                                          'N/A%',
-                                                          style: TextStyle(
-                                                            fontSize: 40 *
-                                                                textScaleFactor,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .normal,
-                                                          ),
-                                                        );
-                                                      }
-                                                    },
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                //Temperature
-                                SizedBox(
-                                  width: 175 * textScaleFactor,
-                                  height: 140 * textScaleFactor,
-                                  child: DecoratedBox(
-                                    decoration: BoxDecoration(
-                                      color: Color.fromRGBO(232, 225, 198, 1),
-                                      borderRadius: BorderRadius.circular(25),
-                                    ),
-                                    child: InkWell(
-                                      onTap: () async {
-                                        print("temp");
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    TemtimeSeriesPage(
-                                                      sensorId: widget.sensorId,
-                                                    )));
-                                      },
-                                      child: Padding(
-                                        padding: EdgeInsets.only(
-                                          top: 15 * textScaleFactor,
-                                          left: 15 * textScaleFactor,
-                                          right: 15 * textScaleFactor,
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Padding(
-                                                  padding: EdgeInsets.only(
-                                                      top: 8 * textScaleFactor),
-                                                  child: Text(
-                                                    "Temperature",
-                                                    style: TextStyle(
-                                                        fontSize: 15 *
-                                                            textScaleFactor,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                ),
-                                                Image.asset(
-                                                  "images/temperature-sensor.png",
-                                                  height: 40 * textScaleFactor,
-                                                  width: 40 * textScaleFactor,
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Padding(
-                                                  padding: EdgeInsets.only(
-                                                      bottom:
-                                                          20 * textScaleFactor,
-                                                      top: 6 * textScaleFactor),
-                                                  child: StreamBuilder<
-                                                      Map<String,
-                                                          List<String>>>(
-                                                    stream:
-                                                        _dataController.stream,
-                                                    builder:
-                                                        (context, snapshot) {
-                                                      if (snapshot.hasData) {
-                                                        List<
-                                                            String> temp = snapshot
-                                                                    .data![
-                                                                'Temperature'] ??
-                                                            [];
-                                                        if (temp.isNotEmpty &&
-                                                            temp[widget.index]
-                                                                .isNotEmpty) {
-                                                          return Text(
-                                                            '${temp[widget.index]}%',
-                                                            style: TextStyle(
-                                                              fontSize: 40 *
-                                                                  textScaleFactor,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .normal,
-                                                            ),
-                                                          );
-                                                        } else {
-                                                          return Text(
-                                                            'N/A%',
-                                                            style: TextStyle(
-                                                              fontSize: 40 *
-                                                                  textScaleFactor,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .normal,
-                                                            ),
-                                                          );
-                                                        }
-                                                      } else {
-                                                        return Text(
-                                                          'N/A%',
-                                                          style: TextStyle(
-                                                            fontSize: 40 *
-                                                                textScaleFactor,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .normal,
-                                                          ),
-                                                        );
-                                                      }
-                                                    },
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20 * textScaleFactor,
-                          ),
-                          // water pump
-                          SizedBox(
-                            width: 360 * textScaleFactor,
-                            height: 140 * textScaleFactor,
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                color: Color.fromRGBO(232, 225, 198, 1),
-                                borderRadius: BorderRadius.circular(25),
-                                //boxShadow: [BoxShadow(blurRadius: 1)]
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 20 * textScaleFactor,
                               ),
                               child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                        left: 10 * textScaleFactor),
-                                    child: Image.asset(
-                                      "images/water-pump.png",
-                                      height: 100 * textScaleFactor,
-                                      width: 100 * textScaleFactor,
+                                  //Humidity
+                                  SizedBox(
+                                    width: 175 * textScaleFactor,
+                                    height: 140 * textScaleFactor,
+                                    child: DecoratedBox(
+                                      decoration: BoxDecoration(
+                                        color: Color.fromRGBO(232, 225, 198, 1),
+                                        borderRadius: BorderRadius.circular(25),
+                                        //boxShadow: [BoxShadow(blurRadius: 1)]
+                                      ),
+                                      child: InkWell(
+                                        onTap: () async {
+                                          print("Humidity");
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      HTimeSeriesPage(
+                                                          sensorId: widget
+                                                              .sensorId)));
+                                        },
+                                        child: Padding(
+                                          padding: EdgeInsets.only(
+                                            top: 15 * textScaleFactor,
+                                            left: 15 * textScaleFactor,
+                                            right: 15 * textScaleFactor,
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 8 *
+                                                            textScaleFactor),
+                                                    child: Text(
+                                                      "Humidity",
+                                                      style: TextStyle(
+                                                          fontSize: 19 *
+                                                              textScaleFactor,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                  ),
+                                                  Image.asset(
+                                                    "images/humidity.png",
+                                                    height:
+                                                        40 * textScaleFactor,
+                                                    width: 40 * textScaleFactor,
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        bottom: 20 *
+                                                            textScaleFactor,
+                                                        top: 6 *
+                                                            textScaleFactor),
+                                                    child: StreamBuilder<
+                                                        Map<String,
+                                                            List<String>>>(
+                                                      stream: _dataController
+                                                          .stream,
+                                                      builder:
+                                                          (context, snapshot) {
+                                                        if (snapshot.hasData) {
+                                                          List<String>
+                                                              humidity =
+                                                              snapshot.data![
+                                                                      'Moisture'] ??
+                                                                  [];
+                                                          if (humidity
+                                                                  .isNotEmpty &&
+                                                              humidity[widget
+                                                                      .index]
+                                                                  .isNotEmpty) {
+                                                            return Text(
+                                                              '${humidity[widget.index]}%',
+                                                              style: TextStyle(
+                                                                fontSize: 40 *
+                                                                    textScaleFactor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .normal,
+                                                              ),
+                                                            );
+                                                          } else {
+                                                            return Text(
+                                                              'N/A%',
+                                                              style: TextStyle(
+                                                                fontSize: 40 *
+                                                                    textScaleFactor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .normal,
+                                                              ),
+                                                            );
+                                                          }
+                                                        } else {
+                                                          return Text(
+                                                            'N/A%',
+                                                            style: TextStyle(
+                                                              fontSize: 40 *
+                                                                  textScaleFactor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .normal,
+                                                            ),
+                                                          );
+                                                        }
+                                                      },
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                  Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      // Switch auto/manual
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 13 * textScaleFactor,
-                                                top: 30 * textScaleFactor),
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  "Manual/Auto",
-                                                  style: TextStyle(
-                                                    fontSize:
-                                                        20 * textScaleFactor,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.grey[800],
+                                  //Temperature
+                                  SizedBox(
+                                    width: 175 * textScaleFactor,
+                                    height: 140 * textScaleFactor,
+                                    child: DecoratedBox(
+                                      decoration: BoxDecoration(
+                                        color: Color.fromRGBO(232, 225, 198, 1),
+                                        borderRadius: BorderRadius.circular(25),
+                                      ),
+                                      child: InkWell(
+                                        onTap: () async {
+                                          print("temp");
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      TemtimeSeriesPage(
+                                                        sensorId:
+                                                            widget.sensorId,
+                                                      )));
+                                        },
+                                        child: Padding(
+                                          padding: EdgeInsets.only(
+                                            top: 15 * textScaleFactor,
+                                            left: 15 * textScaleFactor,
+                                            right: 15 * textScaleFactor,
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 8 *
+                                                            textScaleFactor),
+                                                    child: Text(
+                                                      "Temperature",
+                                                      style: TextStyle(
+                                                          fontSize: 15 *
+                                                              textScaleFactor,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
                                                   ),
-                                                ),
-                                                Padding(
-                                                  padding: EdgeInsets.only(
-                                                      left:
-                                                          27 * textScaleFactor),
-                                                  child: CupertinoSwitch(
-                                                    value: New_mode,
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                        New_mode = value;
-                                                        if (value) {
-                                                          New_power = false;
+                                                  Image.asset(
+                                                    "images/temperature-sensor.png",
+                                                    height:
+                                                        40 * textScaleFactor,
+                                                    width: 40 * textScaleFactor,
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        bottom: 20 *
+                                                            textScaleFactor,
+                                                        top: 6 *
+                                                            textScaleFactor),
+                                                    child: StreamBuilder<
+                                                        Map<String,
+                                                            List<String>>>(
+                                                      stream: _dataController
+                                                          .stream,
+                                                      builder:
+                                                          (context, snapshot) {
+                                                        if (snapshot.hasData) {
+                                                          List<String> temp =
+                                                              snapshot.data![
+                                                                      'Temperature'] ??
+                                                                  [];
+                                                          if (temp.isNotEmpty &&
+                                                              temp[widget.index]
+                                                                  .isNotEmpty) {
+                                                            return Text(
+                                                              '${temp[widget.index]}%',
+                                                              style: TextStyle(
+                                                                fontSize: 40 *
+                                                                    textScaleFactor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .normal,
+                                                              ),
+                                                            );
+                                                          } else {
+                                                            return Text(
+                                                              'N/A%',
+                                                              style: TextStyle(
+                                                                fontSize: 40 *
+                                                                    textScaleFactor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .normal,
+                                                              ),
+                                                            );
+                                                          }
+                                                        } else {
+                                                          return Text(
+                                                            'N/A%',
+                                                            style: TextStyle(
+                                                              fontSize: 40 *
+                                                                  textScaleFactor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .normal,
+                                                            ),
+                                                          );
                                                         }
-                                                      });
-                                                      //_publishMQTT();
-                                                      print(New_mode);
-                                                      _updateWaterPump(
-                                                          New_mode, New_power);
-                                                    },
+                                                      },
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
-                                            ),
+                                                ],
+                                              )
+                                            ],
                                           ),
-                                        ],
+                                        ),
                                       ),
-                                      //Switch On/Off
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                              left: 14 * textScaleFactor,
-                                              bottom: 25 * textScaleFactor,
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  "Power off/ON",
-                                                  style: TextStyle(
-                                                    fontSize:
-                                                        20 * textScaleFactor,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: New_mode
-                                                        ? Colors.grey
-                                                        : Colors.grey[800],
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: EdgeInsets.only(
-                                                      left:
-                                                          18 * textScaleFactor),
-                                                  child: CupertinoSwitch(
-                                                      value: New_power,
-                                                      onChanged: New_mode
-                                                          ? null
-                                                          : (value) {
-                                                              setState(() {
-                                                                if (New_mode ==
-                                                                    false) {
-                                                                  New_power =
-                                                                      value;
-                                                                }
-                                                              });
-                                                              //_publishMQTT();
-                                                              print(New_power);
-                                                              _updateWaterPump(
-                                                                  New_mode,
-                                                                  New_power);
-                                                            }),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
-                          ),
-                          SizedBox(height: 20 * textScaleFactor),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20 * textScaleFactor),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                //Battery
-                                SizedBox(
-                                  width: 175 * textScaleFactor,
-                                  height: 100 * textScaleFactor,
-                                  child: DecoratedBox(
-                                      decoration: BoxDecoration(
-                                          color:
-                                              Color.fromRGBO(232, 225, 198, 1),
-                                          borderRadius:
-                                              BorderRadius.circular(25)),
-                                      child: Column(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                                top: 8 * textScaleFactor),
-                                            child: Image.asset(
-                                              "images/full-battery.png",
-                                              height: 35 * textScaleFactor,
-                                              width: 37 * textScaleFactor,
+                            SizedBox(
+                              height: 20 * textScaleFactor,
+                            ),
+                            // water pump
+                            SizedBox(
+                              width: 360 * textScaleFactor,
+                              height: 140 * textScaleFactor,
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: Color.fromRGBO(232, 225, 198, 1),
+                                  borderRadius: BorderRadius.circular(25),
+                                  //boxShadow: [BoxShadow(blurRadius: 1)]
+                                ),
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 10 * textScaleFactor),
+                                      child: Image.asset(
+                                        "images/water-pump.png",
+                                        height: 100 * textScaleFactor,
+                                        width: 100 * textScaleFactor,
+                                      ),
+                                    ),
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        // Switch auto/manual
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 13 * textScaleFactor,
+                                                  top: 30 * textScaleFactor),
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    "Manual/Auto",
+                                                    style: TextStyle(
+                                                      fontSize:
+                                                          20 * textScaleFactor,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.grey[800],
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        left: 27 *
+                                                            textScaleFactor),
+                                                    child: CupertinoSwitch(
+                                                      value: New_mode,
+                                                      onChanged: (value) {
+                                                        setState(() {
+                                                          New_mode = value;
+                                                          if (value) {
+                                                            New_power = false;
+                                                          }
+                                                        });
+                                                        //_publishMQTT();
+                                                        print(New_mode);
+                                                        _updateWaterPump(
+                                                            New_mode,
+                                                            New_power);
+                                                      },
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                                //bottom: 20 * textScaleFactor,
-                                                top: 1 * textScaleFactor),
-                                            child: StreamBuilder<
-                                                Map<String, List<String>>>(
-                                              stream: _dataController.stream,
-                                              builder: (context, snapshot) {
-                                                if (snapshot.hasData) {
-                                                  List<String> battery =
-                                                      snapshot.data![
-                                                              'Battery'] ??
-                                                          [];
-                                                  if (battery.isNotEmpty &&
-                                                      battery[widget.index]
-                                                          .isNotEmpty) {
-                                                    return Text(
-                                                      '${battery[widget.index]}%',
-                                                      style: TextStyle(
-                                                        fontSize: 30 *
-                                                            textScaleFactor,
-                                                        fontWeight:
-                                                            FontWeight.normal,
-                                                      ),
-                                                    );
+                                          ],
+                                        ),
+                                        //Switch On/Off
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                left: 14 * textScaleFactor,
+                                                bottom: 25 * textScaleFactor,
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    "Power off/ON",
+                                                    style: TextStyle(
+                                                      fontSize:
+                                                          20 * textScaleFactor,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: New_mode
+                                                          ? Colors.grey
+                                                          : Colors.grey[800],
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        left: 18 *
+                                                            textScaleFactor),
+                                                    child: CupertinoSwitch(
+                                                        value: New_power,
+                                                        onChanged: New_mode
+                                                            ? null
+                                                            : (value) {
+                                                                setState(() {
+                                                                  if (New_mode ==
+                                                                      false) {
+                                                                    New_power =
+                                                                        value;
+                                                                  }
+                                                                });
+                                                                //_publishMQTT();
+                                                                print(
+                                                                    New_power);
+                                                                _updateWaterPump(
+                                                                    New_mode,
+                                                                    New_power);
+                                                              }),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 20 * textScaleFactor),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20 * textScaleFactor),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  //Battery
+                                  SizedBox(
+                                    width: 175 * textScaleFactor,
+                                    height: 100 * textScaleFactor,
+                                    child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                            color: Color.fromRGBO(
+                                                232, 225, 198, 1),
+                                            borderRadius:
+                                                BorderRadius.circular(25)),
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  top: 8 * textScaleFactor),
+                                              child: Image.asset(
+                                                "images/full-battery.png",
+                                                height: 35 * textScaleFactor,
+                                                width: 37 * textScaleFactor,
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  //bottom: 20 * textScaleFactor,
+                                                  top: 1 * textScaleFactor),
+                                              child: StreamBuilder<
+                                                  Map<String, List<String>>>(
+                                                stream: _dataController.stream,
+                                                builder: (context, snapshot) {
+                                                  if (snapshot.hasData) {
+                                                    List<String> battery =
+                                                        snapshot.data![
+                                                                'Battery'] ??
+                                                            [];
+                                                    if (battery.isNotEmpty &&
+                                                        battery[widget.index]
+                                                            .isNotEmpty) {
+                                                      return Text(
+                                                        '${battery[widget.index]}%',
+                                                        style: TextStyle(
+                                                          fontSize: 30 *
+                                                              textScaleFactor,
+                                                          fontWeight:
+                                                              FontWeight.normal,
+                                                        ),
+                                                      );
+                                                    } else {
+                                                      return Text(
+                                                        'N/A%',
+                                                        style: TextStyle(
+                                                          fontSize: 30 *
+                                                              textScaleFactor,
+                                                          fontWeight:
+                                                              FontWeight.normal,
+                                                        ),
+                                                      );
+                                                    }
                                                   } else {
                                                     return Text(
                                                       'N/A%',
@@ -1037,132 +1064,123 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                       ),
                                                     );
                                                   }
-                                                } else {
-                                                  return Text(
-                                                    'N/A%',
-                                                    style: TextStyle(
-                                                      fontSize:
-                                                          30 * textScaleFactor,
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                    ),
-                                                  );
-                                                }
-                                              },
+                                                },
+                                              ),
                                             ),
-                                          ),
-                                        ],
-                                      )),
-                                ),
-                                //GPIO Port
-                                SizedBox(
-                                  width: 175 * textScaleFactor,
-                                  height: 100 * textScaleFactor,
-                                  child: DecoratedBox(
-                                      decoration: BoxDecoration(
-                                          color:
-                                              Color.fromRGBO(232, 225, 198, 1),
-                                          borderRadius:
-                                              BorderRadius.circular(25)),
-                                      child: Column(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                                top: 12 * textScaleFactor),
-                                            child: Text(
-                                              "GPIO Port",
-                                              style: TextStyle(
-                                                  fontSize:
-                                                      25 * textScaleFactor,
-                                                  fontWeight: FontWeight.bold),
+                                          ],
+                                        )),
+                                  ),
+                                  //GPIO Port
+                                  SizedBox(
+                                    width: 175 * textScaleFactor,
+                                    height: 100 * textScaleFactor,
+                                    child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                            color: Color.fromRGBO(
+                                                232, 225, 198, 1),
+                                            borderRadius:
+                                                BorderRadius.circular(25)),
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  top: 12 * textScaleFactor),
+                                              child: Text(
+                                                "GPIO Port",
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        25 * textScaleFactor,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
                                             ),
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                                //bottom: 20 * textScaleFactor,
-                                                top: 1 * textScaleFactor),
-                                            child: Text(
-                                              widget.GpioList,
-                                              style: TextStyle(
-                                                  fontSize:
-                                                      30 * textScaleFactor,
-                                                  fontWeight:
-                                                      FontWeight.normal),
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  //bottom: 20 * textScaleFactor,
+                                                  top: 1 * textScaleFactor),
+                                              child: Text(
+                                                widget.GpioList,
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        30 * textScaleFactor,
+                                                    fontWeight:
+                                                        FontWeight.normal),
+                                              ),
                                             ),
-                                          ),
-                                        ],
-                                      )),
-                                )
-                              ],
-                            ),
-                          )
-                        ],
+                                          ],
+                                        )),
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                // Back Bottom
-                Positioned(
-                    left: 40 * textScaleFactor,
-                    bottom: 30 * textScaleFactor,
-                    child: FloatingActionButton(
-                      onPressed: () {
-                        LodeDataToHomePage();
-                      },
-                      heroTag: 'uniqueTag1',
-                      child: Icon(
-                        Icons.home,
-                        size: 30,
-                        color: Colors.white,
-                      ),
-                      backgroundColor: Color(0xff0e4f55),
-                    )),
-                // Delete sensor Bottom
-                Positioned(
-                    right: 40 * textScaleFactor,
-                    bottom: 30 * textScaleFactor,
-                    child: FloatingActionButton(
-                      onPressed: () => showDialog<String>(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (BuildContext context) => AlertDialog(
-                                title: Text(
-                                  "Delete this Device",
-                                  style:
-                                      TextStyle(fontSize: 20 * textScaleFactor),
-                                ),
-                                actions: <Widget>[
-                                  TextButton(
-                                      onPressed: () =>
-                                          Navigator.pop(context, 'Cancel'),
-                                      child: Text(
-                                        "Cancel",
-                                        style: TextStyle(
-                                          color: Color(0xff0e4f55),
-                                        ),
-                                      )),
-                                  TextButton(
-                                      onPressed: () {
-                                        DeleteSensor();
-                                      },
-                                      child: Text(
-                                        "Delete",
-                                        style:
-                                            TextStyle(color: Color(0xff0e4f55)),
-                                      ))
-                                ],
-                              )),
-                      heroTag: 'uniqueTag2',
-                      child: Icon(
-                        Icons.delete,
-                        size: 30,
-                        color: Colors.white,
-                      ),
-                      backgroundColor: Color.fromARGB(255, 143, 48, 48),
-                    )),
-              ],
+                  // Back Bottom
+                  Positioned(
+                      left: 40 * textScaleFactor,
+                      bottom: 30 * textScaleFactor,
+                      child: FloatingActionButton(
+                        onPressed: () {
+                          LodeDataToHomePage();
+                        },
+                        heroTag: 'uniqueTag1',
+                        child: Icon(
+                          Icons.home,
+                          size: 30,
+                          color: Colors.white,
+                        ),
+                        backgroundColor: Color(0xff0e4f55),
+                      )),
+                  // Delete sensor Bottom
+                  Positioned(
+                      right: 40 * textScaleFactor,
+                      bottom: 30 * textScaleFactor,
+                      child: FloatingActionButton(
+                        onPressed: () => showDialog<String>(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext context) => AlertDialog(
+                                  title: Text(
+                                    "Delete this Device",
+                                    style: TextStyle(
+                                        fontSize: 20 * textScaleFactor),
+                                  ),
+                                  actions: <Widget>[
+                                    TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(context, 'Cancel'),
+                                        child: Text(
+                                          "Cancel",
+                                          style: TextStyle(
+                                            color: Color(0xff0e4f55),
+                                          ),
+                                        )),
+                                    TextButton(
+                                        onPressed: () {
+                                          DeleteSensor();
+                                        },
+                                        child: Text(
+                                          "Delete",
+                                          style: TextStyle(
+                                              color: Color(0xff0e4f55)),
+                                        ))
+                                  ],
+                                )),
+                        heroTag: 'uniqueTag2',
+                        child: Icon(
+                          Icons.delete,
+                          size: 30,
+                          color: Colors.white,
+                        ),
+                        backgroundColor: Color.fromARGB(255, 143, 48, 48),
+                      )),
+                ],
+              ),
             )),
-      );
+          ));
     });
   }
 }
