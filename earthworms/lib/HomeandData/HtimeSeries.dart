@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 import 'package:animated_button_bar/animated_button_bar.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -59,7 +61,8 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
         "period": "daily",
         "date": DateFormat('yyyy-MM-dd').format(selectedDate),
       };
-      final displayDate = DateFormat('dd - MM - yyyy').format(selectedDate);
+      final displayDate =
+          DateFormat('EEE, MMM d, ' 'yyyy').format(selectedDate);
       print(displayDate);
       _updateDateData(displayDate);
       //print(json);
@@ -96,6 +99,14 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
       };
       print(json);
       _sendDataToApi(json, 'Week');
+
+      final displayStartDate =
+          DateFormat('EEE, MMM d, ' 'yyyy').format(selectedStartDate);
+      final DisplayEndDayBefore =
+          DateFormat('EEE, MMM d, ' 'yyyy').format(selectedEndDate);
+      final dateSevenDay = '$displayStartDate - $DisplayEndDayBefore';
+      print(dateSevenDay);
+      _updateDateData(dateSevenDay);
     }
   }
 
@@ -145,11 +156,33 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
       "period": "daily",
       "date": DateFormat('yyyy-MM-dd').format(today),
     };
-    final displayDate = DateFormat('dd - MM - yyyy').format(today);
+    //final displayDate = DateFormat('dd - MM - yyyy').format(today);
+    final displayDate = DateFormat('EEE, MMM d, ' 'yyyy').format(today);
     print(displayDate);
     _updateDateData(displayDate);
     _sendDataToApi(json, 'Day');
     _updateSelectedBottom('Select Day');
+  }
+
+// Send Today to Api when open this page
+  void _sendThisWeekToApi() {
+    final today = DateTime.now();
+    final SixDayBefore = today.subtract(Duration(days: 6));
+    final json = {
+      "sensor_id": widget.sensorId,
+      "period": "weekly",
+      "start": DateFormat('yyyy-MM-dd').format(SixDayBefore),
+      "end": DateFormat('yyyy-MM-dd').format(today),
+    };
+
+    final displayDate = DateFormat('EEE, MMM d, ' 'yyyy').format(today);
+    final DisplaySixDayBefore =
+        DateFormat('EEE, MMM d, ' 'yyyy').format(SixDayBefore);
+    final dateSevenDay = '$DisplaySixDayBefore - $displayDate';
+    print(dateSevenDay);
+    _updateDateData(dateSevenDay);
+    _sendDataToApi(json, 'Day');
+    _updateSelectedBottom('Select Week');
   }
 
 // Send This month to Api
@@ -436,14 +469,15 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                                       _sendTodayToApi();
                                     }),
                                 ButtonBarEntry(
-                                  child: Text(
-                                    'Week',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  onTap: () =>
-                                      _updateSelectedBottom('Select Week'),
-                                ),
+                                    child: Text(
+                                      'Week',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    onTap: () {
+                                      _updateSelectedBottom('Select Week');
+                                      _sendThisWeekToApi();
+                                    }),
                                 ButtonBarEntry(
                                     child: Text(
                                       'Month',
@@ -468,11 +502,16 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text(
-                                        '< $dateSelect >',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 18 * textScaleFactor),
+                                      SizedBox(
+                                        width: 340 * textScaleFactor,
+                                        child: AutoSizeText(
+                                          '< $dateSelect >',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 18 * textScaleFactor),
+                                          maxLines: 1,
+                                          textAlign: TextAlign.center,
+                                        ),
                                       )
                                     ],
                                   ),
