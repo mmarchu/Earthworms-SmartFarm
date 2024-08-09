@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:earthworms/HomeandData/Components/url.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -27,12 +28,9 @@ class _RegisterPageState extends State<RegisterPage> {
 
     var url;
     if (Platform.isAndroid) {
-      url = 'http://10.0.2.2:4000/api/auth/register';
-      //url = 'http://192.168.1.40:4000/api/auth/register';
+      url = ApiUrl.ANDregister;
     } else if (Platform.isIOS) {
-      url = 'http://127.0.0.1:4000/api/auth/register';
-      //url = 'http://192.168.1.40:4000/api/auth/register';
-      //url = 'http://172.20.10.2:4000/api/auth/register';
+      url = ApiUrl.IOSregister;
     }
 
     final response = await http.post(Uri.parse(url),

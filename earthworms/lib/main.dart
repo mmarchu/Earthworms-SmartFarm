@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:earthworms/HomeandData/Components/url.dart';
 import 'package:earthworms/HomeandData/homepage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:earthworms/MainFunction/SessionToken.dart';
@@ -34,10 +35,9 @@ Future<int> CheckToken() async {
   String? email = await loadData('email');
   var url;
   if (Platform.isAndroid) {
-    url = 'http://10.0.2.2:4000/api/auth/getoneuser';
-    //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+    url = ApiUrl.ANDgetoneuser;
   } else if (Platform.isIOS) {
-    url = 'http://127.0.0.1:4000/api/auth/getoneuser';
+    url = ApiUrl.IOSgetoneuser;
   }
 
   if (token == null) {

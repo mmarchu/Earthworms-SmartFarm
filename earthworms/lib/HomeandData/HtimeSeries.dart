@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui';
 import 'package:animated_button_bar/animated_button_bar.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:earthworms/HomeandData/Components/url.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -205,13 +205,9 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
     var url;
 
     if (Platform.isAndroid) {
-      url = 'http://192.168.1.40:4000/api/timeSeries/get';
-      //local
-      url = 'http://10.0.2.2:4000/api/timeSeries/get';
+      url = ApiUrl.ANDgetTimeseries;
     } else if (Platform.isIOS) {
-      url = 'http://127.0.0.1:4000/api/timeSeries/get';
-      // IP HomeWifi
-      // url = 'http://192.168.1.40:4000/api/timeSeries/get';
+      url = ApiUrl.IOSgetTimeseries;
     }
 
     final response = await http.post(Uri.parse(url),

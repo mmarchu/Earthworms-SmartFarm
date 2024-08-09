@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:earthworms/HomeandData/Components/url.dart';
 import 'package:earthworms/MainFunction/RegisterPage.dart';
 import 'package:earthworms/HomeandData/homepage.dart';
 import 'package:flutter/material.dart';
@@ -47,15 +48,9 @@ class _LoginPageState extends State<LoginPage> {
 
     var url;
     if (Platform.isAndroid) {
-      //IP Localhost
-      url = 'http://10.0.2.2:4000/api/auth/login';
-      //IP HomeWifi
-      //url = 'http://192.168.1.40:4000/api/auth/login';
+      url = ApiUrl.ANDlogin;
     } else if (Platform.isIOS) {
-      //IP Localhost
-      url = 'http://127.0.0.1:4000/api/auth/login';
-      //IP HomeWifi
-      //url = 'http://192.168.1.40:4000/api/auth/login';
+      url = ApiUrl.IOSlogin;
     }
 
     showDialog(
@@ -107,15 +102,18 @@ class _LoginPageState extends State<LoginPage> {
         sensorIdList =
             DBSensorsDynamic.map((item) => item['id'].toString()).toList();
         macAddressList =
-            DBSensorsDynamic.map((item) => item['macAddress'].toString()).toList();
+            DBSensorsDynamic.map((item) => item['macAddress'].toString())
+                .toList();
         sensorNameList =
             DBSensorsDynamic.map((item) => item['name'].toString()).toList();
         GpioList =
             DBSensorsDynamic.map((item) => item['gpio'].toString()).toList();
         modeList =
-            DBSensorsDynamic.map((item) => item['mode'].toString() == '1').toList();
-        powerList = 
-            DBSensorsDynamic.map((item) => item['power'].toString() == '1').toList();
+            DBSensorsDynamic.map((item) => item['mode'].toString() == '1')
+                .toList();
+        powerList =
+            DBSensorsDynamic.map((item) => item['power'].toString() == '1')
+                .toList();
       }
 
       ConMqtt(DBemail);

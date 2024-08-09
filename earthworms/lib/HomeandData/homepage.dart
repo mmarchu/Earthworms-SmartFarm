@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:earthworms/HomeandData/AddSensorPage.dart';
+import 'package:earthworms/HomeandData/Components/url.dart';
 import 'package:earthworms/HomeandData/SensorDetailPage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:earthworms/TestFunc/AutoScale.dart';
@@ -97,7 +98,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 //Unsubscribe mqtt topic
   void unsubscribe(String topic) {
     client.unsubscribe(topic);
-    print("Un Subscribe topic: $topic");
+    print("UnSubscribe topic: $topic");
   }
 
   void _TokenChenkTimeout() {
@@ -112,12 +113,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     var url;
 
     if (Platform.isAndroid) {
-      url = 'http://10.0.2.2:4000/api/auth/getoneuser';
-      //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+      url = ApiUrl.ANDgetoneuser;
     } else if (Platform.isIOS) {
-      url = 'http://127.0.0.1:4000/api/auth/getoneuser';
-      //IP HomeWifi
-      //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+      url = ApiUrl.IOSgetoneuser;
     }
 
     final response = await http.post(Uri.parse(url),

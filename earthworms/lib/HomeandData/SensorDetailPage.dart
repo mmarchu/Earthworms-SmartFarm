@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:earthworms/HomeandData/Components/url.dart';
 import 'package:earthworms/HomeandData/HtimeSeries.dart';
 import 'package:earthworms/HomeandData/TemtimeSeries.dart';
 import 'package:earthworms/HomeandData/homepage.dart';
@@ -96,12 +97,9 @@ class _SensorDetailPageState extends State<SensorDetailPage>
     var url;
 
     if (Platform.isAndroid) {
-      url = 'http://10.0.2.2:4000/api/auth/getoneuser';
-      //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+      url = ApiUrl.ANDgetoneuser;
     } else if (Platform.isIOS) {
-      url = 'http://127.0.0.1:4000/api/auth/getoneuser';
-      //IP HomeWifi
-      //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+      url = ApiUrl.IOSgetoneuser;
     }
 
     final response = await http.post(Uri.parse(url),
@@ -153,12 +151,9 @@ class _SensorDetailPageState extends State<SensorDetailPage>
     var url;
 
     if (Platform.isAndroid) {
-      url = 'http://10.0.2.2:4000/api/auth/getoneuser';
-      //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+      url = ApiUrl.ANDgetoneuser;
     } else if (Platform.isIOS) {
-      url = 'http://127.0.0.1:4000/api/auth/getoneuser';
-      //IP HomeWifi
-      //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+      url = ApiUrl.IOSgetoneuser;
     }
 
     final response = await http.post(Uri.parse(url),
@@ -230,13 +225,9 @@ class _SensorDetailPageState extends State<SensorDetailPage>
 
     if (Platform.isAndroid) {
       //IP Localhost
-      url = 'http://10.0.2.2:4000/api/sensor/create';
-      //IP HomeWifi
-      //url = 'http://192.168.1.40:4000/api/sensor/delete';
+      url = ApiUrl.ANDdeletesensor;
     } else if (Platform.isIOS) {
-      url = 'http://127.0.0.1:4000/api/sensor/delete';
-      //IP HomeWifi
-      //url = 'http://192.168.1.40:4000/api/sensor/delete';
+      url = ApiUrl.IOSdeletesensor;
     }
 
     final response = await http.post(Uri.parse(url),
@@ -330,13 +321,9 @@ class _SensorDetailPageState extends State<SensorDetailPage>
 
     if (Platform.isAndroid) {
       //IP Localhost
-      url = 'http://10.0.2.2:4000/api/sensor/update';
-      //IP HomeWifi
-      //url = 'http://192.168.1.40:4000/api/sensor/update';
+      url = ApiUrl.ANDupdateSensorName;
     } else if (Platform.isIOS) {
-      url = 'http://127.0.0.1:4000/api/sensor/update';
-      //IP HomeWifi
-      //url = 'http://192.168.1.40:4000/api/sensor/update';
+      url = ApiUrl.IOSupdateSensorName;
     }
 
     showDialog(
@@ -442,12 +429,9 @@ class _SensorDetailPageState extends State<SensorDetailPage>
     String? token = await loadData('Token');
     var url;
     if (Platform.isAndroid) {
-      url = 'http://10.0.2.2:4000/api/gpio/update';
-      //url = 'http://192.168.1.40:4000/api/gpio/update';
+      url = ApiUrl.ANDwaterpump;
     } else if (Platform.isIOS) {
-      url = 'http://127.0.0.1:4000/api/gpio/update';
-      //IP HomeWifi
-      //url = 'http://192.168.1.40:4000/api/gpio/update';
+      url = ApiUrl.IOSwaterpump;
     }
 
     showDialog(

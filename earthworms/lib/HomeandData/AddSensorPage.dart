@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:earthworms/HomeandData/Components/url.dart';
 import 'package:earthworms/HomeandData/homepage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:flutter/material.dart';
@@ -77,7 +78,7 @@ class _AddSensorPageState extends State<AddSensorPage>
 // Unsubscribe mqtt topic
   void unsubscribe(String topic) {
     client.unsubscribe(topic);
-    print("Un Subscribe topic: $topic");
+    print("UnSubscribe topic: $topic");
   }
 
   @override
@@ -96,12 +97,9 @@ class _AddSensorPageState extends State<AddSensorPage>
     var url;
 
     if (Platform.isAndroid) {
-      //url = 'http://10.0.2.2:4000/api/auth/getoneuser';
-      url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+      url = ApiUrl.ANDgetoneuser;
     } else if (Platform.isIOS) {
-      url = 'http://127.0.0.1:4000/api/auth/getoneuser';
-      //IP HomeWifi
-      //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+      url = ApiUrl.IOSgetoneuser;
     }
 
     final response = await http.post(Uri.parse(url),
@@ -153,12 +151,9 @@ class _AddSensorPageState extends State<AddSensorPage>
     var url;
 
     if (Platform.isAndroid) {
-      url = 'http://10.0.2.2:4000/api/auth/getoneuser';
-      //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+      url = ApiUrl.ANDgetoneuser;
     } else if (Platform.isIOS) {
-      url = 'http://127.0.0.1:4000/api/auth/getoneuser';
-      //IP HomeWifi
-      //url = 'http://192.168.1.40:4000/api/auth/getoneuser';
+      url = ApiUrl.IOSgetoneuser;
     }
 
     final response = await http.post(Uri.parse(url),
@@ -216,14 +211,10 @@ class _AddSensorPageState extends State<AddSensorPage>
     var url;
     if (Platform.isAndroid) {
       //IP Localhost
-      url = 'http://10.0.2.2:4000/api/sensor/create';
-      //IP HomeWifi
-      //url = 'http://192.168.1.40:4000/api/sensor/create';
+      url = ApiUrl.ANDcreatesensor;
     } else if (Platform.isIOS) {
       //IP Localhost
-      url = 'http://127.0.0.1:4000/api/sensor/create';
-      //IP HomeWifi
-      //url = 'http://192.168.1.40:4000/api/sensor/create';
+      url = ApiUrl.IOScreatesensor;
     }
 
     final response = await http.post(Uri.parse(url),
@@ -250,7 +241,6 @@ class _AddSensorPageState extends State<AddSensorPage>
 
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
 
-      // Extract gpio_id values and convert to List<int>
       GPIO_Port = List<int>.from(
           jsonData['gpio'].map((item) => item['gpio_id'] as int));
       print(GPIO_Port);
@@ -294,15 +284,9 @@ class _AddSensorPageState extends State<AddSensorPage>
 
     var url;
     if (Platform.isAndroid) {
-      //IP Localhost
-      url = 'http://10.0.2.2:4000/api/sensor/create';
-      //IP HomeWifi
-      //url = 'http://192.168.1.40:4000/api/sensor/create';
+      url = ApiUrl.ANDcreatesensor;
     } else if (Platform.isIOS) {
-      //IP Localhost
-      url = 'http://127.0.0.1:4000/api/sensor/create';
-      //IP HomeWifi
-      //url = 'http://192.168.1.40:4000/api/sensor/create';
+      url = ApiUrl.IOScreatesensor;
     }
 
     final response = await http.post(Uri.parse(url),
