@@ -80,8 +80,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
 
-        //home: LoginPage(),
-
         home: FutureBuilder(
           future: CheckToken(),
           builder: (context, snapshot) {

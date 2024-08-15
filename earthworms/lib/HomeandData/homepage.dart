@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:earthworms/HomeandData/AddSensorPage.dart';
 import 'package:earthworms/HomeandData/Components/url.dart';
+import 'package:earthworms/HomeandData/EnemyPage.dart';
 import 'package:earthworms/HomeandData/SensorDetailPage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
-import 'package:earthworms/TestFunc/AutoScale.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -165,8 +165,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void _OnTapBottomBar(int index) {
     switch (index) {
       case 0:
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => CalendarRangePicker()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => Enemypage()));
         break;
       case 1:
         Navigator.push(
@@ -284,8 +284,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             bottomNavigationBar: BottomNavigationBar(
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                  label: 'Home',
+                  icon: Icon(
+                    Icons.filter_center_focus_rounded,
+                    size: 29 * textScaleFactor,
+                  ),
+                  label: 'Enemy',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(
@@ -300,7 +303,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 ),
               ],
               currentIndex: 0,
-              selectedItemColor: Color.fromRGBO(232, 225, 198, 1),
+              selectedItemColor: Colors.white,
               unselectedItemColor: Colors.white,
               backgroundColor: Color(0xff0e4f55),
               onTap: _OnTapBottomBar,

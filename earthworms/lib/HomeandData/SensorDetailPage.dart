@@ -172,18 +172,15 @@ class _SensorDetailPageState extends State<SensorDetailPage>
       List<String> sensorIdList =
           DBSensorsDynamic.map((item) => item['id'].toString()).toList();
       List<String> macAddressList =
-          DBSensorsDynamic.map((item) => item['macAddress'].toString())
-              .toList();
+          DBSensorsDynamic.map((item) => item['macAddress'].toString()).toList();
       List<String> sensorNameList =
           DBSensorsDynamic.map((item) => item['name'].toString()).toList();
       List<String> GpioList =
           DBSensorsDynamic.map((item) => item['gpio'].toString()).toList();
       List<bool> modeList =
-          DBSensorsDynamic.map((item) => item['mode'].toString() == '1')
-              .toList();
+          DBSensorsDynamic.map((item) => item['mode'].toString() == '1').toList();
       List<bool> powerList =
-          DBSensorsDynamic.map((item) => item['power'].toString() == '1')
-              .toList();
+          DBSensorsDynamic.map((item) => item['power'].toString() == '1').toList();
 
       Navigator.pushAndRemoveUntil(
         context,
@@ -427,6 +424,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
     final modeValue = mode ? 1 : 0;
     final powerValue = power ? 1 : 0;
     String? token = await loadData('Token');
+
     var url;
     if (Platform.isAndroid) {
       url = ApiUrl.ANDwaterpump;
@@ -459,6 +457,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
           'Authorization': 'Bearer $token',
         },
         body: jsonEncode({
+          'user_id': widget.email,
           'gpio_id': widget.GpioList,
           'mode': modeValue,
           'power': powerValue

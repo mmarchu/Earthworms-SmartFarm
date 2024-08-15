@@ -291,21 +291,21 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                   reservedSize: 30,
                   getTitlesWidget: (value, meta) {
                     final TitleDay = {
-                      0: '0',
+                      0: '12☾',
                       6: '6',
-                      12: '12',
+                      12: '12𖤓',
                       18: '18',
                       23: '23'
                     };
-                    final TitleWeek = {
-                      0: 'Sun',
-                      1: 'Mon',
-                      2: 'Tue',
-                      3: 'Wed',
-                      4: 'Thu',
-                      5: 'Fri',
-                      6: 'Sat'
-                    };
+                    // final TitleWeek = {
+                    //   0: 'Sun',
+                    //   1: 'Mon',
+                    //   2: 'Tue',
+                    //   3: 'Wed',
+                    //   4: 'Thu',
+                    //   5: 'Fri',
+                    //   6: 'Sat'
+                    // };
                     final TitleMonth = {
                       0: '1',
                       4: '5',
@@ -320,7 +320,13 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                     if (period == 'Day') {
                       title = TitleDay[value.toInt()] ?? '';
                     } else if (period == 'Week') {
-                      title = TitleWeek[value.toInt()] ?? '';
+                      //title = TitleWeek[value.toInt()] ?? '';
+                      //title = value.toInt().toString();
+                      int index = value.toInt();
+                      if (index < _data.length) {
+                        title = _data[index]['x']
+                            .toString(); // ใช้ค่า 'x' จาก entry
+                      }
                     } else {
                       title = TitleMonth[value.toInt()] ?? '';
                     }
@@ -489,7 +495,7 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                             SizedBox(height: 20 * textScaleFactor),
                             SizedBox(
                               width: 355 * textScaleFactor,
-                              height: 40 * textScaleFactor,
+                              height: 43 * textScaleFactor,
                               child: DecoratedBox(
                                 decoration: BoxDecoration(
                                     color: Color.fromRGBO(250, 246, 229, 1),
