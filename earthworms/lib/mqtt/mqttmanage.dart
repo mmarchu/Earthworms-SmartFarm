@@ -42,6 +42,8 @@ Future<int> ConMqtt(String email) async {
   } on SocketException catch (e) {
     print('Socket exception: $e');
     client.disconnect();
+  } catch (e) {
+    print('can not connect MQTT');
   }
 
   if (client.connectionStatus!.state == MqttConnectionState.connected) {

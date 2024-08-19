@@ -210,22 +210,26 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
       url = ApiUrl.IOSgetTimeseries;
     }
 
-    final response = await http.post(Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': 'Bearer $token',
-        },
-        body: jsonEncode(json));
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode(json));
 
-    if (response.statusCode == 200) {
-      var decodedData = jsonDecode(response.body);
-      print('Decoded Data: $decodedData');
-      setState(() {
-        _data = decodedData;
-        period = _period;
-      });
-    } else {
-      print('${response.statusCode}: ${response.reasonPhrase}');
+      if (response.statusCode == 200) {
+        var decodedData = jsonDecode(response.body);
+        print('Decoded Data: $decodedData');
+        setState(() {
+          _data = decodedData;
+          period = _period;
+        });
+      } else {
+        print('${response.statusCode}: ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      print('Failed to connect to server: $e');
     }
   }
 

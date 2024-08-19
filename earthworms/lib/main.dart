@@ -50,23 +50,28 @@ Future<int> CheckToken() async {
     return 401;
   }
 
-  final response = await http.post(Uri.parse(url),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charest=UTF-8',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode({'email': email}));
+  try {
+    final response = await http.post(Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charest=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({'email': email}));
 
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body);
-    DBemail = data['email'];
-    DBname = data['name'];
-    DBlastname = data['lastname'];
-    DBSensorsDynamic = data['sensors'];
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      DBemail = data['email'];
+      DBname = data['name'];
+      DBlastname = data['lastname'];
+      DBSensorsDynamic = data['sensors'];
 
-    return 200;
-  } else {
-    return response.statusCode;
+      return 200;
+    } else {
+      return response.statusCode;
+    }
+  } catch (e) {
+    print('Failed to connect to server: $e');
+    return 401;
   }
 }
 //-------------------------------------------------
@@ -79,7 +84,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-
         home: FutureBuilder(
           future: CheckToken(),
           builder: (context, snapshot) {

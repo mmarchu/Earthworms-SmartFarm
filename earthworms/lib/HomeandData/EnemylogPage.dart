@@ -4,6 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:earthworms/HomeandData/Components/url.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,6 +24,9 @@ Future<String?> loadData(String key) async {
 
 class _EnemylogpageState extends State<Enemylogpage> {
   String dateSelect = '';
+  String RatLog = '';
+  String ToadLog = '';
+  String SkinkLog = '';
 
   @override
   void initState() {
@@ -88,7 +92,7 @@ class _EnemylogpageState extends State<Enemylogpage> {
     });
   }
 
-// Api Get Data
+// send month for get data
   Future<void> _sendDataToApi(final json) async {
     String? token = await loadData('Token');
     var url;
@@ -99,22 +103,46 @@ class _EnemylogpageState extends State<Enemylogpage> {
       url = ApiUrl.IOSgetTimeseries;
     }
 
-    final response = await http.post(Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': 'Bearer $token',
-        },
-        body: jsonEncode(json));
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SizedBox(
+            width: 300,
+            height: 100,
+            child: Center(
+              child: LoadingAnimationWidget.halfTriangleDot(
+                color: Color(0xff0e4f55),
+                size: 50,
+              ),
+            ),
+          ),
+        );
+      },
+    );
 
-    if (response.statusCode == 200) {
-      // var decodedData = jsonDecode(response.body);
-      // print('Decoded Data: $decodedData');
-      // setState(() {
-      //   _data = decodedData;
-      //   period = _period;
-      // });
-    } else {
-      print('${response.statusCode}: ${response.reasonPhrase}');
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode(json));
+
+      Navigator.pop(context);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        RatLog = data['Rat'];
+        ToadLog = data['Toad'];
+        SkinkLog = data['Skink'];
+      } else {
+        print('${response.statusCode}: ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      Navigator.pop(context);
+      print('Failed to connect to server: $e');
     }
   }
 
@@ -166,10 +194,282 @@ class _EnemylogpageState extends State<Enemylogpage> {
                                 ),
                               )
                             ],
-                          )
+                          ),
+                          SizedBox(height: 10 * textScaleFactor),
                         ],
                       ),
-                    )
+                    ),
+                    //Rat
+                    SizedBox(
+                      width: 350 * textScaleFactor,
+                      height: 175 * textScaleFactor,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: Color.fromRGBO(232, 225, 198, 1),
+                          borderRadius: BorderRadius.circular(27),
+                        ),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SizedBox(
+                                width: 350 * textScaleFactor,
+                                height: 35 * textScaleFactor,
+                                child: Center(
+                                  child: Text(
+                                    'Rat',
+                                    style: TextStyle(
+                                        fontSize: 30 * textScaleFactor,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 3 * textScaleFactor),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 17 * textScaleFactor),
+                                  child: SizedBox(
+                                    width: 150 * textScaleFactor,
+                                    height: 100 * textScaleFactor,
+                                    child: DecoratedBox(
+                                      decoration: BoxDecoration(
+                                          color:
+                                              Color.fromRGBO(250, 246, 229, 1),
+                                          borderRadius:
+                                              BorderRadius.circular(25)),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                            'images/rats.png',
+                                            height: 85 * textScaleFactor,
+                                            width: 85 * textScaleFactor,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      right: 17 * textScaleFactor),
+                                  child: SizedBox(
+                                    width: 150 * textScaleFactor,
+                                    height: 100 * textScaleFactor,
+                                    child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                            color: Color.fromRGBO(
+                                                250, 246, 229, 1),
+                                            borderRadius:
+                                                BorderRadius.circular(25)),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              RatLog,
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      50 * textScaleFactor,
+                                                  fontWeight: FontWeight.bold),
+                                            )
+                                          ],
+                                        )),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 15 * textScaleFactor),
+
+                    //Toad
+                    SizedBox(
+                      width: 350 * textScaleFactor,
+                      height: 175 * textScaleFactor,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: Color.fromRGBO(232, 225, 198, 1),
+                          borderRadius: BorderRadius.circular(27),
+                        ),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SizedBox(
+                                width: 350 * textScaleFactor,
+                                height: 35 * textScaleFactor,
+                                child: Center(
+                                  child: Text(
+                                    "Toad",
+                                    style: TextStyle(
+                                        fontSize: 30 * textScaleFactor,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 3 * textScaleFactor),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 17 * textScaleFactor),
+                                  child: SizedBox(
+                                    width: 150 * textScaleFactor,
+                                    height: 100 * textScaleFactor,
+                                    child: DecoratedBox(
+                                      decoration: BoxDecoration(
+                                          color:
+                                              Color.fromRGBO(250, 246, 229, 1),
+                                          borderRadius:
+                                              BorderRadius.circular(25)),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                            'images/toad.png',
+                                            height: 75 * textScaleFactor,
+                                            width: 75 * textScaleFactor,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      right: 17 * textScaleFactor),
+                                  child: SizedBox(
+                                    width: 150 * textScaleFactor,
+                                    height: 100 * textScaleFactor,
+                                    child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                            color: Color.fromRGBO(
+                                                250, 246, 229, 1),
+                                            borderRadius:
+                                                BorderRadius.circular(25)),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              ToadLog,
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      50 * textScaleFactor,
+                                                  fontWeight: FontWeight.bold),
+                                            )
+                                          ],
+                                        )),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 15 * textScaleFactor),
+
+                    //Skink
+                    SizedBox(
+                      width: 350 * textScaleFactor,
+                      height: 175 * textScaleFactor,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: Color.fromRGBO(232, 225, 198, 1),
+                          borderRadius: BorderRadius.circular(27),
+                        ),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SizedBox(
+                                width: 350 * textScaleFactor,
+                                height: 35 * textScaleFactor,
+                                child: Center(
+                                  child: Text(
+                                    'Toad',
+                                    style: TextStyle(
+                                        fontSize: 30 * textScaleFactor,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 3 * textScaleFactor),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 17 * textScaleFactor),
+                                  child: SizedBox(
+                                    width: 150 * textScaleFactor,
+                                    height: 100 * textScaleFactor,
+                                    child: DecoratedBox(
+                                      decoration: BoxDecoration(
+                                          color:
+                                              Color.fromRGBO(250, 246, 229, 1),
+                                          borderRadius:
+                                              BorderRadius.circular(25)),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                            'images/skink.png',
+                                            height: 75 * textScaleFactor,
+                                            width: 75 * textScaleFactor,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      right: 17 * textScaleFactor),
+                                  child: SizedBox(
+                                    width: 150 * textScaleFactor,
+                                    height: 100 * textScaleFactor,
+                                    child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                            color: Color.fromRGBO(
+                                                250, 246, 229, 1),
+                                            borderRadius:
+                                                BorderRadius.circular(25)),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              SkinkLog,
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      50 * textScaleFactor,
+                                                  fontWeight: FontWeight.bold),
+                                            )
+                                          ],
+                                        )),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -202,7 +502,7 @@ class _EnemylogpageState extends State<Enemylogpage> {
                                   SizedBox(
                                     width: 340 * textScaleFactor,
                                     child: AutoSizeText(
-                                      '< $dateSelect >', ///////////////////////////////////
+                                      '< $dateSelect >',
                                       style: TextStyle(
                                           fontSize: 20 * textScaleFactor,
                                           fontWeight: FontWeight.bold),

@@ -102,45 +102,51 @@ class _AddSensorPageState extends State<AddSensorPage>
       url = ApiUrl.IOSgetoneuser;
     }
 
-    final response = await http.post(Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charest=UTF-8',
-          'Authorization': 'Bearer $token',
-        },
-        body: jsonEncode({'email': email}));
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charest=UTF-8',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({'email': email}));
 
-    if (response.statusCode == 401) {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Session Timeout'),
-            actions: <Widget>[
-              Column(
-                children: [
-                  Text("Session expired. You will be redirected to Login page"),
-                  TextButton(
-                    child: Text(
-                      'OK',
-                      style: TextStyle(color: Color(0xff0e4f55)),
+      if (response.statusCode == 401) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Session Timeout'),
+              actions: <Widget>[
+                Column(
+                  children: [
+                    Text(
+                        "Session expired. You will be redirected to Login page"),
+                    TextButton(
+                      child: Text(
+                        'OK',
+                        style: TextStyle(color: Color(0xff0e4f55)),
+                      ),
+                      onPressed: () {
+                        _logout();
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginPage()),
+                            (Route<dynamic> Route) => false);
+                      },
                     ),
-                    onPressed: () {
-                      _logout();
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => LoginPage()),
-                          (Route<dynamic> Route) => false);
-                    },
-                  ),
-                ],
-              ),
-            ],
-          );
-        },
-      );
-    } else {
-      print("ยังอยู่จ้าาOnAddSensorPage");
+                  ],
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        print("ยังอยู่จ้าาOnAddSensorPage");
+      }
+    } catch (e) {
+      print('Failed to connect to server: $e');
     }
   }
 
@@ -156,52 +162,55 @@ class _AddSensorPageState extends State<AddSensorPage>
       url = ApiUrl.IOSgetoneuser;
     }
 
-    final response = await http.post(Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charest=UTF-8',
-          'Authorization': 'Bearer $token',
-        },
-        body: jsonEncode({'email': email}));
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charest=UTF-8',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({'email': email}));
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      DBemail = data['email'];
-      DBname = data['name'];
-      DBlastname = data['lastname'];
-      DBSensorsDynamic = data['sensors'];
-      List<String> sensorIdList =
-          DBSensorsDynamic.map((item) => item['id'].toString()).toList();
-      List<String> macAddressList =
-          DBSensorsDynamic.map((item) => item['macAddress'].toString())
-              .toList();
-      List<String> sensorNameList =
-          DBSensorsDynamic.map((item) => item['name'].toString()).toList();
-      List<String> GpioList =
-          DBSensorsDynamic.map((item) => item['gpio'].toString()).toList();
-      List<bool> modeList =
-          DBSensorsDynamic.map((item) => item['mode'].toString() == '1')
-              .toList();
-      List<bool> powerList =
-          DBSensorsDynamic.map((item) => item['power'].toString() == '1')
-              .toList()
-              .toList();
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-              builder: (context) => HomePage(
-                    name: DBname,
-                    lastname: DBlastname,
-                    email: DBemail,
-                    sensorIdList: sensorIdList,
-                    macAddressList: macAddressList,
-                    sensorNameList: sensorNameList,
-                    GpioList: GpioList,
-                    modeList: modeList,
-                    powerList: powerList,
-                  )),
-          (Route<dynamic> Route) => false);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        DBemail = data['email'];
+        DBname = data['name'];
+        DBlastname = data['lastname'];
+        DBSensorsDynamic = data['sensors'];
+        List<String> sensorIdList =
+            DBSensorsDynamic.map((item) => item['id'].toString()).toList();
+        List<String> macAddressList =
+            DBSensorsDynamic.map((item) => item['macAddress'].toString())
+                .toList();
+        List<String> sensorNameList =
+            DBSensorsDynamic.map((item) => item['name'].toString()).toList();
+        List<String> GpioList =
+            DBSensorsDynamic.map((item) => item['gpio'].toString()).toList();
+        List<bool> modeList =
+            DBSensorsDynamic.map((item) => item['mode'].toString() == '1')
+                .toList();
+        List<bool> powerList =
+            DBSensorsDynamic.map((item) => item['power'].toString() == '1')
+                .toList()
+                .toList();
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomePage(
+                      name: DBname,
+                      lastname: DBlastname,
+                      email: DBemail,
+                      sensorIdList: sensorIdList,
+                      macAddressList: macAddressList,
+                      sensorNameList: sensorNameList,
+                      GpioList: GpioList,
+                      modeList: modeList,
+                      powerList: powerList,
+                    )),
+            (Route<dynamic> Route) => false);
+      }
+    } catch (e) {
+      print('Failed to connect to server: $e');
     }
-    ;
   }
 
 // API receive sensor list
@@ -217,66 +226,70 @@ class _AddSensorPageState extends State<AddSensorPage>
       url = ApiUrl.IOScreatesensor;
     }
 
-    final response = await http.post(Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charesr=UTF-8',
-          'Authorization': 'Bearer $token'
-        },
-        body: jsonEncode({'email': email, 'createSensor': 'false'}));
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charesr=UTF-8',
+            'Authorization': 'Bearer $token'
+          },
+          body: jsonEncode({'email': email, 'createSensor': 'false'}));
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      if (data['data'] != null && data['data'] is List) {
-        List<Map<String, String>> sensorList =
-            List<Map<String, String>>.from(data['data'].map((item) => {
-                  //'status': int.parse(item['status'].toString()),
-                  'address': item['address'].toString(),
-                  'name': item['name'].toString()
-                }));
-        print(sensorList);
-        _streamController.add(sensorList);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data['data'] != null && data['data'] is List) {
+          List<Map<String, String>> sensorList =
+              List<Map<String, String>>.from(data['data'].map((item) => {
+                    //'status': int.parse(item['status'].toString()),
+                    'address': item['address'].toString(),
+                    'name': item['name'].toString()
+                  }));
+          print(sensorList);
+          _streamController.add(sensorList);
+        } else {
+          //throw Exception('Data format is incorrect');
+        }
+
+        final Map<String, dynamic> jsonData = jsonDecode(response.body);
+
+        GPIO_Port = List<int>.from(
+            jsonData['gpio'].map((item) => item['gpio_id'] as int));
+        print(GPIO_Port);
+        Navigator.pop(context);
       } else {
-        //throw Exception('Data format is incorrect');
-      }
-
-      final Map<String, dynamic> jsonData = jsonDecode(response.body);
-
-      GPIO_Port = List<int>.from(
-          jsonData['gpio'].map((item) => item['gpio_id'] as int));
-      print(GPIO_Port);
-      Navigator.pop(context);
-    } else {
-      Navigator.pop(context);
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Sensor not found'),
-            actions: <Widget>[
-              TextButton(
-                child: Text(
-                  'Try Again',
-                  style: TextStyle(color: Color(0xff0e4f55)),
+        Navigator.pop(context);
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Sensor not found'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                    'Try Again',
+                    style: TextStyle(color: Color(0xff0e4f55)),
+                  ),
+                  onPressed: () {
+                    // Navigator.pop(context);
+                    // DialogScanSenser(context);
+                    // SensorsListAPI();
+                    //CheckToken();
+                    LodeDataToHomePage();
+                  },
                 ),
-                onPressed: () {
-                  // Navigator.pop(context);
-                  // DialogScanSenser(context);
-                  // SensorsListAPI();
-                  //CheckToken();
-                  LodeDataToHomePage();
-                },
-              ),
-            ],
-          );
-        },
-      );
+              ],
+            );
+          },
+        );
+      }
+    } catch (e) {
+      print('Failed to connect to server: $e');
     }
   }
 
 // API add sensor to board
   Future<void> _addSensor(
-    String MacAdd, String NameSensor, int? Gpio_selected) async {
+      String MacAdd, String NameSensor, int? Gpio_selected) async {
     final email = widget.email;
     final MacAddress = MacAdd;
     final SensorName = NameSensor;
@@ -289,31 +302,35 @@ class _AddSensorPageState extends State<AddSensorPage>
       url = ApiUrl.IOScreatesensor;
     }
 
-    final response = await http.post(Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charesr=UTF-8',
-          'Authorization': 'Bearer $token'
-        },
-        body: jsonEncode({
-          'createSensor': 'true',
-          'user_id': email,
-          'mac_address': MacAddress,
-          'sensor_name': SensorName,
-          'gpio_id': Gpio_selected
-        }));
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charesr=UTF-8',
+            'Authorization': 'Bearer $token'
+          },
+          body: jsonEncode({
+            'createSensor': 'true',
+            'user_id': email,
+            'mac_address': MacAddress,
+            'sensor_name': SensorName,
+            'gpio_id': Gpio_selected
+          }));
 
-    if (response.statusCode == 200) {
-      var snackBar = SnackBar(content: Text("Sensor added"));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      LodeDataToHomePage();
-    } else if (response.statusCode == 402) {
-      var snackBar = SnackBar(content: Text("Duplicate Sensor! Try again."));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      Navigator.pop(context);
-    } else {
-      var snackBar = SnackBar(content: Text("Can not Connect! Try again."));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      Navigator.pop(context);
+      if (response.statusCode == 200) {
+        var snackBar = SnackBar(content: Text("Sensor added"));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        LodeDataToHomePage();
+      } else if (response.statusCode == 402) {
+        var snackBar = SnackBar(content: Text("Duplicate Sensor! Try again."));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        Navigator.pop(context);
+      } else {
+        var snackBar = SnackBar(content: Text("Can not Connect! Try again."));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      print('Failed to connect to server: $e');
     }
   }
 

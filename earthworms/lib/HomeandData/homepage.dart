@@ -5,9 +5,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:earthworms/HomeandData/AddSensorPage.dart';
 import 'package:earthworms/HomeandData/Components/url.dart';
 import 'package:earthworms/HomeandData/EnemylogPage.dart';
-import 'package:earthworms/NewHomePage/EnemyPage.dart';
 import 'package:earthworms/HomeandData/SensorDetailPage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
+import 'package:earthworms/MainFunction/SessionToken.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -118,47 +118,52 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     } else if (Platform.isIOS) {
       url = ApiUrl.IOSgetoneuser;
     }
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({'email': email}));
 
-    final response = await http.post(Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': 'Bearer $token',
-        },
-        body: jsonEncode({'email': email}));
-
-    if (response.statusCode == 200) {
-      print("ยังอยู่จ้าาOnHomPage");
-    } else {
-      if (!mounted) return;
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Session Timeout'),
-            actions: <Widget>[
-              Column(
-                children: [
-                  Text("Session expired. You will be redirected to Login page"),
-                  TextButton(
-                    child: Text(
-                      'OK',
-                      style: TextStyle(color: Color(0xff0e4f55)),
+      if (response.statusCode == 200) {
+        print("ยังอยู่จ้าาOnHomPage");
+      } else {
+        if (!mounted) return;
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Session Timeout'),
+              actions: <Widget>[
+                Column(
+                  children: [
+                    Text(
+                        "Session expired. You will be redirected to Login page"),
+                    TextButton(
+                      child: Text(
+                        'OK',
+                        style: TextStyle(color: Color(0xff0e4f55)),
+                      ),
+                      onPressed: () {
+                        _logout();
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginPage()),
+                            (Route<dynamic> route) => false);
+                      },
                     ),
-                    onPressed: () {
-                      _logout();
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => LoginPage()),
-                          (Route<dynamic> route) => false);
-                    },
-                  ),
-                ],
-              ),
-            ],
-          );
-        },
-      );
+                  ],
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } catch (e) {
+      print('Failed to connect to server: $e');
     }
   }
 

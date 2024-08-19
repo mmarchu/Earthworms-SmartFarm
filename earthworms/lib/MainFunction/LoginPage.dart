@@ -71,79 +71,83 @@ class _LoginPageState extends State<LoginPage> {
         );
       },
     );
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charest=UTF-8',
+            'Authorization': 'Bearer $DBtoken',
+          },
+          body: jsonEncode({'email': InputEmail, 'password': InputPassword}));
 
-    final response = await http.post(Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charest=UTF-8',
-          'Authorization': 'Bearer $DBtoken',
-        },
-        body: jsonEncode({'email': InputEmail, 'password': InputPassword}));
+      Navigator.of(context).pop();
 
-    Navigator.of(context).pop();
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        DBemail = data['email'];
+        DBname = data['name'];
+        DBlastname = data['lastname'];
+        DBtoken = data['token'];
+        DBSensorsDynamic = data['sensors'];
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      DBemail = data['email'];
-      DBname = data['name'];
-      DBlastname = data['lastname'];
-      DBtoken = data['token'];
-      DBSensorsDynamic = data['sensors'];
+        // Extract sensor details into separate lists
+        List<String> sensorIdList = [];
+        List<String> macAddressList = [];
+        List<String> sensorNameList = [];
+        List<String> GpioList = [];
+        List<bool> modeList = [];
+        List<bool> powerList = [];
 
-      // Extract sensor details into separate lists
-      List<String> sensorIdList = [];
-      List<String> macAddressList = [];
-      List<String> sensorNameList = [];
-      List<String> GpioList = [];
-      List<bool> modeList = [];
-      List<bool> powerList = [];
+        // ignore: unnecessary_null_comparison, unnecessary_type_check
+        if (DBSensorsDynamic != null && DBSensorsDynamic is List) {
+          sensorIdList =
+              DBSensorsDynamic.map((item) => item['id'].toString()).toList();
+          macAddressList =
+              DBSensorsDynamic.map((item) => item['macAddress'].toString())
+                  .toList();
+          sensorNameList =
+              DBSensorsDynamic.map((item) => item['name'].toString()).toList();
+          GpioList =
+              DBSensorsDynamic.map((item) => item['gpio'].toString()).toList();
+          modeList =
+              DBSensorsDynamic.map((item) => item['mode'].toString() == '1')
+                  .toList();
+          powerList =
+              DBSensorsDynamic.map((item) => item['power'].toString() == '1')
+                  .toList();
+        }
 
-      // ignore: unnecessary_null_comparison, unnecessary_type_check
-      if (DBSensorsDynamic != null && DBSensorsDynamic is List) {
-        sensorIdList =
-            DBSensorsDynamic.map((item) => item['id'].toString()).toList();
-        macAddressList =
-            DBSensorsDynamic.map((item) => item['macAddress'].toString())
-                .toList();
-        sensorNameList =
-            DBSensorsDynamic.map((item) => item['name'].toString()).toList();
-        GpioList =
-            DBSensorsDynamic.map((item) => item['gpio'].toString()).toList();
-        modeList =
-            DBSensorsDynamic.map((item) => item['mode'].toString() == '1')
-                .toList();
-        powerList =
-            DBSensorsDynamic.map((item) => item['power'].toString() == '1')
-                .toList();
+        ConMqtt(DBemail);
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(
+                name: DBname,
+                lastname: DBlastname,
+                email: DBemail,
+                sensorIdList: sensorIdList,
+                macAddressList: macAddressList,
+                sensorNameList: sensorNameList,
+                GpioList: GpioList,
+                modeList: modeList,
+                powerList: powerList,
+              ),
+            ));
+        await saveData('Token', DBtoken);
+        await saveData('email', DBemail);
+        print(DBtoken);
+        print(sensorIdList);
+        print(sensorNameList);
+        print(macAddressList);
+        print(GpioList);
+        print(modeList);
+      } else {
+        var snackBar = SnackBar(
+            content:
+                Text("Login Failed. Please check your Email and Password."));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
-
-      ConMqtt(DBemail);
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(
-              name: DBname,
-              lastname: DBlastname,
-              email: DBemail,
-              sensorIdList: sensorIdList,
-              macAddressList: macAddressList,
-              sensorNameList: sensorNameList,
-              GpioList: GpioList,
-              modeList: modeList,
-              powerList: powerList,
-            ),
-          ));
-      await saveData('Token', DBtoken);
-      await saveData('email', DBemail);
-      print(DBtoken);
-      print(sensorIdList);
-      print(sensorNameList);
-      print(macAddressList);
-      print(GpioList);
-      print(modeList);
-    } else {
-      var snackBar = SnackBar(
-          content: Text("Login Failed. Please check your Email and Password."));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } catch (e) {
+      print('Failed to connect to server: $e');
     }
   }
 

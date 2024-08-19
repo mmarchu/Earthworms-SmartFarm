@@ -156,60 +156,68 @@ class _SensorDetailPageState extends State<SensorDetailPage>
       url = ApiUrl.IOSgetoneuser;
     }
 
-    final response = await http.post(Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charest=UTF-8',
-          'Authorization': 'Bearer $token',
-        },
-        body: jsonEncode({'email': email}));
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      DBemail = data['email'];
-      DBname = data['name'];
-      DBlastname = data['lastname'];
-      DBSensorsDynamic = data['sensors'];
-      List<String> sensorIdList =
-          DBSensorsDynamic.map((item) => item['id'].toString()).toList();
-      List<String> macAddressList =
-          DBSensorsDynamic.map((item) => item['macAddress'].toString()).toList();
-      List<String> sensorNameList =
-          DBSensorsDynamic.map((item) => item['name'].toString()).toList();
-      List<String> GpioList =
-          DBSensorsDynamic.map((item) => item['gpio'].toString()).toList();
-      List<bool> modeList =
-          DBSensorsDynamic.map((item) => item['mode'].toString() == '1').toList();
-      List<bool> powerList =
-          DBSensorsDynamic.map((item) => item['power'].toString() == '1').toList();
-
-      Navigator.pushAndRemoveUntil(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => HomePage(
-            name: DBname,
-            lastname: DBlastname,
-            email: DBemail,
-            sensorIdList: sensorIdList,
-            macAddressList: macAddressList,
-            sensorNameList: sensorNameList,
-            GpioList: GpioList,
-            modeList: modeList,
-            powerList: powerList,
-          ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(-1.0, 0.0);
-            const end = Offset.zero;
-            const curve = Curves.easeInOut;
-            var tween =
-                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-            var offsetAnimation = animation.drive(tween);
-
-            return SlideTransition(position: offsetAnimation, child: child);
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charest=UTF-8',
+            'Authorization': 'Bearer $token',
           },
-          transitionDuration: const Duration(milliseconds: 95),
-        ),
-        (Route<dynamic> route) => false,
-      );
+          body: jsonEncode({'email': email}));
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        DBemail = data['email'];
+        DBname = data['name'];
+        DBlastname = data['lastname'];
+        DBSensorsDynamic = data['sensors'];
+        List<String> sensorIdList =
+            DBSensorsDynamic.map((item) => item['id'].toString()).toList();
+        List<String> macAddressList =
+            DBSensorsDynamic.map((item) => item['macAddress'].toString())
+                .toList();
+        List<String> sensorNameList =
+            DBSensorsDynamic.map((item) => item['name'].toString()).toList();
+        List<String> GpioList =
+            DBSensorsDynamic.map((item) => item['gpio'].toString()).toList();
+        List<bool> modeList =
+            DBSensorsDynamic.map((item) => item['mode'].toString() == '1')
+                .toList();
+        List<bool> powerList =
+            DBSensorsDynamic.map((item) => item['power'].toString() == '1')
+                .toList();
+
+        Navigator.pushAndRemoveUntil(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) => HomePage(
+              name: DBname,
+              lastname: DBlastname,
+              email: DBemail,
+              sensorIdList: sensorIdList,
+              macAddressList: macAddressList,
+              sensorNameList: sensorNameList,
+              GpioList: GpioList,
+              modeList: modeList,
+              powerList: powerList,
+            ),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              const begin = Offset(-1.0, 0.0);
+              const end = Offset.zero;
+              const curve = Curves.easeInOut;
+              var tween =
+                  Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              var offsetAnimation = animation.drive(tween);
+
+              return SlideTransition(position: offsetAnimation, child: child);
+            },
+            transitionDuration: const Duration(milliseconds: 95),
+          ),
+          (Route<dynamic> route) => false,
+        );
+      }
+    } catch (e) {
+      print('Failed to connect to server: $e');
     }
     ;
   }
@@ -227,21 +235,25 @@ class _SensorDetailPageState extends State<SensorDetailPage>
       url = ApiUrl.IOSdeletesensor;
     }
 
-    final response = await http.post(Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charest=UTF-8',
-          'Authorization': 'Bearer $token',
-        },
-        body: jsonEncode({'sensor_id': widget.sensorId}));
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charest=UTF-8',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({'sensor_id': widget.sensorId}));
 
-    if (response.statusCode == 200) {
-      var snackBar = SnackBar(content: Text("delete successful"));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      LodeDataToHomePage();
-    } else {
-      var snackBar = SnackBar(content: Text("Can't Delete! Try again."));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      Navigator.pop(context);
+      if (response.statusCode == 200) {
+        var snackBar = SnackBar(content: Text("delete successful"));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        LodeDataToHomePage();
+      } else {
+        var snackBar = SnackBar(content: Text("Can't Delete! Try again."));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      print('Failed to connect to server: $e');
     }
   }
 
@@ -342,32 +354,36 @@ class _SensorDetailPageState extends State<SensorDetailPage>
       },
     );
 
-    final response = await http.post(Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charest=UTF-8',
-          'Authorization': 'Bearer $token',
-        },
-        body:
-            jsonEncode({"sensor_id": widget.sensorId, "sensor_name": NewName}));
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charest=UTF-8',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode(
+              {"sensor_id": widget.sensorId, "sensor_name": NewName}));
 
-    Navigator.pop(context);
+      Navigator.pop(context);
 
-    if (response.statusCode == 200) {
-      print(NewName);
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => SensorDetailPage(
-                  nameSensor: NewName,
-                  macAddress: widget.macAddress,
-                  email: widget.email,
-                  sensorId: widget.sensorId,
-                  GpioList: widget.GpioList,
-                  index: widget.index,
-                  mode: widget.mode,
-                  power: widget.power)));
-    } else {
-      print("Error");
+      if (response.statusCode == 200) {
+        print(NewName);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SensorDetailPage(
+                    nameSensor: NewName,
+                    macAddress: widget.macAddress,
+                    email: widget.email,
+                    sensorId: widget.sensorId,
+                    GpioList: widget.GpioList,
+                    index: widget.index,
+                    mode: widget.mode,
+                    power: widget.power)));
+      } else {
+        print("Error");
+      }
+    } catch (e) {
+      print('Failed to connect to server: $e');
     }
   }
 
@@ -451,33 +467,37 @@ class _SensorDetailPageState extends State<SensorDetailPage>
       },
     );
 
-    final response = await http.post(Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charest=UTF-8',
-          'Authorization': 'Bearer $token',
-        },
-        body: jsonEncode({
-          'user_id': widget.email,
-          'gpio_id': widget.GpioList,
-          'mode': modeValue,
-          'power': powerValue
-        }));
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charest=UTF-8',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({
+            'user_id': widget.email,
+            'gpio_id': widget.GpioList,
+            'mode': modeValue,
+            'power': powerValue
+          }));
 
-    Navigator.pop(context);
+      Navigator.pop(context);
 
-    if (response.statusCode == 200) {
-      print('Pump mode response 200');
-      var snackBar = SnackBar(content: Text("Successful"));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      //showSnackBar(context);
-    } else {
-      setState(() {
-        New_mode = defaultMode;
-        New_power = defaultPower;
-      });
-      print('Pump mode response 400');
-      var snackBar = SnackBar(content: Text("Try Again!"));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      if (response.statusCode == 200) {
+        print('Pump mode response 200');
+        var snackBar = SnackBar(content: Text("Successful"));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        //showSnackBar(context);
+      } else {
+        setState(() {
+          New_mode = defaultMode;
+          New_power = defaultPower;
+        });
+        print('Pump mode response 400');
+        var snackBar = SnackBar(content: Text("Try Again!"));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    } catch (e) {
+      print('Failed to connect to server: $e');
     }
   }
 

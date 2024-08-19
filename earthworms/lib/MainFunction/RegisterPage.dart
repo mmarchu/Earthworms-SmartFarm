@@ -33,40 +33,43 @@ class _RegisterPageState extends State<RegisterPage> {
       url = ApiUrl.IOSregister;
     }
 
-    final response = await http.post(Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charest=UTF-8'
-        },
-        body: jsonEncode({
-          'name': InputName,
-          'lastname': InputLastname,
-          'email': InputEmail,
-          'password': InputPassword,
-          'confirmpassword': InputConfirmPass
-        }));
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charest=UTF-8'
+          },
+          body: jsonEncode({
+            'name': InputName,
+            'lastname': InputLastname,
+            'email': InputEmail,
+            'password': InputPassword,
+            'confirmpassword': InputConfirmPass
+          }));
 
-    if (response.statusCode == 400) {
-      var snackBar = SnackBar(content: Text("Already have this email."));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    } else if (InputName.isEmpty ||
-        InputLastname.isEmpty ||
-        InputEmail.isEmpty ||
-        InputPassword.isEmpty ||
-        InputConfirmPass.isEmpty) {
-      var snackBar =
-          SnackBar(content: Text("Please fill in complete information."));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    } else if (passwordController.text != ConfirmPassController.text) {
-      var snackBar =
-          SnackBar(content: Text("Those passwords didn't match. Try again."));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    } else {
-      var snackBar =
-          SnackBar(content: Text("You account has been successfully created."));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      Navigator.pop(context);
+      if (response.statusCode == 400) {
+        var snackBar = SnackBar(content: Text("Already have this email."));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      } else if (InputName.isEmpty ||
+          InputLastname.isEmpty ||
+          InputEmail.isEmpty ||
+          InputPassword.isEmpty ||
+          InputConfirmPass.isEmpty) {
+        var snackBar =
+            SnackBar(content: Text("Please fill in complete information."));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      } else if (passwordController.text != ConfirmPassController.text) {
+        var snackBar =
+            SnackBar(content: Text("Those passwords didn't match. Try again."));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      } else {
+        var snackBar = SnackBar(
+            content: Text("You account has been successfully created."));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      print('Failed to connect to server: $e');
     }
-    ;
   }
 
   @override
