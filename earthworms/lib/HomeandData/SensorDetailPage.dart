@@ -436,7 +436,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
   }
 
 // WaterPump Function
-  Future<void> _updateWaterPump(bool mode, bool power) async {
+  Future<void> _updateWaterPumpPower(bool mode, bool power) async {
     final modeValue = mode ? 1 : 0;
     final powerValue = power ? 1 : 0;
     String? token = await loadData('Token');
@@ -921,7 +921,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                         });
                                                         //_publishMQTT();
                                                         print(New_mode);
-                                                        _updateWaterPump(
+                                                        _updateWaterPumpPower(
                                                             New_mode,
                                                             New_power);
                                                       },
@@ -975,7 +975,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                                 //_publishMQTT();
                                                                 print(
                                                                     New_power);
-                                                                _updateWaterPump(
+                                                                _updateWaterPumpPower(
                                                                     New_mode,
                                                                     New_power);
                                                               }),

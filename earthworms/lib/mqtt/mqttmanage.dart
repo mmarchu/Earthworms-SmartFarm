@@ -43,6 +43,7 @@ Future<int> ConMqtt(String email) async {
     print('Socket exception: $e');
     client.disconnect();
   } catch (e) {
+    client.disconnect();
     print('can not connect MQTT');
   }
 
