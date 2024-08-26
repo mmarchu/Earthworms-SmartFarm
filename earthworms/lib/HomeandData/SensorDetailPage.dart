@@ -102,45 +102,51 @@ class _SensorDetailPageState extends State<SensorDetailPage>
       url = ApiUrl.IOSgetoneuser;
     }
 
-    final response = await http.post(Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charest=UTF-8',
-          'Authorization': 'Bearer $token',
-        },
-        body: jsonEncode({'email': email}));
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charest=UTF-8',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({'email': email}));
 
-    if (response.statusCode == 401) {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Session Timeout'),
-            actions: <Widget>[
-              Column(
-                children: [
-                  Text("Session expired. You will be redirected to Login page"),
-                  TextButton(
-                    child: Text(
-                      'OK',
-                      style: TextStyle(color: Color(0xff0e4f55)),
+      if (response.statusCode == 401) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Session Timeout'),
+              actions: <Widget>[
+                Column(
+                  children: [
+                    Text(
+                        "Session expired. You will be redirected to Login page"),
+                    TextButton(
+                      child: Text(
+                        'OK',
+                        style: TextStyle(color: Color(0xff0e4f55)),
+                      ),
+                      onPressed: () {
+                        _logout();
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginPage()),
+                            (Route<dynamic> Route) => false);
+                      },
                     ),
-                    onPressed: () {
-                      _logout();
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => LoginPage()),
-                          (Route<dynamic> Route) => false);
-                    },
-                  ),
-                ],
-              ),
-            ],
-          );
-        },
-      );
-    } else {
-      print("ยังอยู่จ้าาOnDetailPage");
+                  ],
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        print("ยังอยู่จ้าาOnDetailPage");
+      }
+    } catch (e) {
+      print('Failed to connect to server: $e');
     }
   }
 
@@ -435,17 +441,17 @@ class _SensorDetailPageState extends State<SensorDetailPage>
     print(batteries);
   }
 
-// WaterPump Function
-  Future<void> _updateWaterPumpPower(bool mode, bool power) async {
+// WaterPump Mode Update Function
+  Future<void> _updateWaterPumpMode(bool mode, bool power) async {
     final modeValue = mode ? 1 : 0;
     final powerValue = power ? 1 : 0;
     String? token = await loadData('Token');
 
     var url;
     if (Platform.isAndroid) {
-      url = ApiUrl.ANDwaterpump;
+      url = ApiUrl.ANDwaterpumpMode;
     } else if (Platform.isIOS) {
-      url = ApiUrl.IOSwaterpump;
+      url = ApiUrl.IOSwaterpumpMode;
     }
 
     showDialog(
@@ -490,6 +496,72 @@ class _SensorDetailPageState extends State<SensorDetailPage>
       } else {
         setState(() {
           New_mode = defaultMode;
+          //New_power = defaultPower;
+        });
+        print('Pump mode response ');
+        var snackBar = SnackBar(content: Text("Try Again!"));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    } catch (e) {
+      print('Failed to connect to server: $e');
+    }
+  }
+
+// WaterPump Power Update Function
+  Future<void> _updateWaterPumpPower(bool mode, bool power) async {
+    final modeValue = mode ? 1 : 0;
+    final powerValue = power ? 1 : 0;
+    String? token = await loadData('Token');
+
+    var url;
+    if (Platform.isAndroid) {
+      url = ApiUrl.ANDwaterpumpPower;
+    } else if (Platform.isIOS) {
+      url = ApiUrl.IOSwaterpumpPower;
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SizedBox(
+            width: 300,
+            height: 100,
+            child: Center(
+              child: LoadingAnimationWidget.halfTriangleDot(
+                color: Color(0xff0e4f55),
+                size: 50,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charest=UTF-8',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({
+            'user_id': widget.email,
+            'gpio_id': widget.GpioList,
+            'mode': modeValue,
+            'power': powerValue
+          }));
+
+      Navigator.pop(context);
+
+      if (response.statusCode == 200) {
+        print('Pump mode response 200');
+        var snackBar = SnackBar(content: Text("Successful"));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        //showSnackBar(context);
+      } else {
+        setState(() {
+          //New_mode = defaultMode;
           New_power = defaultPower;
         });
         print('Pump mode response 400');
@@ -903,7 +975,9 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                           20 * textScaleFactor,
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: Colors.grey[800],
+                                                      color: New_power
+                                                          ? Colors.grey
+                                                          : Colors.grey[800],
                                                     ),
                                                   ),
                                                   Padding(
@@ -912,19 +986,36 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                             textScaleFactor),
                                                     child: CupertinoSwitch(
                                                       value: New_mode,
-                                                      onChanged: (value) {
-                                                        setState(() {
-                                                          New_mode = value;
-                                                          if (value) {
-                                                            New_power = false;
-                                                          }
-                                                        });
-                                                        //_publishMQTT();
-                                                        print(New_mode);
-                                                        _updateWaterPumpPower(
-                                                            New_mode,
-                                                            New_power);
-                                                      },
+                                                      onChanged: New_power
+                                                          ? null // ถ้า New_power เป็น true, ไม่อนุญาตให้เปลี่ยนแปลง New_mode
+                                                          : (value) {
+                                                              setState(() {
+                                                                New_mode =
+                                                                    value;
+                                                                if (value) {
+                                                                  New_power =
+                                                                      false; // ถ้า New_mode เป็น true, ตั้งค่า New_power เป็น false
+                                                                }
+                                                              });
+                                                              //_publishMQTT();
+                                                              print(New_mode);
+                                                              _updateWaterPumpMode(
+                                                                  New_mode,
+                                                                  New_power);
+                                                            },
+                                                      // (value) {
+                                                      //   setState(() {
+                                                      //     New_mode = value;
+                                                      //     if (value) {
+                                                      //       New_power = false;
+                                                      //     }
+                                                      //   });
+                                                      //   //_publishMQTT();
+                                                      //   print(New_mode);
+                                                      //   _updateWaterPumpMode(
+                                                      //       New_mode,
+                                                      //       New_power);
+                                                      // }
                                                     ),
                                                   ),
                                                 ],

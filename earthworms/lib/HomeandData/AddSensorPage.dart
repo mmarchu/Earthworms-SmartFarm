@@ -39,13 +39,6 @@ Future<String?> loadData(String key) async {
   return prefs.getString(key);
 }
 
-//Func. Logout
-void _logout() async {
-  await removeData('Token');
-  await removeData('email');
-  print("Log out");
-}
-
 class _AddSensorPageState extends State<AddSensorPage>
     with WidgetsBindingObserver {
   TextEditingController NameSensor = TextEditingController();
@@ -55,6 +48,8 @@ class _AddSensorPageState extends State<AddSensorPage>
   List<dynamic> GPIOlist = [];
   List<int> GPIO_Port = [];
   int? SelectedGPIO;
+  late String topic;
+  late String email;
 
   @override
   void initState() {
@@ -64,8 +59,9 @@ class _AddSensorPageState extends State<AddSensorPage>
     });
     NameSensor.addListener(_handleTextFieldChange);
     SensorsListAPI();
-    //_TokenChenkTimeout();
     WidgetsBinding.instance.addObserver(this);
+    email = widget.email;
+    topic = '$email/flora';
   }
 
   @override
@@ -79,6 +75,14 @@ class _AddSensorPageState extends State<AddSensorPage>
   void unsubscribe(String topic) {
     client.unsubscribe(topic);
     print("UnSubscribe topic: $topic");
+  }
+
+  //Func. Logout
+  void _logout() async {
+    await removeData('Token');
+    await removeData('email');
+    unsubscribe(topic);
+    print("Log out");
   }
 
   @override

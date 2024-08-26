@@ -7,7 +7,6 @@ import 'package:earthworms/HomeandData/Components/url.dart';
 import 'package:earthworms/HomeandData/EnemylogPage.dart';
 import 'package:earthworms/HomeandData/SensorDetailPage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
-import 'package:earthworms/MainFunction/SessionToken.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -54,13 +53,6 @@ Future<String?> loadData(String key) async {
   return prefs.getString(key);
 }
 
-//Func. Logout
-void _logout() async {
-  await removeData('Token');
-  await removeData('email');
-  print("Log out");
-}
-
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   final BehaviorSubject<Map<String, List<String>>> _dataController =
       BehaviorSubject<Map<String, List<String>>>();
@@ -100,6 +92,14 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void unsubscribe(String topic) {
     client.unsubscribe(topic);
     print("UnSubscribe topic: $topic");
+  }
+
+//Func. Logout
+  void _logout() async {
+    await removeData('Token');
+    await removeData('email');
+    unsubscribe(topic);
+    print("Log out");
   }
 
   void _TokenChenkTimeout() {
@@ -204,7 +204,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     CupertinoDialogAction(
                         onPressed: () {
                           _logout();
-                          unsubscribe(topic);
                           Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(

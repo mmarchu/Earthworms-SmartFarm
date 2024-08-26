@@ -35,10 +35,16 @@ class ApiUrl {
   static const String IOSupdateSensorName =
       'http://127.0.0.1:4000/api/sensor/update'; // 'http://192.168.1.40:4000/api/sensor/update'
 
-  //WaterPump
-  static const String ANDwaterpump =
+  //WaterPump Mode Update
+  static const String ANDwaterpumpMode =
+      'http://10.0.2.2:4000/api/gpio/update'; // 'http://192.168.1.40:4000/api/gpio/state;
+  static const String IOSwaterpumpMode =
+      'http://127.0.0.1:4000/api/gpio/update'; // 'http://192.168.1.40:4000/api/gpio/state';
+
+  //WaterPump Power Update
+  static const String ANDwaterpumpPower =
       'http://10.0.2.2:4000/api/gpio/state'; // 'http://192.168.1.40:4000/api/gpio/state;
-  static const String IOSwaterpump =
+  static const String IOSwaterpumpPower =
       'http://127.0.0.1:4000/api/gpio/state'; // 'http://192.168.1.40:4000/api/gpio/state';
 
   //Get Data TimeSeries
