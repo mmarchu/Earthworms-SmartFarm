@@ -54,6 +54,64 @@ class ApiUrl {
       'http://127.0.0.1:4000/api/timeSeries/get'; // 'http://192.168.1.40:4000/api/timeSeries/get'
 }
 
+//Local MacBook March
+// class ApiUrl {
+//   //Login
+//   static const String ANDlogin =
+//       'http://192.168.1.40:4000/api/auth/login'; // 'http://192.168.1.40:4000/api/auth/login';
+//   static const String IOSlogin =
+//       'http://192.168.1.40:4000/api/auth/login'; // 'http://192.168.1.40:4000/api/auth/login';
+
+//   //Register
+//   static const String ANDregister =
+//       'http://192.168.1.40:4000/api/auth/register'; // 'http://192.168.1.40:4000/api/auth/register'
+//   static const String IOSregister =
+//       'http://192.168.1.40:4000/api/auth/register'; // 'http://192.168.1.40:4000/api/auth/register'
+
+//   //Get One User
+//   static const String ANDgetoneuser =
+//       'http://192.168.1.40:4000/api/auth/getoneuser'; // 'http://192.168.1.40:4000/api/auth/getoneuser'
+//   static const String IOSgetoneuser =
+//       'http://192.168.1.40:4000/api/auth/getoneuser'; // 'http://192.168.1.40:4000/api/auth/getoneuser'
+
+//   //Create Sensor
+//   static const String ANDcreatesensor =
+//       'http://192.168.1.40:4000/api/sensor/create'; //  'http://192.168.1.40:4000/api/sensor/create'
+//   static const String IOScreatesensor =
+//       'http://192.168.1.40:4000/api/sensor/create'; // 'http://192.168.1.40:4000/api/sensor/create'
+
+//   //Delete Sensor
+//   static const String ANDdeletesensor =
+//       'http://192.168.1.40:4000/api/sensor/delete'; // 'http://192.168.1.40:4000/api/sensor/delete'
+//   static const String IOSdeletesensor =
+//       'http://192.168.1.40:4000/api/sensor/delete'; // 'http://192.168.1.40:4000/api/sensor/delete';
+
+//   //Update Sensor Name
+//   static const String ANDupdateSensorName =
+//       'http://192.168.1.40:4000/api/sensor/update'; // 'http://192.168.1.40:4000/api/sensor/update'
+//   static const String IOSupdateSensorName =
+//       'http://192.168.1.40:4000/api/sensor/update'; // 'http://192.168.1.40:4000/api/sensor/update'
+
+//   //WaterPump Mode Update
+//   static const String ANDwaterpumpMode =
+//       'http://192.168.1.40:4000/api/gpio/update'; // 'http://192.168.1.40:4000/api/gpio/state;
+//   static const String IOSwaterpumpMode =
+//       'http://192.168.1.40:4000/api/gpio/update'; // 'http://192.168.1.40:4000/api/gpio/state';
+
+//   //WaterPump Power Update
+//   static const String ANDwaterpumpPower =
+//       'http://192.168.1.40:4000/api/gpio/state'; // 'http://192.168.1.40:4000/api/gpio/state;
+//   static const String IOSwaterpumpPower =
+//       'http://192.168.1.40:4000/api/gpio/state'; // 'http://192.168.1.40:4000/api/gpio/state';
+
+//   //Get Data TimeSeries
+//   static const String ANDgetTimeseries =
+//       'http://192.168.1.40:4000/api/timeSeries/get'; // 'http://192.168.1.40:4000/api/timeSeries/get'
+//   static const String IOSgetTimeseries =
+//       'http://192.168.1.40:4000/api/timeSeries/get'; // 'http://192.168.1.40:4000/api/timeSeries/get'
+// }
+
+//Local MacBook Third
 // class ApiUrl {
 //   //Login
 //   static const String ANDlogin =

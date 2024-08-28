@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   void _TokenChenkTimeout() {
-    Timer.periodic(Duration(minutes: 5), (timer) {
+    Timer.periodic(Duration(minutes: 1), (timer) {
       CheckToken();
     });
   }
