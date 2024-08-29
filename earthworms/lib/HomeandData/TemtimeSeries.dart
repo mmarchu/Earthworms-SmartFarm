@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:animated_button_bar/animated_button_bar.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:earthworms/HomeandData/Components/url.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -34,7 +36,7 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
     super.initState();
   }
 
-  // Select Day
+// Select Day
   void _selectDay(BuildContext context) async {
     final DateTime? selectedDate = await showDatePicker(
         context: context,
@@ -59,7 +61,8 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
         "period": "daily",
         "date": DateFormat('yyyy-MM-dd').format(selectedDate),
       };
-      final displayDate = DateFormat('dd - MM - yyyy').format(selectedDate);
+      final displayDate =
+          DateFormat('EEE, MMM d, ' 'yyyy').format(selectedDate);
       print(displayDate);
       _updateDateData(displayDate);
       //print(json);
@@ -67,7 +70,7 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
     }
   }
 
-  // Select Week
+// Select Week
   void _selectWeek(BuildContext context) async {
     final DateTime? selectedStartDate = await showDatePicker(
         context: context,
@@ -96,10 +99,18 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
       };
       print(json);
       _sendDataToApi(json, 'Week');
+
+      final displayStartDate =
+          DateFormat('EEE, MMM d, ' 'yyyy').format(selectedStartDate);
+      final DisplayEndDayBefore =
+          DateFormat('EEE, MMM d, ' 'yyyy').format(selectedEndDate);
+      final dateSevenDay = '$displayStartDate - $DisplayEndDayBefore';
+      print(dateSevenDay);
+      _updateDateData(dateSevenDay);
     }
   }
 
-  // Select Month
+// Select Month
   void _selectMonth(BuildContext context) async {
     final DateTime? selectedDate = await showMonthPicker(
         context: context,
@@ -129,12 +140,15 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
         "period": "monthly",
         "date": DateFormat('yyyy-MM').format(selectedDate),
       };
-      print(json);
+      final displayDate = DateFormat.MMMM('en_US').format(selectedDate);
+      print(displayDate);
+      _updateDateData(displayDate);
+      //print(json);
       _sendDataToApi(json, 'Month');
     }
   }
 
-  // Send Today to Api when open this page
+// Send Today to Api when open this page
   void _sendTodayToApi() {
     final today = DateTime.now();
     final json = {
@@ -142,58 +156,98 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
       "period": "daily",
       "date": DateFormat('yyyy-MM-dd').format(today),
     };
-    final displayDate = DateFormat('dd - MM - yyyy').format(today);
+    //final displayDate = DateFormat('dd - MM - yyyy').format(today);
+    final displayDate = DateFormat('EEE, MMM d, ' 'yyyy').format(today);
     print(displayDate);
     _updateDateData(displayDate);
-    print(json);
     _sendDataToApi(json, 'Day');
     _updateSelectedBottom('Select Day');
   }
 
+// Send Today to Api when open this page
+  void _sendThisWeekToApi() {
+    final today = DateTime.now();
+    final SixDayBefore = today.subtract(Duration(days: 6));
+    final json = {
+      "sensor_id": widget.sensorId,
+      "period": "weekly",
+      "start": DateFormat('yyyy-MM-dd').format(SixDayBefore),
+      "end": DateFormat('yyyy-MM-dd').format(today),
+    };
+
+    final displayDate = DateFormat('EEE, MMM d, ' 'yyyy').format(today);
+    final DisplaySixDayBefore =
+        DateFormat('EEE, MMM d, ' 'yyyy').format(SixDayBefore);
+    final dateSevenDay = '$DisplaySixDayBefore - $displayDate';
+    print(dateSevenDay);
+    _updateDateData(dateSevenDay);
+    _sendDataToApi(json, 'Day');
+    _updateSelectedBottom('Select Week');
+  }
+
+// Send This month to Api
+  void _SendThisMonthToApi() {
+    final today = DateTime.now();
+    final json = {
+      "sensor_id": widget.sensorId,
+      "period": "monthly",
+      "date": DateFormat('yyyy-MM').format(today),
+    };
+    final displayDate = DateFormat.MMMM('en_US').format(today);
+    print(displayDate);
+    _updateDateData(displayDate);
+    _sendDataToApi(json, 'Month');
+  }
+
+// Api Get Data
   Future<void> _sendDataToApi(final json, String _period) async {
     String? token = await loadData('Token');
     var url;
 
     if (Platform.isAndroid) {
-      url = 'http://192.168.1.40:4000/api/timeSeries/get';
+      url = ApiUrl.ANDgetTimeseries;
     } else if (Platform.isIOS) {
-      url = 'http://127.0.0.1:4000/api/timeSeries/get';
-      // IP HomeWifi
-      // url = 'http://192.168.1.40:4000/api/timeSeries/get';
+      url = ApiUrl.IOSgetTimeseries;
     }
 
-    final response = await http.post(Uri.parse(url),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': 'Bearer $token',
-        },
-        body: jsonEncode(json));
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode(json));
 
-    if (response.statusCode == 200) {
-      var decodedData = jsonDecode(response.body);
-      print('Decoded Data: $decodedData');
-      setState(() {
-        _data = decodedData;
-        period = _period;
-      });
-    } else {
-      print('${response.statusCode}: ${response.reasonPhrase}');
+      if (response.statusCode == 200) {
+        var decodedData = jsonDecode(response.body);
+        print('Decoded Data: $decodedData');
+        setState(() {
+          _data = decodedData;
+          period = _period;
+        });
+      } else {
+        print('${response.statusCode}: ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      print('Failed to connect to server: $e');
     }
   }
 
-  // Update bottom period
+// Update bottom period
   void _updateSelectedBottom(String newText) {
     setState(() {
       selectedPeriod = newText;
     });
   }
 
+// update display Date
   void _updateDateData(String newDate) {
     setState(() {
       dateSelect = newDate;
     });
   }
 
+// BarChart
   Widget _buildBarChart(double width, double height) {
     return Container(
       height: height,
@@ -201,8 +255,8 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
       child: BarChart(
         BarChartData(
           alignment: BarChartAlignment.spaceAround,
-          gridData: FlGridData(show: true),
-          maxY: 45,
+          gridData: FlGridData(show: false),
+          maxY: 50,
           barGroups: _data.asMap().entries.map((entry) {
             int index = entry.key;
             var item = entry.value;
@@ -241,21 +295,21 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
                   reservedSize: 30,
                   getTitlesWidget: (value, meta) {
                     final TitleDay = {
-                      0: '0',
+                      0: '12☾',
                       6: '6',
-                      12: '12',
+                      12: '  12𖤓',
                       18: '18',
                       23: '23'
                     };
-                    final TitleWeek = {
-                      0: 'Sun',
-                      1: 'Mon',
-                      2: 'Tue',
-                      3: 'Wed',
-                      4: 'Thu',
-                      5: 'Fri',
-                      6: 'Sat'
-                    };
+                    // final TitleWeek = {
+                    //   0: 'Sun',
+                    //   1: 'Mon',
+                    //   2: 'Tue',
+                    //   3: 'Wed',
+                    //   4: 'Thu',
+                    //   5: 'Fri',
+                    //   6: 'Sat'
+                    // };
                     final TitleMonth = {
                       0: '1',
                       4: '5',
@@ -270,7 +324,13 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
                     if (period == 'Day') {
                       title = TitleDay[value.toInt()] ?? '';
                     } else if (period == 'Week') {
-                      title = TitleWeek[value.toInt()] ?? '';
+                      //title = TitleWeek[value.toInt()] ?? '';
+                      //title = value.toInt().toString();
+                      int index = value.toInt();
+                      if (index < _data.length) {
+                        title = _data[index]['x']
+                            .toString(); // ใช้ค่า 'x' จาก entry
+                      }
                     } else {
                       title = TitleMonth[value.toInt()] ?? '';
                     }
@@ -415,23 +475,25 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
                                       _sendTodayToApi();
                                     }),
                                 ButtonBarEntry(
-                                  child: Text(
-                                    'Week',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  onTap: () =>
-                                      _updateSelectedBottom('Select Week'),
-                                ),
+                                    child: Text(
+                                      'Week',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    onTap: () {
+                                      _updateSelectedBottom('Select Week');
+                                      _sendThisWeekToApi();
+                                    }),
                                 ButtonBarEntry(
-                                  child: Text(
-                                    'Month',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  onTap: () =>
-                                      _updateSelectedBottom('Select Month'),
-                                )
+                                    child: Text(
+                                      'Month',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    onTap: () {
+                                      _updateSelectedBottom('Select Month');
+                                      _SendThisMonthToApi();
+                                    })
                               ],
                             ),
                             SizedBox(height: 20 * textScaleFactor),
@@ -446,11 +508,16 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text(
-                                        '< $dateSelect >',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 18 * textScaleFactor),
+                                      SizedBox(
+                                        width: 340 * textScaleFactor,
+                                        child: AutoSizeText(
+                                          '< $dateSelect >',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 18 * textScaleFactor),
+                                          maxLines: 1,
+                                          textAlign: TextAlign.center,
+                                        ),
                                       )
                                     ],
                                   ),

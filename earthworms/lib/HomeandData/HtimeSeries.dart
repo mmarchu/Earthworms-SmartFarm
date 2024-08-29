@@ -255,7 +255,7 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
       child: BarChart(
         BarChartData(
           alignment: BarChartAlignment.spaceAround,
-          gridData: FlGridData(show: true),
+          gridData: FlGridData(show: false),
           maxY: 100,
           barGroups: _data.asMap().entries.map((entry) {
             int index = entry.key;
@@ -297,7 +297,7 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                     final TitleDay = {
                       0: '12☾',
                       6: '6',
-                      12: '12𖤓',
+                      12: '  12𖤓',
                       18: '18',
                       23: '23'
                     };
