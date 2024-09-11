@@ -61,6 +61,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   final List<String> temp = [];
   late String email;
   late String topic;
+  Timer? _tokenCheckTimer;
 
   @override
   void initState() {
@@ -103,7 +104,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   void _TokenChenkTimeout() {
-    Timer.periodic(Duration(minutes: 1), (timer) {
+    _tokenCheckTimer = Timer.periodic(Duration(minutes: 1), (timer) {
       CheckToken();
     });
   }
@@ -129,7 +130,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       if (response.statusCode == 200) {
         print("ยังอยู่จ้าาOnHomPage");
       } else {
-        if (!mounted) return;
+        //if (!mounted) return;
+        _tokenCheckTimer?.cancel();
         showDialog(
           context: context,
           barrierDismissible: false,

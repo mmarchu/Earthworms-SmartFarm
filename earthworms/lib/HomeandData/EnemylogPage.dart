@@ -137,8 +137,39 @@ class _EnemylogpageState extends State<Enemylogpage> {
         RatLog = data['Rat'];
         ToadLog = data['Toad'];
         SkinkLog = data['Skink'];
+      } else if (response.statusCode == 402) {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('No Data'),
+                actions: <Widget> [
+                  TextButton(
+                    onPressed: (){Navigator.pop(context);},
+                    child: Text(
+                      "Try Again",
+                      style: TextStyle(color: Color(0xff0e4f55))))
+                ],
+              );
+            });
       } else {
         print('${response.statusCode}: ${response.reasonPhrase}');
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('ERROR!'),
+                actions: <Widget> [
+                  TextButton(
+                    onPressed: (){Navigator.pop(context);},
+                    child: Text(
+                      "Try Again",
+                      style: TextStyle(color: Color(0xff0e4f55))))
+                ],
+              );
+            });
       }
     } catch (e) {
       Navigator.pop(context);
@@ -399,7 +430,7 @@ class _EnemylogpageState extends State<Enemylogpage> {
                                 height: 35 * textScaleFactor,
                                 child: Center(
                                   child: Text(
-                                    'Toad',
+                                    'Lizard',
                                     style: TextStyle(
                                         fontSize: 30 * textScaleFactor,
                                         fontWeight: FontWeight.bold),

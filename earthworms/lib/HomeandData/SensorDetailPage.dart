@@ -241,6 +241,25 @@ class _SensorDetailPageState extends State<SensorDetailPage>
       url = ApiUrl.IOSdeletesensor;
     }
 
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SizedBox(
+            width: 300,
+            height: 100,
+            child: Center(
+              child: LoadingAnimationWidget.halfTriangleDot(
+                color: Color(0xff0e4f55),
+                size: 50,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
     try {
       final response = await http.post(Uri.parse(url),
           headers: <String, String>{
@@ -250,6 +269,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
           body: jsonEncode({'sensor_id': widget.sensorId}));
 
       if (response.statusCode == 200) {
+        Navigator.pop(context);
         var snackBar = SnackBar(content: Text("delete successful"));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         LodeDataToHomePage();

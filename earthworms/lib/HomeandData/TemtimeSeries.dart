@@ -188,10 +188,11 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
 // Send This month to Api
   void _SendThisMonthToApi() {
     final today = DateTime.now();
+    final firstDayOfMonth = DateTime(today.year, today.month, 1);
     final json = {
       "sensor_id": widget.sensorId,
       "period": "monthly",
-      "date": DateFormat('yyyy-MM').format(today),
+      "date": DateFormat('yyyy-MM-dd').format(firstDayOfMonth),
     };
     final displayDate = DateFormat.MMMM('en_US').format(today);
     print(displayDate);
@@ -225,8 +226,41 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
           _data = decodedData;
           period = _period;
         });
+      } else if (response.statusCode == 402) {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('No Data'),
+                actions: <Widget>[
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("Try Again",
+                          style: TextStyle(color: Color(0xff0e4f55))))
+                ],
+              );
+            });
       } else {
         print('${response.statusCode}: ${response.reasonPhrase}');
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('ERROR!'),
+                actions: <Widget>[
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("Try Again",
+                          style: TextStyle(color: Color(0xff0e4f55))))
+                ],
+              );
+            });
       }
     } catch (e) {
       print('Failed to connect to server: $e');
