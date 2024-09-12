@@ -52,6 +52,12 @@
 //       'http://10.0.2.2:4000/api/timeSeries/get'; // 'http://192.168.1.40:4000/api/timeSeries/get'
 //   static const String IOSgetTimeseries =
 //       'http://127.0.0.1:4000/api/timeSeries/get'; // 'http://192.168.1.40:4000/api/timeSeries/get'
+
+//   //Log Enemies
+//   static const String ANDGetLogEnemies =
+//        'http://10.0.2.2:4000/api/logEnemies/getAll';
+//   static const String IOSGetLogEnemies =
+//       'http://127.0.0.1:4000/api/logEnemies/getAll';
 // }
 
 //Local MacBook March
@@ -217,4 +223,10 @@ class ApiUrl {
       'http://192.168.1.146:4000/api/timeSeries/get'; // 'http://192.168.1.40:4000/api/timeSeries/get'
   static const String IOSgetTimeseries =
       'http://192.168.1.146:4000/api/timeSeries/get'; // 'http://192.168.1.40:4000/api/timeSeries/get'
+
+  //Log Enemies
+  static const String ANDGetLogEnemies =
+      'http://192.168.1.146:4000/api/logEnemies/getAll';
+  static const String IOSGetLogEnemies =
+      'http://192.168.1.146:4000/api/logEnemies/getAll';
 }

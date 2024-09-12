@@ -24,9 +24,9 @@ Future<String?> loadData(String key) async {
 
 class _EnemylogpageState extends State<Enemylogpage> {
   String dateSelect = '';
-  String RatLog = '';
-  String ToadLog = '';
-  String SkinkLog = '';
+  String RatLog = '0';
+  String ToadLog = '0';
+  String LizardLog = '0';
 
   @override
   void initState() {
@@ -62,7 +62,7 @@ class _EnemylogpageState extends State<Enemylogpage> {
       final json = {
         //"sensor_id": widget.sensorId,
         //"period": "monthly",
-        "date": DateFormat('yyyy-MM').format(selectedDate),
+        "date": DateFormat('yyyy-MM-dd').format(selectedDate),
       };
       final displayDate = DateFormat.MMMM('en_US').format(selectedDate);
       print(displayDate);
@@ -77,7 +77,7 @@ class _EnemylogpageState extends State<Enemylogpage> {
     final json = {
       //"sensor_id": widget.sensorId,
       //"period": "monthly",
-      "date": DateFormat('yyyy-MM').format(today),
+      "date": DateFormat('yyyy-MM-dd').format(today),
     };
     final displayDate = DateFormat.MMMM('en_US').format(today);
     print(displayDate);
@@ -98,9 +98,9 @@ class _EnemylogpageState extends State<Enemylogpage> {
     var url;
 
     if (Platform.isAndroid) {
-      url = ApiUrl.ANDgetTimeseries;
+      url = ApiUrl.ANDGetLogEnemies;
     } else if (Platform.isIOS) {
-      url = ApiUrl.IOSgetTimeseries;
+      url = ApiUrl.IOSGetLogEnemies;
     }
 
     showDialog(
@@ -125,7 +125,7 @@ class _EnemylogpageState extends State<Enemylogpage> {
     try {
       final response = await http.post(Uri.parse(url),
           headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
+            'Content-Type': 'application/json; charest=UTF-8',
             'Authorization': 'Bearer $token',
           },
           body: jsonEncode(json));
@@ -133,23 +133,29 @@ class _EnemylogpageState extends State<Enemylogpage> {
       Navigator.pop(context);
 
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        RatLog = data['Rat'];
-        ToadLog = data['Toad'];
-        SkinkLog = data['Skink'];
-      } else if (response.statusCode == 402) {
+        final JsonData = jsonDecode(response.body) as List<dynamic>;
+        if (JsonData.isNotEmpty) {
+          final data = JsonData[0] as Map<String, dynamic>;
+          setState(() {
+            RatLog = data['Rat'].toString();
+            ToadLog = data['Toad'].toString();
+            LizardLog = data['Lizard'].toString();
+          });
+        }
+      } else if (response == 404) {
         showDialog(
             context: context,
             barrierDismissible: false,
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Text('No Data'),
-                actions: <Widget> [
+                actions: <Widget>[
                   TextButton(
-                    onPressed: (){Navigator.pop(context);},
-                    child: Text(
-                      "Try Again",
-                      style: TextStyle(color: Color(0xff0e4f55))))
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("Try Again",
+                          style: TextStyle(color: Color(0xff0e4f55))))
                 ],
               );
             });
@@ -161,12 +167,13 @@ class _EnemylogpageState extends State<Enemylogpage> {
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Text('ERROR!'),
-                actions: <Widget> [
+                actions: <Widget>[
                   TextButton(
-                    onPressed: (){Navigator.pop(context);},
-                    child: Text(
-                      "Try Again",
-                      style: TextStyle(color: Color(0xff0e4f55))))
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("Try Again",
+                          style: TextStyle(color: Color(0xff0e4f55))))
                 ],
               );
             });
@@ -217,7 +224,7 @@ class _EnemylogpageState extends State<Enemylogpage> {
                                 padding:
                                     EdgeInsets.only(left: 10 * textScaleFactor),
                                 child: Text(
-                                  'Enemy Summery',
+                                  'Enemies Summery',
                                   style: TextStyle(
                                       fontSize: 28 * textScaleFactor,
                                       color: Colors.grey[800],
@@ -485,7 +492,7 @@ class _EnemylogpageState extends State<Enemylogpage> {
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              SkinkLog,
+                                              LizardLog,
                                               style: TextStyle(
                                                   fontSize:
                                                       50 * textScaleFactor,

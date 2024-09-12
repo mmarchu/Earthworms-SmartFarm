@@ -40,6 +40,7 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
   void _selectDay(BuildContext context) async {
     final DateTime? selectedDate = await showDatePicker(
         context: context,
+        initialEntryMode: DatePickerEntryMode.calendarOnly,
         initialDate: DateTime.now(),
         firstDate: DateTime(2024),
         lastDate: DateTime.now(),
@@ -74,6 +75,7 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
   void _selectWeek(BuildContext context) async {
     final DateTime? selectedStartDate = await showDatePicker(
         context: context,
+        initialEntryMode: DatePickerEntryMode.calendarOnly,
         initialDate: DateTime.now(),
         firstDate: DateTime(2024),
         lastDate: DateTime.now(),
@@ -164,7 +166,7 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
     _updateSelectedBottom('Select Day');
   }
 
-// Send Today to Api when open this page
+// Send This week to Api when open this page
   void _sendThisWeekToApi() {
     final today = DateTime.now();
     final SixDayBefore = today.subtract(Duration(days: 6));
@@ -181,7 +183,7 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
     final dateSevenDay = '$DisplaySixDayBefore - $displayDate';
     print(dateSevenDay);
     _updateDateData(dateSevenDay);
-    _sendDataToApi(json, 'Day');
+    _sendDataToApi(json, 'Week');
     _updateSelectedBottom('Select Week');
   }
 
@@ -299,7 +301,7 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
               x: index,
               barRods: [
                 BarChartRodData(
-                  toY: item['y_temp'].toDouble(),
+                  toY: item['avg_temperature'].toDouble(),
                   color: Color(0xff0e4f55),
                   width: 7,
                 ),
@@ -335,15 +337,6 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
                       18: '18',
                       23: '23'
                     };
-                    // final TitleWeek = {
-                    //   0: 'Sun',
-                    //   1: 'Mon',
-                    //   2: 'Tue',
-                    //   3: 'Wed',
-                    //   4: 'Thu',
-                    //   5: 'Fri',
-                    //   6: 'Sat'
-                    // };
                     final TitleMonth = {
                       0: '1',
                       4: '5',
@@ -358,12 +351,8 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
                     if (period == 'Day') {
                       title = TitleDay[value.toInt()] ?? '';
                     } else if (period == 'Week') {
-                      //title = TitleWeek[value.toInt()] ?? '';
-                      //title = value.toInt().toString();
-                      int index = value.toInt();
-                      if (index < _data.length) {
-                        title = _data[index]['x']
-                            .toString(); // ใช้ค่า 'x' จาก entry
+                      if (value.toInt() < _data.length) {
+                        title = _data[value.toInt()]['x'].toString();
                       }
                     } else {
                       title = TitleMonth[value.toInt()] ?? '';
@@ -405,199 +394,203 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
         value: SystemUiOverlayStyle.dark,
         child: Scaffold(
           backgroundColor: Color.fromRGBO(250, 246, 229, 1),
-          body: Stack(
-            children: [
-              Container(
-                height: screenHeight,
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(
-                              top: 55 * textScaleFactor,
-                              left: 10 * textScaleFactor),
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    icon: Icon(
-                                      Icons.arrow_back_ios_rounded,
-                                      size: 35,
-                                      color: Colors.grey[800],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                        left: 10 * textScaleFactor),
-                                    child: Text(
-                                      "Temperature",
-                                      style: TextStyle(
-                                          fontSize: 28 * textScaleFactor,
-                                          color: Colors.grey[800],
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                    SizedBox(height: 20 * textScaleFactor),
-                    Row(
-                      children: [
-                        Center(
-                          child: Column(
-                            children: [
-                              if (Platform.isAndroid)
-                                _buildBarChart(375 * textScaleFactor,
-                                    445 * textScaleFactor)
-                              else if (Platform.isIOS)
-                                _buildBarChart(380 * textScaleFactor,
-                                    480 * textScaleFactor)
-                            ],
-                          ),
-                        )
-                      ],
-                    )
-                  ],
-                ),
-              ),
-              Positioned(
-                top: screenHeight * 0.7,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(27),
-                    topRight: Radius.circular(27),
-                  ),
-                  child: Container(
-                    color: Color(0xff0e4f55),
-                    child: Column(
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            AnimatedButtonBar(
-                              radius: 16.0,
-                              padding: EdgeInsets.only(
-                                  top: 20 * textScaleFactor,
-                                  right: 20 * textScaleFactor,
-                                  left: 20 * textScaleFactor),
-                              invertedSelection: true,
-                              backgroundColor: Color.fromRGBO(250, 246, 229, 1),
-                              foregroundColor: Color(0xff0e4f55),
-                              borderColor: Colors.white,
-                              innerVerticalPadding: 12,
+          body: SingleChildScrollView(
+            child: Stack(
+              children: [
+                Container(
+                  height: screenHeight,
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: 55 * textScaleFactor,
+                                left: 10 * textScaleFactor),
+                            child: Column(
                               children: [
-                                ButtonBarEntry(
-                                    child: Text(
-                                      'Day',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      icon: Icon(
+                                        Icons.arrow_back_ios_rounded,
+                                        size: 35,
+                                        color: Colors.grey[800],
+                                      ),
                                     ),
-                                    onTap: () {
-                                      _updateSelectedBottom('Select Day');
-                                      _sendTodayToApi();
-                                    }),
-                                ButtonBarEntry(
-                                    child: Text(
-                                      'Week',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 10 * textScaleFactor),
+                                      child: Text(
+                                        "Temperature",
+                                        style: TextStyle(
+                                            fontSize: 28 * textScaleFactor,
+                                            color: Colors.grey[800],
+                                            fontWeight: FontWeight.bold),
+                                      ),
                                     ),
-                                    onTap: () {
-                                      _updateSelectedBottom('Select Week');
-                                      _sendThisWeekToApi();
-                                    }),
-                                ButtonBarEntry(
-                                    child: Text(
-                                      'Month',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    onTap: () {
-                                      _updateSelectedBottom('Select Month');
-                                      _SendThisMonthToApi();
-                                    })
+                                  ],
+                                ),
                               ],
                             ),
-                            SizedBox(height: 20 * textScaleFactor),
-                            SizedBox(
-                              width: 355 * textScaleFactor,
-                              height: 43 * textScaleFactor,
-                              child: DecoratedBox(
-                                decoration: BoxDecoration(
-                                    color: Color.fromRGBO(250, 246, 229, 1),
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: Center(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                        width: 340 * textScaleFactor,
-                                        child: AutoSizeText(
-                                          '< $dateSelect >',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 18 * textScaleFactor),
-                                          maxLines: 1,
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 20 * textScaleFactor),
+                      Row(
+                        children: [
+                          Center(
+                            child: Column(
+                              children: [
+                                if (Platform.isAndroid)
+                                  _buildBarChart(375 * textScaleFactor,
+                                      445 * textScaleFactor)
+                                else if (Platform.isIOS)
+                                  _buildBarChart(380 * textScaleFactor,
+                                      480 * textScaleFactor)
+                              ],
                             ),
-                            SizedBox(height: 20 * textScaleFactor),
-                            InkWell(
-                              onTap: () {
-                                if (selectedPeriod == 'Select Day') {
-                                  _selectDay(context);
-                                } else if (selectedPeriod == 'Select Week') {
-                                  _selectWeek(context);
-                                } else if (selectedPeriod == 'Select Month') {
-                                  _selectMonth(context);
-                                }
-                              },
-                              child: Container(
-                                padding: EdgeInsets.all(20),
-                                margin: EdgeInsets.symmetric(horizontal: 25),
-                                decoration: BoxDecoration(
-                                  color: Color.fromRGBO(239, 165, 38, 1),
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(
-                                      color: Colors.white, width: 1.3),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    selectedPeriod,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+                Positioned(
+                  top: screenHeight * 0.7,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(27),
+                      topRight: Radius.circular(27),
+                    ),
+                    child: Container(
+                      color: Color(0xff0e4f55),
+                      child: Column(
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              AnimatedButtonBar(
+                                radius: 16.0,
+                                padding: EdgeInsets.only(
+                                    top: 20 * textScaleFactor,
+                                    right: 20 * textScaleFactor,
+                                    left: 20 * textScaleFactor),
+                                invertedSelection: true,
+                                backgroundColor:
+                                    Color.fromRGBO(250, 246, 229, 1),
+                                foregroundColor: Color(0xff0e4f55),
+                                borderColor: Colors.white,
+                                innerVerticalPadding: 12,
+                                children: [
+                                  ButtonBarEntry(
+                                      child: Text(
+                                        'Day',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      onTap: () {
+                                        _updateSelectedBottom('Select Day');
+                                        _sendTodayToApi();
+                                      }),
+                                  ButtonBarEntry(
+                                      child: Text(
+                                        'Week',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      onTap: () {
+                                        _updateSelectedBottom('Select Week');
+                                        _sendThisWeekToApi();
+                                      }),
+                                  ButtonBarEntry(
+                                      child: Text(
+                                        'Month',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      onTap: () {
+                                        _updateSelectedBottom('Select Month');
+                                        _SendThisMonthToApi();
+                                      })
+                                ],
+                              ),
+                              SizedBox(height: 20 * textScaleFactor),
+                              SizedBox(
+                                width: 355 * textScaleFactor,
+                                height: 43 * textScaleFactor,
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                      color: Color.fromRGBO(250, 246, 229, 1),
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: Center(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          width: 340 * textScaleFactor,
+                                          child: AutoSizeText(
+                                            '< $dateSelect >',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 18 * textScaleFactor),
+                                            maxLines: 1,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        )
+                                      ],
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                              SizedBox(height: 20 * textScaleFactor),
+                              InkWell(
+                                onTap: () {
+                                  if (selectedPeriod == 'Select Day') {
+                                    _selectDay(context);
+                                  } else if (selectedPeriod == 'Select Week') {
+                                    _selectWeek(context);
+                                  } else if (selectedPeriod == 'Select Month') {
+                                    _selectMonth(context);
+                                  }
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(20),
+                                  margin: EdgeInsets.symmetric(horizontal: 25),
+                                  decoration: BoxDecoration(
+                                    color: Color.fromRGBO(239, 165, 38, 1),
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                        color: Colors.white, width: 1.3),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      selectedPeriod,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       );

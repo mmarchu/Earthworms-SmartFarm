@@ -295,7 +295,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     Icons.filter_center_focus_rounded,
                     size: 29 * textScaleFactor,
                   ),
-                  label: 'Enemy',
+                  label: 'Enemies',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(
@@ -690,8 +690,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                       height:
                                                           17 * textScaleFactor),
                                                   SizedBox(
-                                                    width: 350,
-                                                    height: 50,
+                                                    width: 320 * textScaleFactor,
+                                                    height: 50 * textScaleFactor,
                                                     child: DecoratedBox(
                                                       decoration: BoxDecoration(
                                                         color: Color.fromRGBO(
