@@ -228,7 +228,7 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
           _data = decodedData;
           period = _period;
         });
-      } else if (response.statusCode == 402) {
+      } else if (response.statusCode == 404) {
         showDialog(
             context: context,
             barrierDismissible: false,
@@ -447,7 +447,7 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
                               children: [
                                 if (Platform.isAndroid)
                                   _buildBarChart(375 * textScaleFactor,
-                                      445 * textScaleFactor)
+                                      460 * textScaleFactor)
                                 else if (Platform.isIOS)
                                   _buildBarChart(380 * textScaleFactor,
                                       480 * textScaleFactor)

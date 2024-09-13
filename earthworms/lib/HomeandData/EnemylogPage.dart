@@ -24,9 +24,9 @@ Future<String?> loadData(String key) async {
 
 class _EnemylogpageState extends State<Enemylogpage> {
   String dateSelect = '';
-  String RatLog = '0';
-  String ToadLog = '0';
-  String LizardLog = '0';
+  String RatLog = '';
+  String ToadLog = '';
+  String LizardLog = '';
 
   @override
   void initState() {

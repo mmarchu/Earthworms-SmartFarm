@@ -537,7 +537,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                                 MainAxisAlignment.center,
                                                                             children: [
                                                                               Padding(
-                                                                                padding: EdgeInsets.only(bottom: 20 * textScaleFactor, top: 6 * textScaleFactor),
+                                                                                padding: EdgeInsets.only(bottom: 20 * textScaleFactor, top: 8 * textScaleFactor),
                                                                                 child: StreamBuilder<Map<String, List<String>>>(
                                                                                   stream: _dataController.stream,
                                                                                   builder: (context, snapshot) {
