@@ -38,10 +38,10 @@ class HomeWidget extends StatelessWidget {
         children: [
           InkWell(
               onTap: () {
-                print(NameSensor);
-                print(macAddress);
-                print('mode: $mode');
-                print('power: $power');
+                // print(NameSensor);
+                // print(macAddress);
+                // print('mode: $mode');
+                // print('power: $power');
                 // Navigator.push(
                 //     context,
                 //     MaterialPageRoute(
