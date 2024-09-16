@@ -14,7 +14,7 @@ Future<int> ConMqtt(String email) async {
   client.onDisconnected = onDisconnected;
   client.onConnected = onConnected;
   client.onSubscribed = onSubscribed;
-  client.pongCallback = pong;
+  // client.pongCallback = pong;
 
   final context = SecurityContext.defaultContext;
   final clientAuthorities =
@@ -85,7 +85,7 @@ void onDisconnected() {
 
 /// The successful connect callback
 void onConnected() {
-  print('OnConnected client callback - Client connection was sucessful');
+  print('OnConnected client callback - Client connection was successful');
 }
 
 /// Pong callback

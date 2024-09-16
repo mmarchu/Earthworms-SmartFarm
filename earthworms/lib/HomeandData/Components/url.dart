@@ -4,7 +4,6 @@ class ApiUrl {
       'http://10.0.2.2:4000/api/auth/login'; // 'http://192.168.1.40:4000/api/auth/login';
   static const String IOSlogin =
       'http://127.0.0.1:4000/api/auth/login'; // 'http://192.168.1.40:4000/api/auth/login';
-
   //Register
   static const String ANDregister =
       'http://10.0.2.2:4000/api/auth/register'; // 'http://192.168.1.40:4000/api/auth/register'

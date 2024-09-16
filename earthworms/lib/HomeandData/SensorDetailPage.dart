@@ -579,6 +579,31 @@ class _SensorDetailPageState extends State<SensorDetailPage>
         var snackBar = SnackBar(content: Text("Successful"));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         //showSnackBar(context);
+      } else if (response.statusCode == 402) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Water pump in automatic mode are working, please try again',),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                    'Try Again',
+                    style: TextStyle(color: Color(0xff0e4f55)),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            );
+          },
+        );
+        setState(() {
+          //New_mode = defaultMode;
+          New_power = defaultPower;
+        });
       } else {
         setState(() {
           //New_mode = defaultMode;

@@ -264,12 +264,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         'Battery': batteries,
       });
 
-      print(macAddresses);
-      print(temperatures);
-      print(moisture);
-      print(lights);
-      print(conductivities);
-      print(batteries);
+      // print(macAddresses);
+      // print(temperatures);
+      // print(moisture);
+      // print(lights);
+      // print(conductivities);
+      // print(batteries);
     } catch (e) {
       print('Error processing JSON data: $e');
     }
