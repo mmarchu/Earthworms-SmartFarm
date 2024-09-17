@@ -927,7 +927,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                               temp[widget.index]
                                                                   .isNotEmpty) {
                                                             return Text(
-                                                              '${temp[widget.index]}%',
+                                                              '${temp[widget.index]}°C',
                                                               style: TextStyle(
                                                                 fontSize: 40 *
                                                                     textScaleFactor,
