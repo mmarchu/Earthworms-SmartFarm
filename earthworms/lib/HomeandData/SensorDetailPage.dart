@@ -585,8 +585,12 @@ class _SensorDetailPageState extends State<SensorDetailPage>
           barrierDismissible: false,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Water pump in automatic mode are working, please try again',),
+              title: Text('Warning',),
               actions: <Widget>[
+                Text('Water pump in automatic mode are working, Please try again',
+                style: TextStyle(
+                  fontSize: 16
+                ),),
                 TextButton(
                   child: Text(
                     'Try Again',

@@ -61,6 +61,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   final List<String> temp = [];
   late String email;
   late String topic;
+  late List<String> sensorID;
   Timer? _tokenCheckTimer;
 
   @override
@@ -71,6 +72,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     email = widget.email;
     topic = '$email/flora';
+    sensorID = widget.sensorIdList;
   }
 
   @override
@@ -397,359 +399,407 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                         topRight: Radius.circular(27)),
                     child: Container(
                         color: Color.fromRGBO(250, 246, 229, 1),
-                        child: Column(
+                        child: Stack(
                           children: [
-                            Expanded(
-                              child: ListView.builder(
-                                itemCount: widget.macAddressList.length,
-                                itemBuilder: (context, index) {
-                                  return Column(
-                                    children: [
-                                      InkWell(
-                                          onTap: () {
-                                            print(widget.sensorNameList[index]);
-                                            print(widget.macAddressList[index]);
-                                            print(widget.modeList[index]);
-                                            print(widget.modeList[index]);
-                                            print("index: $index");
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        SensorDetailPage(
-                                                          nameSensor: widget
-                                                                  .sensorNameList[
-                                                              index],
-                                                          macAddress: widget
-                                                                  .macAddressList[
-                                                              index],
-                                                          email: widget.email,
-                                                          sensorId: widget
-                                                                  .sensorIdList[
-                                                              index],
-                                                          index: index,
-                                                          mode: widget
-                                                              .modeList[index],
-                                                          power: widget
-                                                              .powerList[index],
-                                                          GpioList: widget
-                                                              .GpioList[index],
-                                                        )));
-                                          },
-                                          child: SizedBox(
-                                            width: 360 * textScaleFactor,
-                                            height: 250 * textScaleFactor,
-                                            child: DecoratedBox(
-                                              decoration: BoxDecoration(
-                                                  color: Color.fromRGBO(
-                                                      232, 225, 198, 1),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          27)),
-                                              child: Column(
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: AutoSizeText(
-                                                      widget.sensorNameList[
-                                                          index],
-                                                      style: TextStyle(
-                                                        fontSize: 23 *
-                                                            textScaleFactor,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                      maxLines: 1,
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                    ),
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      //Humidity
-                                                      Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                            left: 20 *
-                                                                textScaleFactor,
-                                                          ),
-                                                          child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .spaceBetween,
-                                                              children: [
-                                                                SizedBox(
-                                                                  width: 150 *
-                                                                      textScaleFactor,
-                                                                  height: 115 *
-                                                                      textScaleFactor,
-                                                                  child:
-                                                                      DecoratedBox(
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      color: Color.fromRGBO(
-                                                                          250,
-                                                                          246,
-                                                                          229,
-                                                                          1),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              25),
-                                                                      //boxShadow: [BoxShadow(blurRadius: 1)]
-                                                                    ),
-                                                                    child:
-                                                                        Padding(
-                                                                      padding:
-                                                                          EdgeInsets
-                                                                              .only(
-                                                                        top: 15 *
-                                                                            textScaleFactor,
-                                                                        left: 15 *
-                                                                            textScaleFactor,
-                                                                        right: 15 *
-                                                                            textScaleFactor,
-                                                                      ),
-                                                                      child:
-                                                                          Column(
-                                                                        children: [
-                                                                          Row(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.spaceBetween,
-                                                                            children: [
-                                                                              Padding(
-                                                                                padding: EdgeInsets.only(top: 8 * textScaleFactor),
-                                                                                child: Text(
-                                                                                  "Humidity",
-                                                                                  style: TextStyle(fontSize: 19 * textScaleFactor, fontWeight: FontWeight.bold),
-                                                                                ),
-                                                                              ),
-                                                                              Image.asset(
-                                                                                "images/humidity.png",
-                                                                                height: 28 * textScaleFactor,
-                                                                                width: 28 * textScaleFactor,
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                          Row(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.center,
-                                                                            children: [
-                                                                              Padding(
-                                                                                padding: EdgeInsets.only(bottom: 20 * textScaleFactor, top: 8 * textScaleFactor),
-                                                                                child: StreamBuilder<Map<String, List<String>>>(
-                                                                                  stream: _dataController.stream,
-                                                                                  builder: (context, snapshot) {
-                                                                                    if (snapshot.hasData) {
-                                                                                      List<String> humidity = snapshot.data!['Moisture'] ?? [];
-                                                                                      if (humidity.isNotEmpty && humidity[index].isNotEmpty) {
-                                                                                        return Text(
-                                                                                          '${humidity[index]}%',
-                                                                                          style: TextStyle(
-                                                                                            fontSize: 25 * textScaleFactor,
-                                                                                            fontWeight: FontWeight.normal,
-                                                                                          ),
-                                                                                        );
-                                                                                      } else {
-                                                                                        return Text(
-                                                                                          'N/A%',
-                                                                                          style: TextStyle(
-                                                                                            fontSize: 25 * textScaleFactor,
-                                                                                            fontWeight: FontWeight.normal,
-                                                                                          ),
-                                                                                        );
-                                                                                      }
-                                                                                    } else {
-                                                                                      return Text(
-                                                                                        'N/A%',
-                                                                                        style: TextStyle(
-                                                                                          fontSize: 25 * textScaleFactor,
-                                                                                          fontWeight: FontWeight.normal,
-                                                                                        ),
-                                                                                      );
-                                                                                    }
-                                                                                  },
-                                                                                ),
-                                                                              ),
-                                                                            ],
-                                                                          )
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 20 *
-                                                                      textScaleFactor,
-                                                                ),
-                                                                //Temperature
-                                                                SizedBox(
-                                                                  width: 150 *
-                                                                      textScaleFactor,
-                                                                  height: 115 *
-                                                                      textScaleFactor,
-                                                                  child:
-                                                                      DecoratedBox(
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      color: Color.fromRGBO(
-                                                                          250,
-                                                                          246,
-                                                                          229,
-                                                                          1),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              25),
-                                                                      //boxShadow: [BoxShadow(blurRadius: 1)]
-                                                                    ),
-                                                                    child:
-                                                                        Padding(
-                                                                      padding:
-                                                                          EdgeInsets
-                                                                              .only(
-                                                                        top: 15 *
-                                                                            textScaleFactor,
-                                                                        left: 15 *
-                                                                            textScaleFactor,
-                                                                        right: 15 *
-                                                                            textScaleFactor,
-                                                                      ),
-                                                                      child:
-                                                                          Column(
-                                                                        children: [
-                                                                          Row(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.spaceBetween,
-                                                                            children: [
-                                                                              Padding(
-                                                                                padding: EdgeInsets.only(top: 8 * textScaleFactor),
-                                                                                child: Text(
-                                                                                  "Temperature",
-                                                                                  style: TextStyle(fontSize: 15 * textScaleFactor, fontWeight: FontWeight.bold),
-                                                                                ),
-                                                                              ),
-                                                                              Image.asset(
-                                                                                "images/temperature-sensor.png",
-                                                                                height: 20 * textScaleFactor,
-                                                                                width: 20 * textScaleFactor,
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                          Row(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.center,
-                                                                            children: [
-                                                                              Padding(
-                                                                                padding: EdgeInsets.only(bottom: 20 * textScaleFactor, top: 13 * textScaleFactor),
-                                                                                child: StreamBuilder<Map<String, List<String>>>(
-                                                                                  stream: _dataController.stream,
-                                                                                  builder: (context, snapshot) {
-                                                                                    if (snapshot.hasData) {
-                                                                                      List<String> temp = snapshot.data!['Temperature'] ?? [];
-                                                                                      if (temp.isNotEmpty && temp[index].isNotEmpty) {
-                                                                                        return Text(
-                                                                                          '${temp[index]}°C',
-                                                                                          style: TextStyle(
-                                                                                            fontSize: 25 * textScaleFactor,
-                                                                                            fontWeight: FontWeight.normal,
-                                                                                          ),
-                                                                                        );
-                                                                                      } else {
-                                                                                        return Text(
-                                                                                          'N/A°C',
-                                                                                          style: TextStyle(
-                                                                                            fontSize: 25 * textScaleFactor,
-                                                                                            fontWeight: FontWeight.normal,
-                                                                                          ),
-                                                                                        );
-                                                                                      }
-                                                                                    } else {
-                                                                                      return Text(
-                                                                                        'N/A°C',
-                                                                                        style: TextStyle(
-                                                                                          fontSize: 25 * textScaleFactor,
-                                                                                          fontWeight: FontWeight.normal,
-                                                                                        ),
-                                                                                      );
-                                                                                    }
-                                                                                  },
-                                                                                ),
-                                                                              ),
-                                                                            ],
-                                                                          )
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ]))
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                      height:
-                                                          17 * textScaleFactor),
-                                                  SizedBox(
-                                                    width: 320 * textScaleFactor,
-                                                    height: 50 * textScaleFactor,
-                                                    child: DecoratedBox(
-                                                      decoration: BoxDecoration(
-                                                        color: Color.fromRGBO(
-                                                            250, 246, 229, 1),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(15),
-                                                      ),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Padding(
-                                                            padding: EdgeInsets.only(
-                                                                top: 5 *
-                                                                    textScaleFactor,
-                                                                bottom: 5 *
-                                                                    textScaleFactor,
-                                                                right: 8 *
-                                                                    textScaleFactor),
-                                                            child: Image.asset(
-                                                                "images/water-pump.png"),
-                                                          ),
-                                                          Text(
-                                                            "Water Pump Mode: ",
-                                                            style: TextStyle(
-                                                                fontSize: 17 *
-                                                                    textScaleFactor),
-                                                          ),
-                                                          Text(
-                                                            widget.modeList[
-                                                                    index]
-                                                                ? "Auto"
-                                                                : "Manual",
-                                                            style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontSize: 20 *
-                                                                    textScaleFactor),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+                            widget.sensorIdList.length == 0
+                                ? Center(
+                                    child: InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AddSensorPage(
+                                                    name: widget.name,
+                                                    lastname: widget.lastname,
+                                                    email: widget.email,
+                                                    topic: topic,
+                                                  )));
+                                    },
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          width: 320 * textScaleFactor,
+                                          height: 100 * textScaleFactor,
+                                          child: Center(
+                                            child: Column(
+                                              children: [
+                                                Icon(Icons.add,
+                                                    size: 50 * textScaleFactor,
+                                                    color: Color.fromARGB(
+                                                        255, 161, 160, 160)),
+                                                Text(
+                                                  'Click to Add Sensor',
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          25 * textScaleFactor,
+                                                      color: Color.fromARGB(
+                                                          255, 161, 160, 160)),
+                                                )
+                                              ],
                                             ),
-                                          )),
-                                      SizedBox(
-                                        height: 10 * textScaleFactor,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ))
+                                : Column(
+                                    children: [
+                                      Expanded(
+                                        child: ListView.builder(
+                                          itemCount:
+                                              widget.macAddressList.length,
+                                          itemBuilder: (context, index) {
+                                            return Column(
+                                              children: [
+                                                InkWell(
+                                                    onTap: () {
+                                                      print(
+                                                          widget.sensorNameList[
+                                                              index]);
+                                                      print(
+                                                          widget.macAddressList[
+                                                              index]);
+                                                      print(widget
+                                                          .modeList[index]);
+                                                      print(widget
+                                                          .modeList[index]);
+                                                      print("index: $index");
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  SensorDetailPage(
+                                                                    nameSensor:
+                                                                        widget.sensorNameList[
+                                                                            index],
+                                                                    macAddress:
+                                                                        widget.macAddressList[
+                                                                            index],
+                                                                    email: widget
+                                                                        .email,
+                                                                    sensorId: widget
+                                                                            .sensorIdList[
+                                                                        index],
+                                                                    index:
+                                                                        index,
+                                                                    mode: widget
+                                                                            .modeList[
+                                                                        index],
+                                                                    power: widget
+                                                                            .powerList[
+                                                                        index],
+                                                                    GpioList: widget
+                                                                            .GpioList[
+                                                                        index],
+                                                                  )));
+                                                    },
+                                                    child: SizedBox(
+                                                      width:
+                                                          360 * textScaleFactor,
+                                                      height:
+                                                          250 * textScaleFactor,
+                                                      child: DecoratedBox(
+                                                        decoration: BoxDecoration(
+                                                            color:
+                                                                Color.fromRGBO(
+                                                                    232,
+                                                                    225,
+                                                                    198,
+                                                                    1),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        27)),
+                                                        child: Column(
+                                                          children: [
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child:
+                                                                  AutoSizeText(
+                                                                widget.sensorNameList[
+                                                                    index],
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 23 *
+                                                                      textScaleFactor,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                                maxLines: 1,
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                              ),
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                //Humidity
+                                                                Padding(
+                                                                    padding:
+                                                                        EdgeInsets
+                                                                            .only(
+                                                                      left: 20 *
+                                                                          textScaleFactor,
+                                                                    ),
+                                                                    child: Row(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.spaceBetween,
+                                                                        children: [
+                                                                          SizedBox(
+                                                                            width:
+                                                                                150 * textScaleFactor,
+                                                                            height:
+                                                                                115 * textScaleFactor,
+                                                                            child:
+                                                                                DecoratedBox(
+                                                                              decoration: BoxDecoration(
+                                                                                color: Color.fromRGBO(250, 246, 229, 1),
+                                                                                borderRadius: BorderRadius.circular(25),
+                                                                                //boxShadow: [BoxShadow(blurRadius: 1)]
+                                                                              ),
+                                                                              child: Padding(
+                                                                                padding: EdgeInsets.only(
+                                                                                  top: 15 * textScaleFactor,
+                                                                                  left: 15 * textScaleFactor,
+                                                                                  right: 15 * textScaleFactor,
+                                                                                ),
+                                                                                child: Column(
+                                                                                  children: [
+                                                                                    Row(
+                                                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                      children: [
+                                                                                        Padding(
+                                                                                          padding: EdgeInsets.only(top: 8 * textScaleFactor),
+                                                                                          child: Text(
+                                                                                            "Humidity",
+                                                                                            style: TextStyle(fontSize: 19 * textScaleFactor, fontWeight: FontWeight.bold),
+                                                                                          ),
+                                                                                        ),
+                                                                                        Image.asset(
+                                                                                          "images/humidity.png",
+                                                                                          height: 28 * textScaleFactor,
+                                                                                          width: 28 * textScaleFactor,
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                    Row(
+                                                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                                                      children: [
+                                                                                        Padding(
+                                                                                          padding: EdgeInsets.only(bottom: 20 * textScaleFactor, top: 8 * textScaleFactor),
+                                                                                          child: StreamBuilder<Map<String, List<String>>>(
+                                                                                            stream: _dataController.stream,
+                                                                                            builder: (context, snapshot) {
+                                                                                              if (snapshot.hasData) {
+                                                                                                List<String> humidity = snapshot.data!['Moisture'] ?? [];
+                                                                                                if (humidity.isNotEmpty && humidity[index].isNotEmpty) {
+                                                                                                  return Text(
+                                                                                                    '${humidity[index]}%',
+                                                                                                    style: TextStyle(
+                                                                                                      fontSize: 25 * textScaleFactor,
+                                                                                                      fontWeight: FontWeight.normal,
+                                                                                                    ),
+                                                                                                  );
+                                                                                                } else {
+                                                                                                  return Text(
+                                                                                                    'N/A%',
+                                                                                                    style: TextStyle(
+                                                                                                      fontSize: 25 * textScaleFactor,
+                                                                                                      fontWeight: FontWeight.normal,
+                                                                                                    ),
+                                                                                                  );
+                                                                                                }
+                                                                                              } else {
+                                                                                                return Text(
+                                                                                                  'N/A%',
+                                                                                                  style: TextStyle(
+                                                                                                    fontSize: 25 * textScaleFactor,
+                                                                                                    fontWeight: FontWeight.normal,
+                                                                                                  ),
+                                                                                                );
+                                                                                              }
+                                                                                            },
+                                                                                          ),
+                                                                                        ),
+                                                                                      ],
+                                                                                    )
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          SizedBox(
+                                                                            width:
+                                                                                20 * textScaleFactor,
+                                                                          ),
+                                                                          //Temperature
+                                                                          SizedBox(
+                                                                            width:
+                                                                                150 * textScaleFactor,
+                                                                            height:
+                                                                                115 * textScaleFactor,
+                                                                            child:
+                                                                                DecoratedBox(
+                                                                              decoration: BoxDecoration(
+                                                                                color: Color.fromRGBO(250, 246, 229, 1),
+                                                                                borderRadius: BorderRadius.circular(25),
+                                                                                //boxShadow: [BoxShadow(blurRadius: 1)]
+                                                                              ),
+                                                                              child: Padding(
+                                                                                padding: EdgeInsets.only(
+                                                                                  top: 15 * textScaleFactor,
+                                                                                  left: 15 * textScaleFactor,
+                                                                                  right: 15 * textScaleFactor,
+                                                                                ),
+                                                                                child: Column(
+                                                                                  children: [
+                                                                                    Row(
+                                                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                      children: [
+                                                                                        Padding(
+                                                                                          padding: EdgeInsets.only(top: 8 * textScaleFactor),
+                                                                                          child: Text(
+                                                                                            "Temperature",
+                                                                                            style: TextStyle(fontSize: 15 * textScaleFactor, fontWeight: FontWeight.bold),
+                                                                                          ),
+                                                                                        ),
+                                                                                        Image.asset(
+                                                                                          "images/temperature-sensor.png",
+                                                                                          height: 20 * textScaleFactor,
+                                                                                          width: 20 * textScaleFactor,
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                    Row(
+                                                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                                                      children: [
+                                                                                        Padding(
+                                                                                          padding: EdgeInsets.only(bottom: 20 * textScaleFactor, top: 13 * textScaleFactor),
+                                                                                          child: StreamBuilder<Map<String, List<String>>>(
+                                                                                            stream: _dataController.stream,
+                                                                                            builder: (context, snapshot) {
+                                                                                              if (snapshot.hasData) {
+                                                                                                List<String> temp = snapshot.data!['Temperature'] ?? [];
+                                                                                                if (temp.isNotEmpty && temp[index].isNotEmpty) {
+                                                                                                  return Text(
+                                                                                                    '${temp[index]}°C',
+                                                                                                    style: TextStyle(
+                                                                                                      fontSize: 25 * textScaleFactor,
+                                                                                                      fontWeight: FontWeight.normal,
+                                                                                                    ),
+                                                                                                  );
+                                                                                                } else {
+                                                                                                  return Text(
+                                                                                                    'N/A°C',
+                                                                                                    style: TextStyle(
+                                                                                                      fontSize: 25 * textScaleFactor,
+                                                                                                      fontWeight: FontWeight.normal,
+                                                                                                    ),
+                                                                                                  );
+                                                                                                }
+                                                                                              } else {
+                                                                                                return Text(
+                                                                                                  'N/A°C',
+                                                                                                  style: TextStyle(
+                                                                                                    fontSize: 25 * textScaleFactor,
+                                                                                                    fontWeight: FontWeight.normal,
+                                                                                                  ),
+                                                                                                );
+                                                                                              }
+                                                                                            },
+                                                                                          ),
+                                                                                        ),
+                                                                                      ],
+                                                                                    )
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ]))
+                                                              ],
+                                                            ),
+                                                            SizedBox(
+                                                                height: 17 *
+                                                                    textScaleFactor),
+                                                            SizedBox(
+                                                              width: 320 *
+                                                                  textScaleFactor,
+                                                              height: 50 *
+                                                                  textScaleFactor,
+                                                              child:
+                                                                  DecoratedBox(
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  color: Color
+                                                                      .fromRGBO(
+                                                                          250,
+                                                                          246,
+                                                                          229,
+                                                                          1),
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              15),
+                                                                ),
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    Padding(
+                                                                      padding: EdgeInsets.only(
+                                                                          top: 5 *
+                                                                              textScaleFactor,
+                                                                          bottom: 5 *
+                                                                              textScaleFactor,
+                                                                          right:
+                                                                              8 * textScaleFactor),
+                                                                      child: Image
+                                                                          .asset(
+                                                                              "images/water-pump.png"),
+                                                                    ),
+                                                                    Text(
+                                                                      "Water Pump Mode: ",
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              17 * textScaleFactor),
+                                                                    ),
+                                                                    Text(
+                                                                      widget.modeList[
+                                                                              index]
+                                                                          ? "Auto"
+                                                                          : "Manual",
+                                                                      style: TextStyle(
+                                                                          fontWeight: FontWeight
+                                                                              .bold,
+                                                                          fontSize:
+                                                                              20 * textScaleFactor),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    )),
+                                                SizedBox(
+                                                  height: 10 * textScaleFactor,
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        ),
                                       ),
                                     ],
-                                  );
-                                },
-                              ),
-                            ),
+                                  ),
                           ],
                         )),
                   ),
