@@ -31,8 +31,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  #url_launcher: ^6.1.12
-  #image_picker: ^1.0.0
   http: ^1.0.0
   cupertino_icons: ^1.0.2
   responsive_framework: ^1.1.1
