@@ -24,9 +24,9 @@ Future<String?> loadData(String key) async {
 
 class _EnemylogpageState extends State<Enemylogpage> {
   String dateSelect = '';
-  String RatLog = '';
-  String ToadLog = '';
-  String LizardLog = '';
+  String RatLog = '0';
+  String ToadLog = '0';
+  String LizardLog = '0';
 
   @override
   void initState() {
@@ -142,41 +142,8 @@ class _EnemylogpageState extends State<Enemylogpage> {
             LizardLog = data['Lizard'].toString();
           });
         }
-      } else if (response == 404) {
-        showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text('No Data'),
-                actions: <Widget>[
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text("Try Again",
-                          style: TextStyle(color: Color(0xff0e4f55))))
-                ],
-              );
-            });
       } else {
         print('${response.statusCode}: ${response.reasonPhrase}');
-        showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text('ERROR!'),
-                actions: <Widget>[
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text("Try Again",
-                          style: TextStyle(color: Color(0xff0e4f55))))
-                ],
-              );
-            });
       }
     } catch (e) {
       Navigator.pop(context);

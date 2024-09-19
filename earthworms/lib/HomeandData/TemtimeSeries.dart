@@ -227,6 +227,28 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
         setState(() {
           _data = decodedData;
           period = _period;
+          if (_period == 'Day') {
+            _data = List.generate(24, (index) {
+              final String x = index.toString().padLeft(2, '0');
+              final data = decodedData.firstWhere((item) => item['x'] == x,
+                  orElse: () => {"x": x, "avg_temperature": 0});
+              return data;
+            });
+            // } else if (_period == 'Week') {
+            //   _data = List.generate(7, (index) {
+            //     final String x = (index + 1).toString().padLeft(2, '0');
+            //     final data = decodedData.firstWhere((item) => item['x'] == x,
+            //         orElse: () => {"x": x, "avg_temperature": 0});
+            //     return data;
+            //   });
+          } else if (_period == 'Month') {
+            _data = List.generate(30, (index) {
+              final String x = (index + 1).toString().padLeft(2, '0');
+              final data = decodedData.firstWhere((item) => item['x'] == x,
+                  orElse: () => {"x": x, "avg_temperature": 0});
+              return data;
+            });
+          }
         });
       } else if (response.statusCode == 404) {
         showDialog(
