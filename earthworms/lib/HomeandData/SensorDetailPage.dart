@@ -585,12 +585,14 @@ class _SensorDetailPageState extends State<SensorDetailPage>
           barrierDismissible: false,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Warning',),
+              title: Text(
+                'Warning',
+              ),
               actions: <Widget>[
-                Text('Water pump in automatic mode are working, Please try again',
-                style: TextStyle(
-                  fontSize: 16
-                ),),
+                Text(
+                  'Water pump in automatic mode are working, Please try again',
+                  style: TextStyle(fontSize: 16),
+                ),
                 TextButton(
                   child: Text(
                     'Try Again',
@@ -644,7 +646,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                     child: Stack(
                       children: [
                         Positioned(
-                          top: 30 * textScaleFactor,
+                          top: 35 * textScaleFactor,
                           right: 25 * textScaleFactor,
                           child: TextButton(
                             onPressed: () {
@@ -758,23 +760,37 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                 children: [
                                                   Padding(
                                                     padding: EdgeInsets.only(
-                                                        top: 8 *
+                                                        top:
+                                                            8 * textScaleFactor,
+                                                        left: 8 *
                                                             textScaleFactor),
                                                     child: Text(
                                                       "Humidity",
                                                       style: TextStyle(
-                                                          fontSize: 19 *
+                                                          fontSize: 20 *
                                                               textScaleFactor,
                                                           fontWeight:
                                                               FontWeight.bold),
                                                     ),
                                                   ),
-                                                  Image.asset(
-                                                    "images/humidity.png",
-                                                    height:
-                                                        40 * textScaleFactor,
-                                                    width: 40 * textScaleFactor,
-                                                  ),
+                                                  // Image.asset(
+                                                  //   "images/humidity.png",
+                                                  //   height:
+                                                  //       40 * textScaleFactor,
+                                                  //   width: 40 * textScaleFactor,
+                                                  // ),
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top:
+                                                            8 * textScaleFactor,
+                                                        left: 15 *
+                                                            textScaleFactor),
+                                                    child: Icon(
+                                                      Icons
+                                                          .arrow_forward_ios_rounded,
+                                                      size: 30,
+                                                    ),
+                                                  )
                                                 ],
                                               ),
                                               Row(
@@ -843,7 +859,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                     ),
                                                   ),
                                                 ],
-                                              )
+                                              ),
                                             ],
                                           ),
                                         ),
@@ -891,18 +907,29 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                     child: Text(
                                                       "Temperature",
                                                       style: TextStyle(
-                                                          fontSize: 15 *
+                                                          fontSize: 17 *
                                                               textScaleFactor,
                                                           fontWeight:
                                                               FontWeight.bold),
                                                     ),
                                                   ),
-                                                  Image.asset(
-                                                    "images/temperature-sensor.png",
-                                                    height:
-                                                        40 * textScaleFactor,
-                                                    width: 40 * textScaleFactor,
-                                                  ),
+                                                  // Image.asset(
+                                                  //   "images/temperature-sensor.png",
+                                                  //   height:
+                                                  //       40 * textScaleFactor,
+                                                  //   width: 40 * textScaleFactor,
+                                                  // ),
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top:
+                                                            8 * textScaleFactor,
+                                                        left: 5),
+                                                    child: Icon(
+                                                      Icons
+                                                          .arrow_forward_ios_rounded,
+                                                      size: 30,
+                                                    ),
+                                                  )
                                                 ],
                                               ),
                                               Row(
