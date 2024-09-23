@@ -240,6 +240,7 @@ class _AddSensorPageState extends State<AddSensorPage>
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        try{
         if (data['data'] != null && data['data'] is List) {
           List<Map<String, String>> sensorList =
               List<Map<String, String>>.from(data['data'].map((item) => {
@@ -259,6 +260,32 @@ class _AddSensorPageState extends State<AddSensorPage>
             jsonData['gpio'].map((item) => item['gpio_id'] as int));
         print(GPIO_Port);
         Navigator.pop(context);
+        }catch(e){
+          showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Sensor not found'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                    'Try Again',
+                    style: TextStyle(color: Color(0xff0e4f55)),
+                  ),
+                  onPressed: () {
+                    // Navigator.pop(context);
+                    // DialogScanSenser(context);
+                    // SensorsListAPI();
+                    //CheckToken();
+                    LodeDataToHomePage();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+        }
       } else {
         Navigator.pop(context);
         showDialog(

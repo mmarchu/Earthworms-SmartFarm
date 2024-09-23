@@ -154,17 +154,29 @@ class ApiUrl {
 //   static const String IOSupdateSensorName =
 //       'http://192.168.1.161:4000/api/sensor/update'; // 'http://192.168.1.40:4000/api/sensor/update'
 
-//   //WaterPump
-//   static const String ANDwaterpump =
+//   //WaterPump Mode Update
+//   static const String ANDwaterpumpMode =
+//       'http://192.168.1.161:4000/api/gpio/update'; // 'http://192.168.1.40:4000/api/gpio/state;
+//   static const String IOSwaterpumpMode =
+//       'http://192.168.1.161:4000/api/gpio/update'; // 'http://192.168.1.40:4000/api/gpio/state';
+
+//   //WaterPump Power Update
+//   static const String ANDwaterpumpPower =
 //       'http://192.168.1.161:4000/api/gpio/state'; // 'http://192.168.1.40:4000/api/gpio/state;
-//   static const String IOSwaterpump =
+//   static const String IOSwaterpumpPower =
 //       'http://192.168.1.161:4000/api/gpio/state'; // 'http://192.168.1.40:4000/api/gpio/state';
 
 //   //Get Data TimeSeries
 //   static const String ANDgetTimeseries =
-//       'http://192.168.1.161:40000/api/timeSeries/get'; // 'http://192.168.1.40:4000/api/timeSeries/get'
+//       'http://192.168.1.161:4000/api/timeSeries/get'; // 'http://192.168.1.40:4000/api/timeSeries/get'
 //   static const String IOSgetTimeseries =
 //       'http://192.168.1.161:4000/api/timeSeries/get'; // 'http://192.168.1.40:4000/api/timeSeries/get'
+
+//   //Log Enemies
+//   static const String ANDGetLogEnemies =
+//       'http://192.168.1.161:4000/api/logEnemies/getAll';
+//   static const String IOSGetLogEnemies =
+//       'http://192.168.1.161:4000/api/logEnemies/getAll';
 // }
 
 // //Local Windows March

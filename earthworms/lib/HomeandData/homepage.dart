@@ -500,7 +500,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                       width:
                                                           360 * textScaleFactor,
                                                       height:
-                                                          270 * textScaleFactor,
+                                                          275 * textScaleFactor,
                                                       child: DecoratedBox(
                                                         decoration: BoxDecoration(
                                                             color:
@@ -802,7 +802,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                   child: Icon(
                                                                     Icons
                                                                         .arrow_forward_ios_rounded,
-                                                                    size: 25,
+                                                                    size: 25 *
+                                                                        textScaleFactor,
                                                                   ),
                                                                 ),
                                                               ],

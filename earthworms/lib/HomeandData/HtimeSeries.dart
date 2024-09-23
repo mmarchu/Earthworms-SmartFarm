@@ -312,7 +312,7 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
       width: width,
       child: BarChart(
         BarChartData(
-          alignment: BarChartAlignment.spaceBetween,
+          alignment: BarChartAlignment.spaceAround,
           gridData: FlGridData(show: false),
           maxY: 100,
           barGroups: _data.asMap().entries.map((entry) {
