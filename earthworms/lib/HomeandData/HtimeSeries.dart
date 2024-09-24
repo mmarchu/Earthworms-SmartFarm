@@ -540,7 +540,12 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                                       onTap: () {
                                         _updateSelectedBottom('Select Month');
                                         _SendThisMonthToApi();
-                                      })
+                                      }),
+                                  ButtonBarEntry(
+                                      child: Text('Year',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                      onTap: () {})
                                 ],
                               ),
                               SizedBox(height: 20 * textScaleFactor),
