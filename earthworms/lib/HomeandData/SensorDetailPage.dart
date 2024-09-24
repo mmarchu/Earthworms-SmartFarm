@@ -832,26 +832,40 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                               ),
                                                             );
                                                           } else {
-                                                            return Text(
-                                                              'N/A%',
-                                                              style: TextStyle(
-                                                                fontSize: 40 *
+                                                            return Padding(
+                                                              padding: EdgeInsets
+                                                                  .only(
+                                                                      top: 10 *
+                                                                          textScaleFactor),
+                                                              child: LoadingAnimationWidget
+                                                                  .staggeredDotsWave(
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        88,
+                                                                        174,
+                                                                        220),
+                                                                size: 50 *
                                                                     textScaleFactor,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .normal,
                                                               ),
                                                             );
                                                           }
                                                         } else {
-                                                          return Text(
-                                                            'N/A%',
-                                                            style: TextStyle(
-                                                              fontSize: 40 *
+                                                          return Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    top: 10 *
+                                                                        textScaleFactor),
+                                                            child: LoadingAnimationWidget
+                                                                .staggeredDotsWave(
+                                                              color: Color
+                                                                  .fromARGB(
+                                                                      255,
+                                                                      88,
+                                                                      174,
+                                                                      220),
+                                                              size: 50 *
                                                                   textScaleFactor,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .normal,
                                                             ),
                                                           );
                                                         }
@@ -968,26 +982,40 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                               ),
                                                             );
                                                           } else {
-                                                            return Text(
-                                                              'N/A%',
-                                                              style: TextStyle(
-                                                                fontSize: 40 *
+                                                            return Padding(
+                                                              padding: EdgeInsets
+                                                                  .only(
+                                                                      top: 10 *
+                                                                          textScaleFactor),
+                                                              child: LoadingAnimationWidget
+                                                                  .staggeredDotsWave(
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        88,
+                                                                        174,
+                                                                        220),
+                                                                size: 50 *
                                                                     textScaleFactor,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .normal,
                                                               ),
                                                             );
                                                           }
                                                         } else {
-                                                          return Text(
-                                                            'N/A%',
-                                                            style: TextStyle(
-                                                              fontSize: 40 *
+                                                          return Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    top: 10 *
+                                                                        textScaleFactor),
+                                                            child: LoadingAnimationWidget
+                                                                .staggeredDotsWave(
+                                                              color: Color
+                                                                  .fromARGB(
+                                                                      255,
+                                                                      88,
+                                                                      174,
+                                                                      220),
+                                                              size: 50 *
                                                                   textScaleFactor,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .normal,
                                                             ),
                                                           );
                                                         }
@@ -1022,13 +1050,14 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                   children: [
                                     Padding(
                                       padding: EdgeInsets.only(
-                                          left: 10 * textScaleFactor),
+                                          left: 20 * textScaleFactor),
                                       child: Image.asset(
-                                        "images/water-pump.png",
-                                        height: 100 * textScaleFactor,
-                                        width: 100 * textScaleFactor,
+                                        "images/pump.png",
+                                        height: 90 * textScaleFactor,
+                                        width: 90 * textScaleFactor,
                                       ),
                                     ),
+                                    SizedBox(width: 5 * textScaleFactor),
                                     Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -1213,24 +1242,24 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                         ),
                                                       );
                                                     } else {
-                                                      return Text(
-                                                        'N/A%',
-                                                        style: TextStyle(
-                                                          fontSize: 30 *
-                                                              textScaleFactor,
-                                                          fontWeight:
-                                                              FontWeight.normal,
-                                                        ),
+                                                      return LoadingAnimationWidget
+                                                          .halfTriangleDot(
+                                                        color: Color.fromARGB(
+                                                            255, 88, 174, 220),
+                                                        size: 70,
                                                       );
                                                     }
                                                   } else {
-                                                    return Text(
-                                                      'N/A%',
-                                                      style: TextStyle(
-                                                        fontSize: 30 *
-                                                            textScaleFactor,
-                                                        fontWeight:
-                                                            FontWeight.normal,
+                                                    return Padding(
+                                                      padding: EdgeInsets.only(
+                                                          top: 5 *
+                                                              textScaleFactor),
+                                                      child:
+                                                          LoadingAnimationWidget
+                                                              .staggeredDotsWave(
+                                                        color: Color.fromARGB(
+                                                            255, 88, 174, 220),
+                                                        size: 40,
                                                       ),
                                                     );
                                                   }
@@ -1256,7 +1285,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                               padding: EdgeInsets.only(
                                                   top: 12 * textScaleFactor),
                                               child: Text(
-                                                "GPIO Port",
+                                                "GPIO",
                                                 style: TextStyle(
                                                     fontSize:
                                                         25 * textScaleFactor,

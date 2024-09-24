@@ -9,6 +9,7 @@ import 'package:earthworms/HomeandData/SensorDetailPage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:earthworms/mqtt/mqttmanage.dart';
 import 'package:mqtt_client/mqtt_client.dart';
@@ -472,16 +473,21 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                       Expanded(
                                         child: Column(
                                           children: [
-                                            TextField(
-                                              controller: SearchController,
-                                              decoration: InputDecoration(
-                                                hintText: 'Search Sensor',
-                                                prefixIcon: Icon(Icons.search),
-                                                border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(
-                                                              25.0)),
+                                            Padding(
+                                              padding: EdgeInsets.all(
+                                                  8.0 * textScaleFactor),
+                                              child: TextField(
+                                                controller: SearchController,
+                                                decoration: InputDecoration(
+                                                  hintText: 'Search Sensor',
+                                                  prefixIcon:
+                                                      Icon(Icons.search),
+                                                  border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                25.0)),
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -508,7 +514,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                     index]);
                                                             print(
                                                                 "index: $index");
-                                                            int sensorIndex = widget.sensorNameList.indexOf(FilterSensorName[index]);
+                                                            int sensorIndex = widget
+                                                                .sensorNameList
+                                                                .indexOf(
+                                                                    FilterSensorName[
+                                                                        index]);
                                                             Navigator.push(
                                                                 context,
                                                                 MaterialPageRoute(
@@ -551,7 +561,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                             8.0),
                                                                     child:
                                                                         AutoSizeText(
-                                                                      FilterSensorName[index],
+                                                                      FilterSensorName[
+                                                                          index],
                                                                       style:
                                                                           TextStyle(
                                                                         fontSize:
@@ -632,21 +643,15 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                                                           ),
                                                                                                         );
                                                                                                       } else {
-                                                                                                        return Text(
-                                                                                                          'N/A%',
-                                                                                                          style: TextStyle(
-                                                                                                            fontSize: 25 * textScaleFactor,
-                                                                                                            fontWeight: FontWeight.normal,
-                                                                                                          ),
+                                                                                                        return LoadingAnimationWidget.staggeredDotsWave(
+                                                                                                          color: Color.fromARGB(255, 88, 174, 220),
+                                                                                                          size: 20 * textScaleFactor,
                                                                                                         );
                                                                                                       }
                                                                                                     } else {
-                                                                                                      return Text(
-                                                                                                        'N/A%',
-                                                                                                        style: TextStyle(
-                                                                                                          fontSize: 25 * textScaleFactor,
-                                                                                                          fontWeight: FontWeight.normal,
-                                                                                                        ),
+                                                                                                      return LoadingAnimationWidget.staggeredDotsWave(
+                                                                                                        color: Color.fromARGB(255, 88, 174, 220),
+                                                                                                        size: 35 * textScaleFactor,
                                                                                                       );
                                                                                                     }
                                                                                                   },
@@ -716,21 +721,15 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                                                           ),
                                                                                                         );
                                                                                                       } else {
-                                                                                                        return Text(
-                                                                                                          'N/A°C',
-                                                                                                          style: TextStyle(
-                                                                                                            fontSize: 25 * textScaleFactor,
-                                                                                                            fontWeight: FontWeight.normal,
-                                                                                                          ),
+                                                                                                        return LoadingAnimationWidget.staggeredDotsWave(
+                                                                                                          color: Color.fromARGB(255, 88, 174, 220),
+                                                                                                          size: 35 * textScaleFactor,
                                                                                                         );
                                                                                                       }
                                                                                                     } else {
-                                                                                                      return Text(
-                                                                                                        'N/A°C',
-                                                                                                        style: TextStyle(
-                                                                                                          fontSize: 25 * textScaleFactor,
-                                                                                                          fontWeight: FontWeight.normal,
-                                                                                                        ),
+                                                                                                      return LoadingAnimationWidget.staggeredDotsWave(
+                                                                                                        color: Color.fromARGB(255, 88, 174, 220),
+                                                                                                        size: 35 * textScaleFactor,
                                                                                                       );
                                                                                                     }
                                                                                                   },

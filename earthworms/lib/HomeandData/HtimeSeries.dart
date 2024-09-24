@@ -150,6 +150,56 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
     }
   }
 
+// Select Year
+  void _selectYear(BuildContext context) async {
+    int selectedYear = DateTime.now().year;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select Year'),
+          content: Container(
+            height: 300,
+            width: 300,
+            child: Theme(
+              data: ThemeData.light().copyWith(
+                colorScheme: ColorScheme.light(
+                  primary: Color(0xff0e4f55),
+                  onPrimary: Colors.white,
+                  surface: Colors.white,
+                  onSurface: Colors.black,
+                ),
+                dialogBackgroundColor: Colors.white,
+              ),
+              child: YearPicker(
+                firstDate: DateTime(2020),
+                lastDate: DateTime(2024),
+                selectedDate: DateTime(selectedYear),
+                onChanged: (DateTime dateTime) {
+                  setState(() {
+                    selectedYear = dateTime.year;
+                  });
+                  Navigator.pop(context);
+
+                  final json = {
+                    "sensor_id": widget.sensorId,
+                    "period": "year",
+                    "date": selectedYear.toString(),
+                  };
+                  final displayDate = "Year : ${selectedYear}";
+                  print(displayDate);
+                  _updateDateData(displayDate);
+                  _sendDataToApi(json, 'Year');
+                },
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 // Send Today to Api when open this page
   void _sendTodayToApi() {
     final today = DateTime.now();
@@ -202,6 +252,20 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
     _sendDataToApi(json, 'Month');
   }
 
+// Send This year to Api
+  void _sendThisYearToApi() {
+    int selectedYear = DateTime.now().year;
+    final json = {
+      "sensor_id": widget.sensorId,
+      "period": "year",
+      "date": selectedYear.toString(),
+    };
+    final displayDate = "Year : ${selectedYear}";
+    print(displayDate);
+    _updateDateData(displayDate);
+    _sendDataToApi(json, 'Year');
+  }
+
 // Api Get Data
   Future<void> _sendDataToApi(final json, String _period) async {
     String? token = await loadData('Token');
@@ -244,6 +308,13 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
           } else if (_period == 'Month') {
             _data = List.generate(30, (index) {
               final String x = (index + 1).toString().padLeft(2, '0');
+              final data = decodedData.firstWhere((item) => item['x'] == x,
+                  orElse: () => {"x": x, "avg_humidity": 0});
+              return data;
+            });
+          } else if (_period == 'Year') {
+            _data = List.generate(12, (index) {
+              final String x = index.toString().padLeft(2, '0');
               final data = decodedData.firstWhere((item) => item['x'] == x,
                   orElse: () => {"x": x, "avg_humidity": 0});
               return data;
@@ -369,6 +440,20 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                       24: '25',
                       28: '29'
                     };
+                    final TitleYear = {
+                      0: '1',
+                      1: '2',
+                      2: '3',
+                      3: '4',
+                      4: '5',
+                      5: '6',
+                      6: '7',
+                      7: '8',
+                      8: '9',
+                      9: '10',
+                      10: '11',
+                      11: '12'
+                    };
                     String title = '';
                     if (period == 'Day') {
                       title = TitleDay[value.toInt()] ?? '';
@@ -376,8 +461,10 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                       if (value.toInt() < _data.length) {
                         title = _data[value.toInt()]['x'].toString();
                       }
-                    } else {
+                    } else if (period == 'Month') {
                       title = TitleMonth[value.toInt()] ?? '';
+                    } else {
+                      title = TitleYear[value.toInt()] ?? '';
                     }
                     return SideTitleWidget(
                       axisSide: meta.axisSide,
@@ -461,7 +548,35 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                           )
                         ],
                       ),
-                      SizedBox(height: 20 * textScaleFactor),
+                      SizedBox(height: 15 * textScaleFactor),
+                      SizedBox(
+                        width: 355 * textScaleFactor,
+                        height: 43 * textScaleFactor,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                              //color: Color.fromRGBO(199, 171, 42, 1),
+                              borderRadius: BorderRadius.circular(20)),
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 340 * textScaleFactor,
+                                  child: AutoSizeText(
+                                    dateSelect,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 30 * textScaleFactor),
+                                    maxLines: 1,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 30 * textScaleFactor),
                       Row(
                         children: [
                           Center(
@@ -472,7 +587,7 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                                       460 * textScaleFactor)
                                 else if (Platform.isIOS)
                                   _buildBarChart(380 * textScaleFactor,
-                                      480 * textScaleFactor)
+                                      493 * textScaleFactor)
                               ],
                             ),
                           )
@@ -482,7 +597,7 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                   ),
                 ),
                 Positioned(
-                  top: screenHeight * 0.7,
+                  top: screenHeight * 0.8,
                   left: 0,
                   right: 0,
                   bottom: 0,
@@ -545,38 +660,41 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                                       child: Text('Year',
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold)),
-                                      onTap: () {})
+                                      onTap: () {
+                                        _updateSelectedBottom('Select Year');
+                                        _sendThisYearToApi();
+                                      })
                                 ],
                               ),
-                              SizedBox(height: 20 * textScaleFactor),
-                              SizedBox(
-                                width: 355 * textScaleFactor,
-                                height: 43 * textScaleFactor,
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                      color: Color.fromRGBO(250, 246, 229, 1),
-                                      borderRadius: BorderRadius.circular(20)),
-                                  child: Center(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                          width: 340 * textScaleFactor,
-                                          child: AutoSizeText(
-                                            '< $dateSelect >',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 18 * textScaleFactor),
-                                            maxLines: 1,
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
+                              // SizedBox(height: 20 * textScaleFactor),
+                              // SizedBox(
+                              //   width: 355 * textScaleFactor,
+                              //   height: 43 * textScaleFactor,
+                              //   child: DecoratedBox(
+                              //     decoration: BoxDecoration(
+                              //         color: Color.fromRGBO(250, 246, 229, 1),
+                              //         borderRadius: BorderRadius.circular(20)),
+                              //     child: Center(
+                              //       child: Row(
+                              //         mainAxisAlignment:
+                              //             MainAxisAlignment.center,
+                              //         children: [
+                              //           SizedBox(
+                              //             width: 340 * textScaleFactor,
+                              //             child: AutoSizeText(
+                              //               '< $dateSelect >',
+                              //               style: TextStyle(
+                              //                   fontWeight: FontWeight.w600,
+                              //                   fontSize: 18 * textScaleFactor),
+                              //               maxLines: 1,
+                              //               textAlign: TextAlign.center,
+                              //             ),
+                              //           )
+                              //         ],
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
                               SizedBox(height: 20 * textScaleFactor),
                               InkWell(
                                 onTap: () {
@@ -586,6 +704,8 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                                     _selectWeek(context);
                                   } else if (selectedPeriod == 'Select Month') {
                                     _selectMonth(context);
+                                  } else if (selectedPeriod == 'Select Year') {
+                                    _selectYear(context);
                                   }
                                 },
                                 child: Container(

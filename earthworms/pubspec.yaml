@@ -100,6 +100,7 @@ flutter:
      - images/rats.png
      - images/skink.png
      - images/toad.png
+     - images/pump.png
      - message.txt
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
