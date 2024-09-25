@@ -298,13 +298,6 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                   orElse: () => {"x": x, "avg_humidity": 0});
               return data;
             });
-            // } else if (_period == 'Week') {
-            //   _data = List.generate(7, (index) {
-            //     final String x = (index + 1).toString().padLeft(2, '0');
-            //     final data = decodedData.firstWhere((item) => item['x'] == x,
-            //         orElse: () => {"x": x, "avg_humidity": 0});
-            //     return data;
-            //   });
           } else if (_period == 'Month') {
             _data = List.generate(30, (index) {
               final String x = (index + 1).toString().padLeft(2, '0');
@@ -331,6 +324,9 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                 actions: <Widget>[
                   TextButton(
                       onPressed: () {
+                        setState(() {
+                          _data.clear();
+                        });
                         Navigator.pop(context);
                       },
                       child: Text("Try Again",
@@ -349,6 +345,9 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                 actions: <Widget>[
                   TextButton(
                       onPressed: () {
+                        setState(() {
+                          _data.clear();
+                        });
                         Navigator.pop(context);
                       },
                       child: Text("Try Again",
@@ -394,7 +393,7 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
               x: index,
               barRods: [
                 BarChartRodData(
-                  toY: item['avg_humidity'].toDouble(),
+                  toY: item['avg_humidity']?.toDouble() ?? 0.0,
                   color: Color(0xff0e4f55),
                   width: 7,
                 ),
@@ -485,6 +484,10 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                 color: Colors.transparent, // Transparent border
                 width: 0),
           ),
+          extraLinesData: ExtraLinesData(horizontalLines: [
+            HorizontalLine(
+                y: 40, color: Colors.red, strokeWidth: 3, dashArray: [25, 5]),
+          ]),
         ),
       ),
     );
@@ -565,6 +568,7 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                                   child: AutoSizeText(
                                     dateSelect,
                                     style: TextStyle(
+                                        color: Colors.grey[800],
                                         fontWeight: FontWeight.w600,
                                         fontSize: 30 * textScaleFactor),
                                     maxLines: 1,
@@ -584,7 +588,7 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                               children: [
                                 if (Platform.isAndroid)
                                   _buildBarChart(375 * textScaleFactor,
-                                      460 * textScaleFactor)
+                                      480 * textScaleFactor)
                                 else if (Platform.isIOS)
                                   _buildBarChart(380 * textScaleFactor,
                                       493 * textScaleFactor)

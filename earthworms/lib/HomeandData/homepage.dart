@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:earthworms/HomeandData/AddSensorPage.dart';
 import 'package:earthworms/HomeandData/Components/url.dart';
+import 'package:earthworms/HomeandData/EnemiesTimeSeries.dart';
 import 'package:earthworms/HomeandData/EnemylogPage.dart';
 import 'package:earthworms/HomeandData/SensorDetailPage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
@@ -183,7 +184,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     switch (index) {
       case 0:
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Enemylogpage()));
+            context, MaterialPageRoute(builder: (context) => EnemiesTimeSeries()));
         break;
       case 1:
         Navigator.push(
@@ -474,8 +475,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                         child: Column(
                                           children: [
                                             Padding(
-                                              padding: EdgeInsets.all(
-                                                  8.0 * textScaleFactor),
+                                              padding: EdgeInsets.only(
+                                                  top: 10.0 * textScaleFactor,
+                                                  left: 8.0 * textScaleFactor,
+                                                  right: 8.0 * textScaleFactor),
                                               child: TextField(
                                                 controller: SearchController,
                                                 decoration: InputDecoration(
