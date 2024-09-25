@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:animated_button_bar/animated_button_bar.dart';
 import 'package:earthworms/HomeandData/Components/url.dart';
 import 'package:http/http.dart' as http;
 import 'package:auto_size_text/auto_size_text.dart';
@@ -9,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:intl/intl.dart';
+import 'package:pie_chart/pie_chart.dart';
 
 class EnemiesTimeSeries extends StatefulWidget {
   const EnemiesTimeSeries({super.key});
@@ -27,6 +29,12 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
   String RatLog = '0';
   String ToadLog = '0';
   String LizardLog = '0';
+  Map<String, double> dataMap = {};
+  final ColorList = <Color>[
+    Color.fromRGBO(121, 142, 164, 1),
+    Color.fromRGBO(252, 126, 52, 1),
+    Color.fromRGBO(2, 117, 144, 1)
+  ];
 
   @override
   void initState() {
@@ -140,10 +148,24 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
             RatLog = data['Rat'].toString();
             ToadLog = data['Toad'].toString();
             LizardLog = data['Lizard'].toString();
+
+            dataMap = {
+              "Lizard": double.parse(LizardLog),
+              "Rat": double.parse(RatLog),
+              "Toad": double.parse(ToadLog),
+            };
+          });
+          print(dataMap);
+        } else {
+          setState(() {
+            dataMap = {};
           });
         }
       } else {
         print('${response.statusCode}: ${response.reasonPhrase}');
+        setState(() {
+          dataMap.clear();
+        });
       }
     } catch (e) {
       Navigator.pop(context);
@@ -243,8 +265,118 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                             topRight: Radius.circular(27)),
                         child: Container(
                           color: Color.fromRGBO(250, 246, 229, 1),
+                          child: Column(
+                            children: [
+                              Center(
+                                child: dataMap.isNotEmpty
+                                    ? Padding(
+                                        padding: EdgeInsets.only(
+                                            top: 2 * textScaleFactor),
+                                        child: PieChart(
+                                          dataMap: dataMap,
+                                          animationDuration:
+                                              Duration(milliseconds: 1000),
+                                          chartLegendSpacing: 32,
+                                          chartRadius: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              1.5,
+                                          colorList: ColorList,
+                                          initialAngleInDegree: 0,
+                                          chartType: ChartType.disc,
+                                          ringStrokeWidth: 32,
+                                          legendOptions: LegendOptions(
+                                            showLegendsInRow: false,
+                                            legendPosition:
+                                                LegendPosition.right,
+                                            showLegends: true,
+                                            legendShape: BoxShape.circle,
+                                            legendTextStyle: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          chartValuesOptions:
+                                              ChartValuesOptions(
+                                                  showChartValueBackground:
+                                                      true,
+                                                  showChartValues: true,
+                                                  showChartValuesInPercentage:
+                                                      false,
+                                                  showChartValuesOutside: false,
+                                                  decimalPlaces: 0,
+                                                  chartValueStyle: TextStyle(
+                                                      fontSize:
+                                                          16 * textScaleFactor,
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                        ),
+                                      )
+                                    : Text('No data available'),
+                              )
+                            ],
+                          ),
                         ),
-                      ))
+                      )),
+                  Positioned(
+                      top: ScreenHeight * 0.5,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(27),
+                              topRight: Radius.circular(27)),
+                          child: Container(
+                            color: Color(0xff0e4f55),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                AnimatedButtonBar(
+                                  radius: 16.0,
+                                  padding: EdgeInsets.only(
+                                      top: 20 * textScaleFactor,
+                                      right: 20 * textScaleFactor,
+                                      left: 20 * textScaleFactor),
+                                  invertedSelection: true,
+                                  backgroundColor:
+                                      Color.fromRGBO(250, 246, 229, 1),
+                                  foregroundColor: Color(0xff0e4f55),
+                                  borderColor: Colors.white,
+                                  innerVerticalPadding: 12,
+                                  children: [
+                                    ButtonBarEntry(
+                                        child: Text(
+                                          'Rat',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        onTap: () {
+                                          print("Rat");
+                                        }),
+                                    ButtonBarEntry(
+                                        child: Text(
+                                          'Toad',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        onTap: () {
+                                          print("Toad");
+                                        }),
+                                    ButtonBarEntry(
+                                        child: Text(
+                                          'Lizard',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        onTap: () {
+                                          print("Lizard");
+                                        })
+                                  ],
+                                )
+                              ],
+                            ),
+                          )))
                 ],
               ),
             ),
