@@ -4,6 +4,7 @@ import 'package:earthworms/HomeandData/Components/url.dart';
 import 'package:earthworms/HomeandData/homepage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:earthworms/MainFunction/SessionToken.dart';
+import 'package:earthworms/TestFunc/base64toIMG.dart';
 import 'package:earthworms/mqtt/mqttmanage.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -138,6 +139,8 @@ class MyApp extends StatelessWidget {
               }
             }
           },
-        ));
+        )
+        // home: Base64ImageExample(),
+        );
   }
 }

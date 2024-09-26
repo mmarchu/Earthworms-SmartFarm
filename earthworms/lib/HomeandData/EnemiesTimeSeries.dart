@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
@@ -25,7 +26,10 @@ Future<String?> loadData(String key) async {
 }
 
 class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
-  String dateSelect = '';
+  final BehaviorSubject<Map<String, List<String>>> _dataController =
+      BehaviorSubject<Map<String, List<String>>>();
+  String dateSelectDisplay = '';
+  String dateSelectApi = '';
   String RatLog = '0';
   String ToadLog = '0';
   String LizardLog = '0';
@@ -68,14 +72,14 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
 
     if (selectedDate != null) {
       final json = {
-        //"sensor_id": widget.sensorId,
-        //"period": "monthly",
         "date": DateFormat('yyyy-MM-dd').format(selectedDate),
       };
       final displayDate = DateFormat.MMMM('en_US').format(selectedDate);
+      final monthSelected = DateFormat('yyyy-MM-dd').format(selectedDate);
       print(displayDate);
+      _updateMonthApi(monthSelected);
       _updateDateData(displayDate);
-      _sendDataToApi(json);
+      _sendDataToApiPieChart(json);
     }
   }
 
@@ -83,32 +87,40 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
   void _SendThisMonthToApi() {
     final today = DateTime.now();
     final json = {
-      //"sensor_id": widget.sensorId,
-      //"period": "monthly",
       "date": DateFormat('yyyy-MM-dd').format(today),
     };
     final displayDate = DateFormat.MMMM('en_US').format(today);
+    final monthSelected = DateFormat('yyyy-MM-dd').format(today);
     print(displayDate);
+    _updateMonthApi(monthSelected);
     _updateDateData(displayDate);
-    _sendDataToApi(json);
+    _sendDataToApiPieChart(json);
   }
 
 // update display Date
   void _updateDateData(String newDate) {
     setState(() {
-      dateSelect = newDate;
+      dateSelectDisplay = newDate;
     });
   }
 
-// send month for get data
-  Future<void> _sendDataToApi(final json) async {
+// update month API
+  void _updateMonthApi(String newDate) {
+    setState(() {
+      dateSelectApi = newDate;
+    });
+    print("Month: $dateSelectApi");
+  }
+
+// send month to get data for PieChart
+  Future<void> _sendDataToApiPieChart(final json) async {
     String? token = await loadData('Token');
     var url;
 
     if (Platform.isAndroid) {
-      url = ApiUrl.ANDGetLogEnemies;
+      url = ApiUrl.ANDGetLogEnemiesPieChart;
     } else if (Platform.isIOS) {
-      url = ApiUrl.IOSGetLogEnemies;
+      url = ApiUrl.IOSGetLogEnemiesPieChart;
     }
 
     showDialog(
@@ -169,6 +181,57 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
       }
     } catch (e) {
       Navigator.pop(context);
+      print('Failed to connect to server: $e');
+    }
+  }
+
+// send month to get data for ListView
+  Future<void> _sendDataToApiListView(final enemy, final month) async {
+    String? token = await loadData('Token');
+    var url;
+
+    if (Platform.isAndroid) {
+      url = ApiUrl.ANDGetLogEnemieListView;
+    } else if (Platform.isIOS) {
+      url = ApiUrl.IOSGetLogEnemiesListview;
+    }
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charest=UTF-8',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({'type_enemies': enemy, 'date': month}));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> parsedData = jsonDecode(response.body);
+        List<String> id = [];
+        List<String> type = [];
+        List<String> is_image = [];
+        List<String> createdAt = [];
+        List<String> date = [];
+        List<String> time = [];
+
+        for (var item in parsedData) {
+          id.add(item['id'].toString());
+          type.add(item['type'].toString());
+          is_image.add(item['is_image'].toString());
+          createdAt.add(item['createdAt'].toString());
+          date.add(item['date'].toString());
+          time.add(item['time'].toString());
+        }
+        _dataController.add({
+          'id': id,
+          'type': type,
+          'is_image': is_image,
+          'createdAt': createdAt,
+          'date': date,
+          'time': time
+        });
+
+        print(id);
+      }
+    } catch (e) {
       print('Failed to connect to server: $e');
     }
   }
@@ -239,7 +302,7 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                                 height: 60 * textScaleFactor,
                                 child: Center(
                                   child: AutoSizeText(
-                                    dateSelect,
+                                    dateSelectDisplay,
                                     style: TextStyle(
                                       fontSize: 35 * textScaleFactor,
                                       fontWeight: FontWeight.bold,
@@ -267,53 +330,53 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                           color: Color.fromRGBO(250, 246, 229, 1),
                           child: Column(
                             children: [
-                              Center(
-                                child: dataMap.isNotEmpty
-                                    ? Padding(
-                                        padding: EdgeInsets.only(
-                                            top: 2 * textScaleFactor),
-                                        child: PieChart(
-                                          dataMap: dataMap,
-                                          animationDuration:
-                                              Duration(milliseconds: 1000),
-                                          chartLegendSpacing: 32,
-                                          chartRadius: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              1.5,
-                                          colorList: ColorList,
-                                          initialAngleInDegree: 0,
-                                          chartType: ChartType.disc,
-                                          ringStrokeWidth: 32,
-                                          legendOptions: LegendOptions(
-                                            showLegendsInRow: false,
-                                            legendPosition:
-                                                LegendPosition.right,
-                                            showLegends: true,
-                                            legendShape: BoxShape.circle,
-                                            legendTextStyle: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                              dataMap.isNotEmpty
+                                  ? Padding(
+                                      padding: EdgeInsets.only(
+                                          top: 2 * textScaleFactor,
+                                          left: 2 * textScaleFactor),
+                                      child: PieChart(
+                                        dataMap: dataMap,
+                                        animationDuration:
+                                            Duration(milliseconds: 2000),
+                                        chartLegendSpacing: 32,
+                                        chartRadius:
+                                            MediaQuery.of(context).size.width /
+                                                1.5,
+                                        colorList: ColorList,
+                                        initialAngleInDegree: 0,
+                                        chartType: ChartType.disc,
+                                        ringStrokeWidth: 32,
+                                        legendOptions: LegendOptions(
+                                          showLegendsInRow: false,
+                                          legendPosition: LegendPosition.right,
+                                          showLegends: true,
+                                          legendShape: BoxShape.rectangle,
+                                          legendTextStyle: TextStyle(
+                                            fontWeight: FontWeight.bold,
                                           ),
-                                          chartValuesOptions:
-                                              ChartValuesOptions(
-                                                  showChartValueBackground:
-                                                      true,
-                                                  showChartValues: true,
-                                                  showChartValuesInPercentage:
-                                                      false,
-                                                  showChartValuesOutside: false,
-                                                  decimalPlaces: 0,
-                                                  chartValueStyle: TextStyle(
-                                                      fontSize:
-                                                          16 * textScaleFactor,
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.bold)),
                                         ),
-                                      )
-                                    : Text('No data available'),
-                              )
+                                        chartValuesOptions: ChartValuesOptions(
+                                            showChartValueBackground: true,
+                                            showChartValues: true,
+                                            showChartValuesInPercentage: false,
+                                            showChartValuesOutside: false,
+                                            decimalPlaces: 0,
+                                            chartValueStyle: TextStyle(
+                                                fontSize: 16 * textScaleFactor,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold)),
+                                      ),
+                                    )
+                                  : Padding(
+                                      padding: EdgeInsets.only(
+                                          top: 135 * textScaleFactor),
+                                      child: Text(
+                                        'No data available',
+                                        style: TextStyle(
+                                            fontSize: 25 * textScaleFactor),
+                                      ),
+                                    )
                             ],
                           ),
                         ),
@@ -352,6 +415,8 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                                               fontWeight: FontWeight.bold),
                                         ),
                                         onTap: () {
+                                          _sendDataToApiListView(
+                                              "Rat", dateSelectApi);
                                           print("Rat");
                                         }),
                                     ButtonBarEntry(
@@ -361,6 +426,8 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                                               fontWeight: FontWeight.bold),
                                         ),
                                         onTap: () {
+                                          _sendDataToApiListView(
+                                              "Toad", dateSelectApi);
                                           print("Toad");
                                         }),
                                     ButtonBarEntry(
@@ -370,13 +437,70 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                                               fontWeight: FontWeight.bold),
                                         ),
                                         onTap: () {
+                                          _sendDataToApiListView(
+                                              "Lizard", dateSelectApi);
                                           print("Lizard");
                                         })
                                   ],
                                 )
                               ],
                             ),
-                          )))
+                          ))),
+                  Positioned(
+                      top: ScreenHeight * 0.6,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(27),
+                          topRight: Radius.circular(27),
+                        ),
+                        child: Container(
+                          color: Color.fromRGBO(250, 246, 229, 1),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    top: 15 * textScaleFactor,
+                                    bottom: 15 * textScaleFactor),
+                                child: SizedBox(
+                                  width: ScreenWidth - 70,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Date',
+                                        style: TextStyle(
+                                            fontSize: 15 * textScaleFactor,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 13 * textScaleFactor),
+                                        child: Text(
+                                          'Time',
+                                          style: TextStyle(
+                                              fontSize: 15 * textScaleFactor,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      Text(
+                                        'Image',
+                                        style: TextStyle(
+                                            fontSize: 15 * textScaleFactor,
+                                            fontWeight: FontWeight.bold),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ))
                 ],
               ),
             ),

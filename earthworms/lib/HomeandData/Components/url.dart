@@ -52,11 +52,17 @@ class ApiUrl {
   static const String IOSgetTimeseries =
       'http://127.0.0.1:4000/api/timeSeries/get'; // 'http://192.168.1.40:4000/api/timeSeries/get'
 
-  //Log Enemies
-  static const String ANDGetLogEnemies =
-       'http://10.0.2.2:4000/api/logEnemies/getAll';
-  static const String IOSGetLogEnemies =
+  //Log Enemies PieChart
+  static const String ANDGetLogEnemiesPieChart =
+      'http://10.0.2.2:4000/api/logEnemies/getAll';
+  static const String IOSGetLogEnemiesPieChart =
       'http://127.0.0.1:4000/api/logEnemies/getAll';
+
+  //Log Enemies ListView
+  static const String ANDGetLogEnemieListView =
+      'http://10.0.2.2:4000/api/logEnemies/getDetail';
+  static const String IOSGetLogEnemiesListview =
+      'http://127.0.0.1:4000/api/logEnemies/getDetail';
 }
 
 //Local MacBook March

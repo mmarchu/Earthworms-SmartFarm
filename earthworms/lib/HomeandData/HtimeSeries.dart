@@ -320,7 +320,7 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
             barrierDismissible: false,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text('No Data'),
+                title: Text('No data available'),
                 actions: <Widget>[
                   TextButton(
                       onPressed: () {

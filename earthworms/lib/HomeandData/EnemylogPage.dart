@@ -98,9 +98,9 @@ class _EnemylogpageState extends State<Enemylogpage> {
     var url;
 
     if (Platform.isAndroid) {
-      url = ApiUrl.ANDGetLogEnemies;
+      url = ApiUrl.ANDGetLogEnemiesPieChart;
     } else if (Platform.isIOS) {
-      url = ApiUrl.IOSGetLogEnemies;
+      url = ApiUrl.IOSGetLogEnemiesPieChart;
     }
 
     showDialog(
