@@ -183,8 +183,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void _OnTapBottomBar(int index) {
     switch (index) {
       case 0:
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => EnemiesTimeSeries()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => EnemiesTimeSeries()));
         break;
       case 1:
         Navigator.push(

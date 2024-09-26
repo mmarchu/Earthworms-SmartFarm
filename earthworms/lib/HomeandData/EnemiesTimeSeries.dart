@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
@@ -26,8 +25,8 @@ Future<String?> loadData(String key) async {
 }
 
 class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
-  final BehaviorSubject<Map<String, List<String>>> _dataController =
-      BehaviorSubject<Map<String, List<String>>>();
+  // final BehaviorSubject<Map<String, List<String>>> _dataController =
+  //     BehaviorSubject<Map<String, List<String>>>();
   String dateSelectDisplay = '';
   String dateSelectApi = '';
   String RatLog = '0';
@@ -39,11 +38,16 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
     Color.fromRGBO(252, 126, 52, 1),
     Color.fromRGBO(2, 117, 144, 1)
   ];
+  List<String> idList = [];
+  List<String> typeList = [];
+  List<String> is_imageList = [];
+  List<String> dateList = [];
+  List<String> timeList = [];
 
   @override
   void initState() {
     super.initState();
-    _SendThisMonthToApi();
+    //_SendThisMonthToApi();
   }
 
 // Select Month
@@ -220,16 +224,23 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
           date.add(item['date'].toString());
           time.add(item['time'].toString());
         }
-        _dataController.add({
-          'id': id,
-          'type': type,
-          'is_image': is_image,
-          'createdAt': createdAt,
-          'date': date,
-          'time': time
+        // _dataController.add({
+        //   'id': id,
+        //   'type': type,
+        //   'is_image': is_image,
+        //   'createdAt': createdAt,
+        //   'date': date,
+        //   'time': time
+        // });
+        setState(() {
+          idList = id;
+          typeList = type;
+          is_imageList = is_image;
+          dateList = date;
+          timeList = time;
         });
-
         print(id);
+        print("IdList: $idList");
       }
     } catch (e) {
       print('Failed to connect to server: $e');
@@ -416,7 +427,7 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                                         ),
                                         onTap: () {
                                           _sendDataToApiListView(
-                                              "Rat", dateSelectApi);
+                                              "Rat", "2024-09-01");
                                           print("Rat");
                                         }),
                                     ButtonBarEntry(
@@ -460,13 +471,14 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                           color: Color.fromRGBO(250, 246, 229, 1),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Padding(
                                 padding: EdgeInsets.only(
                                     top: 15 * textScaleFactor,
                                     bottom: 15 * textScaleFactor),
                                 child: SizedBox(
-                                  width: ScreenWidth - 70,
+                                  width: ScreenWidth - 120,
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -497,10 +509,159 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                                   ),
                                 ),
                               ),
+                              Expanded(
+                                  child: idList.length == 0
+                                      ? Center(
+                                          child: Column(
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.only(
+                                                    top: 10 * textScaleFactor),
+                                                child: Text(
+                                                  'No data available',
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          20 * textScaleFactor,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      : ListView.builder(
+                                          itemCount: idList.length,
+                                          itemBuilder: (context, Index) {
+                                            return Column(
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                      bottom:
+                                                          5 * textScaleFactor),
+                                                  child: SizedBox(
+                                                    width: ScreenWidth - 40,
+                                                    height:
+                                                        50 * textScaleFactor,
+                                                    child: DecoratedBox(
+                                                        decoration: BoxDecoration(
+                                                            color:
+                                                                Color.fromRGBO(
+                                                                    232,
+                                                                    225,
+                                                                    198,
+                                                                    1),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        15)),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            SizedBox(
+                                                              width: 110 *
+                                                                  textScaleFactor,
+                                                              height: 70 *
+                                                                  textScaleFactor,
+                                                              child: Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: EdgeInsets.only(
+                                                                        left: 10 *
+                                                                            textScaleFactor),
+                                                                    child:
+                                                                        AutoSizeText(
+                                                                      dateList[
+                                                                          Index],
+                                                                      style: TextStyle(
+                                                                          fontSize: 13 *
+                                                                              textScaleFactor,
+                                                                          fontWeight:
+                                                                              FontWeight.bold),
+                                                                      maxLines:
+                                                                          1,
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .center,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                              width: 110 *
+                                                                  textScaleFactor,
+                                                              height: 70 *
+                                                                  textScaleFactor,
+                                                              child: Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: EdgeInsets.only(
+                                                                        left: 10 *
+                                                                            textScaleFactor),
+                                                                    child:
+                                                                        AutoSizeText(
+                                                                      timeList[
+                                                                          Index],
+                                                                      style: TextStyle(
+                                                                          fontSize: 13 *
+                                                                              textScaleFactor,
+                                                                          fontWeight:
+                                                                              FontWeight.bold),
+                                                                      maxLines:
+                                                                          1,
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .center,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                              width: 110 *
+                                                                  textScaleFactor,
+                                                              height: 70 *
+                                                                  textScaleFactor,
+                                                              child: Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: EdgeInsets.only(
+                                                                        right: 15 *
+                                                                            textScaleFactor),
+                                                                    child: IconButton(
+                                                                        onPressed: () {},
+                                                                        icon: Icon(
+                                                                          Icons
+                                                                              .collections,
+                                                                          size: 25 *
+                                                                              textScaleFactor,
+                                                                        )),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            )
+                                                          ],
+                                                        )),
+                                                  ),
+                                                )
+                                              ],
+                                            );
+                                          }))
                             ],
                           ),
                         ),
-                      ))
+                      )),
                 ],
               ),
             ),

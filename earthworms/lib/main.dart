@@ -4,6 +4,7 @@ import 'package:earthworms/HomeandData/Components/url.dart';
 import 'package:earthworms/HomeandData/homepage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:earthworms/MainFunction/SessionToken.dart';
+import 'package:earthworms/TestFunc/DropDown.dart';
 import 'package:earthworms/TestFunc/base64toIMG.dart';
 import 'package:earthworms/mqtt/mqttmanage.dart';
 import 'package:flutter/material.dart';
@@ -134,13 +135,11 @@ class MyApp extends StatelessWidget {
                   modeList: modeList,
                   powerList: powerList,
                 );
-                // return Newhomepage(
-                //     email: DBemail, name: DBname, lastname: DBlastname);
               }
             }
           },
         )
-        // home: Base64ImageExample(),
+        //home: testtest(),
         );
   }
 }
