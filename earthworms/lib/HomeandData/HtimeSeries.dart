@@ -670,35 +670,6 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                                       })
                                 ],
                               ),
-                              // SizedBox(height: 20 * textScaleFactor),
-                              // SizedBox(
-                              //   width: 355 * textScaleFactor,
-                              //   height: 43 * textScaleFactor,
-                              //   child: DecoratedBox(
-                              //     decoration: BoxDecoration(
-                              //         color: Color.fromRGBO(250, 246, 229, 1),
-                              //         borderRadius: BorderRadius.circular(20)),
-                              //     child: Center(
-                              //       child: Row(
-                              //         mainAxisAlignment:
-                              //             MainAxisAlignment.center,
-                              //         children: [
-                              //           SizedBox(
-                              //             width: 340 * textScaleFactor,
-                              //             child: AutoSizeText(
-                              //               '< $dateSelect >',
-                              //               style: TextStyle(
-                              //                   fontWeight: FontWeight.w600,
-                              //                   fontSize: 18 * textScaleFactor),
-                              //               maxLines: 1,
-                              //               textAlign: TextAlign.center,
-                              //             ),
-                              //           )
-                              //         ],
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
                               SizedBox(height: 20 * textScaleFactor),
                               InkWell(
                                 onTap: () {

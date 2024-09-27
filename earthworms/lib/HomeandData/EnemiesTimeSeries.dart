@@ -25,8 +25,6 @@ Future<String?> loadData(String key) async {
 }
 
 class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
-  // final BehaviorSubject<Map<String, List<String>>> _dataController =
-  //     BehaviorSubject<Map<String, List<String>>>();
   String dateSelectDisplay = '';
   String dateSelectApi = '';
   String RatLog = '0';
@@ -43,11 +41,15 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
   List<String> is_imageList = [];
   List<String> dateList = [];
   List<String> timeList = [];
+  String EnemySelect = 'Rat';
+  String base64Image = '';
 
   @override
   void initState() {
     super.initState();
-    //_SendThisMonthToApi();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _SendThisMonthToApi(); // เรียกฟังก์ชันทันทีที่หน้าโหลดเสร็จ
+    });
   }
 
 // Select Month
@@ -83,7 +85,7 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
       print(displayDate);
       _updateMonthApi(monthSelected);
       _updateDateData(displayDate);
-      _sendDataToApiPieChart(json);
+      _send2Api(json, EnemySelect, monthSelected);
     }
   }
 
@@ -98,7 +100,7 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
     print(displayDate);
     _updateMonthApi(monthSelected);
     _updateDateData(displayDate);
-    _sendDataToApiPieChart(json);
+    _send2Api(json, "Rat", monthSelected);
   }
 
 // update display Date
@@ -116,6 +118,13 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
     print("Month: $dateSelectApi");
   }
 
+//Update enemy select
+  void _updateEnemy(String newEnemy) {
+    setState(() {
+      EnemySelect = newEnemy;
+    });
+  }
+
 // send month to get data for PieChart
   Future<void> _sendDataToApiPieChart(final json) async {
     String? token = await loadData('Token');
@@ -127,25 +136,6 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
       url = ApiUrl.IOSGetLogEnemiesPieChart;
     }
 
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: SizedBox(
-            width: 300,
-            height: 100,
-            child: Center(
-              child: LoadingAnimationWidget.halfTriangleDot(
-                color: Color(0xff0e4f55),
-                size: 50,
-              ),
-            ),
-          ),
-        );
-      },
-    );
-
     try {
       final response = await http.post(Uri.parse(url),
           headers: <String, String>{
@@ -154,27 +144,34 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
           },
           body: jsonEncode(json));
 
-      Navigator.pop(context);
-
       if (response.statusCode == 200) {
         final JsonData = jsonDecode(response.body) as List<dynamic>;
         if (JsonData.isNotEmpty) {
           final data = JsonData[0] as Map<String, dynamic>;
-          setState(() {
-            RatLog = data['Rat'].toString();
-            ToadLog = data['Toad'].toString();
-            LizardLog = data['Lizard'].toString();
+          final double ratValue = double.parse(data['Rat'].toString());
+          final double toadValue = double.parse(data['Toad'].toString());
+          final double lizardValue = double.parse(data['Lizard'].toString());
+          if (ratValue != 0 || toadValue != 0 || lizardValue != 0) {
+            setState(() {
+              RatLog = data['Rat'].toString();
+              ToadLog = data['Toad'].toString();
+              LizardLog = data['Lizard'].toString();
 
-            dataMap = {
-              "Lizard": double.parse(LizardLog),
-              "Rat": double.parse(RatLog),
-              "Toad": double.parse(ToadLog),
-            };
-          });
-          print(dataMap);
+              dataMap = {
+                "Lizard": double.parse(LizardLog),
+                "Rat": double.parse(RatLog),
+                "Toad": double.parse(ToadLog),
+              };
+            });
+            print(dataMap);
+          } else {
+            setState(() {
+              dataMap.clear();
+            });
+          }
         } else {
           setState(() {
-            dataMap = {};
+            dataMap.clear();
           });
         }
       } else {
@@ -224,14 +221,6 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
           date.add(item['date'].toString());
           time.add(item['time'].toString());
         }
-        // _dataController.add({
-        //   'id': id,
-        //   'type': type,
-        //   'is_image': is_image,
-        //   'createdAt': createdAt,
-        //   'date': date,
-        //   'time': time
-        // });
         setState(() {
           idList = id;
           typeList = type;
@@ -241,6 +230,175 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
         });
         print(id);
         print("IdList: $idList");
+      } else {
+        setState(() {
+          idList.clear();
+          typeList.clear();
+          is_imageList.clear();
+          dateList.clear();
+          timeList.clear();
+        });
+      }
+    } catch (e) {
+      print('Failed to connect to server: $e');
+    }
+  }
+
+// Run 2 Function
+  Future<void> _send2Api(final json, final enemy, final month) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SizedBox(
+            width: 300,
+            height: 100,
+            child: Center(
+              child: LoadingAnimationWidget.halfTriangleDot(
+                color: Color(0xff0e4f55),
+                size: 50,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    try {
+      await Future.wait(
+          {_sendDataToApiPieChart(json), _sendDataToApiListView(enemy, month)});
+    } catch (e) {
+      print('Failed to connect to server: $e');
+    } finally {
+      Navigator.pop(context);
+    }
+  }
+
+// Send Id EnemiesLog to display Image
+  Future<void> _showImage(final id) async {
+    String? token = await loadData('Token');
+    var url;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SizedBox(
+            width: 300,
+            height: 100,
+            child: Center(
+              child: LoadingAnimationWidget.halfTriangleDot(
+                color: Color(0xff0e4f55),
+                size: 50,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    if (Platform.isAndroid) {
+      url = ApiUrl.ANDGetImageEnemy;
+    } else if (Platform.isIOS) {
+      url = ApiUrl.IOSGetImageEnemy;
+    }
+
+    Navigator.pop(context);
+
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charest=UTF-8',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({"id": id}));
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        base64Image = data['image'];
+        print(base64Image);
+
+        showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Enemies Detection"),
+                actions: <Widget>[
+                  Column(
+                    children: [
+                      SizedBox(
+                          width: 300,
+                          height: 200,
+                          child: Center(
+                            child: Image.memory(
+                              base64Decode(base64Image),
+                              width: 300,
+                              height: 200,
+                              fit: BoxFit.fill,
+                            ),
+                          )),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text(
+                                'Close',
+                                style: TextStyle(
+                                    color: Color(0xff0e4f55),
+                                    fontWeight: FontWeight.bold),
+                              )),
+                        ],
+                      )
+                    ],
+                  )
+                ],
+              );
+            });
+      } else {
+        showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Enemies Detection"),
+                actions: <Widget>[
+                  Column(
+                    children: [
+                      SizedBox(
+                          width: 300,
+                          height: 200,
+                          child: Center(
+                              child: Text(
+                            "No image detection",
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ))),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text(
+                                'Close',
+                                style: TextStyle(
+                                    color: Color(0xff0e4f55),
+                                    fontWeight: FontWeight.bold),
+                              )),
+                        ],
+                      )
+                    ],
+                  )
+                ],
+              );
+            });
       }
     } catch (e) {
       print('Failed to connect to server: $e');
@@ -427,8 +585,9 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                                         ),
                                         onTap: () {
                                           _sendDataToApiListView(
-                                              "Rat", "2024-09-01");
+                                              "Rat", dateSelectApi);
                                           print("Rat");
+                                          _updateEnemy("Rat");
                                         }),
                                     ButtonBarEntry(
                                         child: Text(
@@ -440,6 +599,7 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                                           _sendDataToApiListView(
                                               "Toad", dateSelectApi);
                                           print("Toad");
+                                          _updateEnemy("Toad");
                                         }),
                                     ButtonBarEntry(
                                         child: Text(
@@ -451,6 +611,7 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                                           _sendDataToApiListView(
                                               "Lizard", dateSelectApi);
                                           print("Lizard");
+                                          _updateEnemy("Lizard");
                                         })
                                   ],
                                 )
@@ -640,7 +801,12 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                                                                         right: 15 *
                                                                             textScaleFactor),
                                                                     child: IconButton(
-                                                                        onPressed: () {},
+                                                                        onPressed: () {
+                                                                          _showImage(
+                                                                              idList[Index]);
+                                                                          print(
+                                                                              idList[Index]);
+                                                                        },
                                                                         icon: Icon(
                                                                           Icons
                                                                               .collections,

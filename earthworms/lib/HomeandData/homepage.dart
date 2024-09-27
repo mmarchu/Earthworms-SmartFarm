@@ -5,7 +5,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:earthworms/HomeandData/AddSensorPage.dart';
 import 'package:earthworms/HomeandData/Components/url.dart';
 import 'package:earthworms/HomeandData/EnemiesTimeSeries.dart';
-import 'package:earthworms/HomeandData/EnemylogPage.dart';
 import 'package:earthworms/HomeandData/SensorDetailPage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:flutter/material.dart';

@@ -63,6 +63,12 @@ class ApiUrl {
       'http://10.0.2.2:4000/api/logEnemies/getDetail';
   static const String IOSGetLogEnemiesListview =
       'http://127.0.0.1:4000/api/logEnemies/getDetail';
+
+  //Get Image Enemies
+  static const String ANDGetImageEnemy =
+      'http://10.0.2.2:4000/api/logEnemies/getimg';
+  static const String IOSGetImageEnemy =
+      'http://127.0.0.1:4000/api/logEnemies/getimg';
 }
 
 //Local MacBook March

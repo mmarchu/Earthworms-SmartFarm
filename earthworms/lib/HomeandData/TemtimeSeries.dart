@@ -320,7 +320,7 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
             barrierDismissible: false,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text('No Data'),
+                title: Text('No data available'),
                 actions: <Widget>[
                   TextButton(
                       onPressed: () {
@@ -541,7 +541,7 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
                                       padding: EdgeInsets.only(
                                           left: 10 * textScaleFactor),
                                       child: Text(
-                                        "Humidity",
+                                        "Temperature",
                                         style: TextStyle(
                                             fontSize: 28 * textScaleFactor,
                                             color: Colors.grey[800],
