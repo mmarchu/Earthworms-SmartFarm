@@ -272,13 +272,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         'Conductivity': conductivities,
         'Battery': batteries,
       });
-
-      // print(macAddresses);
-      // print(temperatures);
-      // print(moisture);
-      // print(lights);
-      // print(conductivities);
-      // print(batteries);
     } catch (e) {
       print('Error processing JSON data: $e');
     }
@@ -636,7 +629,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                                                   builder: (context, snapshot) {
                                                                                                     if (snapshot.hasData) {
                                                                                                       List<String> humidity = snapshot.data!['Moisture'] ?? [];
-                                                                                                      if (humidity.isNotEmpty && humidity[index].isNotEmpty) {
+                                                                                                      if (humidity.isNotEmpty && humidity[index] != 'null') {
                                                                                                         return Text(
                                                                                                           '${humidity[index]}%',
                                                                                                           style: TextStyle(
@@ -647,7 +640,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                                                       } else {
                                                                                                         return LoadingAnimationWidget.staggeredDotsWave(
                                                                                                           color: Color.fromARGB(255, 88, 174, 220),
-                                                                                                          size: 20 * textScaleFactor,
+                                                                                                          size: 35 * textScaleFactor,
                                                                                                         );
                                                                                                       }
                                                                                                     } else {
@@ -714,7 +707,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                                                   builder: (context, snapshot) {
                                                                                                     if (snapshot.hasData) {
                                                                                                       List<String> temp = snapshot.data!['Temperature'] ?? [];
-                                                                                                      if (temp.isNotEmpty && temp[index].isNotEmpty) {
+                                                                                                      if (temp.isNotEmpty && temp[index] != 'null') {
                                                                                                         return Text(
                                                                                                           '${temp[index]}°C',
                                                                                                           style: TextStyle(

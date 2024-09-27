@@ -773,12 +773,6 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                               FontWeight.bold),
                                                     ),
                                                   ),
-                                                  // Image.asset(
-                                                  //   "images/humidity.png",
-                                                  //   height:
-                                                  //       40 * textScaleFactor,
-                                                  //   width: 40 * textScaleFactor,
-                                                  // ),
                                                   Padding(
                                                     padding: EdgeInsets.only(
                                                         top:
@@ -816,11 +810,12 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                               snapshot.data![
                                                                       'Moisture'] ??
                                                                   [];
-                                                          if (humidity
-                                                                  .isNotEmpty &&
+                                                          if (humidity.length >
+                                                                  widget
+                                                                      .index &&
                                                               humidity[widget
-                                                                      .index]
-                                                                  .isNotEmpty) {
+                                                                      .index] !=
+                                                                  'null') {
                                                             return Text(
                                                               '${humidity[widget.index]}%',
                                                               style: TextStyle(
@@ -839,12 +834,8 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                                           textScaleFactor),
                                                               child: LoadingAnimationWidget
                                                                   .staggeredDotsWave(
-                                                                color: Color
-                                                                    .fromARGB(
-                                                                        255,
-                                                                        88,
-                                                                        174,
-                                                                        220),
+                                                                color: Color(
+                                                                    0xff0e4f55),
                                                                 size: 50 *
                                                                     textScaleFactor,
                                                               ),
@@ -858,12 +849,8 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                                         textScaleFactor),
                                                             child: LoadingAnimationWidget
                                                                 .staggeredDotsWave(
-                                                              color: Color
-                                                                  .fromARGB(
-                                                                      255,
-                                                                      88,
-                                                                      174,
-                                                                      220),
+                                                              color: Color(
+                                                                  0xff0e4f55),
                                                               size: 50 *
                                                                   textScaleFactor,
                                                             ),
@@ -927,12 +914,6 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                               FontWeight.bold),
                                                     ),
                                                   ),
-                                                  // Image.asset(
-                                                  //   "images/temperature-sensor.png",
-                                                  //   height:
-                                                  //       40 * textScaleFactor,
-                                                  //   width: 40 * textScaleFactor,
-                                                  // ),
                                                   Padding(
                                                     padding: EdgeInsets.only(
                                                         top:
@@ -968,9 +949,12 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                               snapshot.data![
                                                                       'Temperature'] ??
                                                                   [];
-                                                          if (temp.isNotEmpty &&
-                                                              temp[widget.index]
-                                                                  .isNotEmpty) {
+                                                          if (temp.length >
+                                                                  widget
+                                                                      .index &&
+                                                              temp[widget
+                                                                      .index] !=
+                                                                  'null') {
                                                             return Text(
                                                               '${temp[widget.index]}°C',
                                                               style: TextStyle(
@@ -989,12 +973,8 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                                           textScaleFactor),
                                                               child: LoadingAnimationWidget
                                                                   .staggeredDotsWave(
-                                                                color: Color
-                                                                    .fromARGB(
-                                                                        255,
-                                                                        88,
-                                                                        174,
-                                                                        220),
+                                                                color: Color(
+                                                                    0xff0e4f55),
                                                                 size: 50 *
                                                                     textScaleFactor,
                                                               ),
@@ -1008,12 +988,8 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                                         textScaleFactor),
                                                             child: LoadingAnimationWidget
                                                                 .staggeredDotsWave(
-                                                              color: Color
-                                                                  .fromARGB(
-                                                                      255,
-                                                                      88,
-                                                                      174,
-                                                                      220),
+                                                              color: Color(
+                                                                  0xff0e4f55),
                                                               size: 50 *
                                                                   textScaleFactor,
                                                             ),
@@ -1099,7 +1075,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                                     value;
                                                                 if (value) {
                                                                   New_power =
-                                                                      false; // ถ้า New_mode เป็น true, ตั้งค่า New_power เป็น false
+                                                                      false;
                                                                 }
                                                               });
                                                               //_publishMQTT();
@@ -1108,19 +1084,6 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                                   New_mode,
                                                                   New_power);
                                                             },
-                                                      // (value) {
-                                                      //   setState(() {
-                                                      //     New_mode = value;
-                                                      //     if (value) {
-                                                      //       New_power = false;
-                                                      //     }
-                                                      //   });
-                                                      //   //_publishMQTT();
-                                                      //   print(New_mode);
-                                                      //   _updateWaterPumpMode(
-                                                      //       New_mode,
-                                                      //       New_power);
-                                                      // }
                                                     ),
                                                   ),
                                                 ],
@@ -1229,9 +1192,10 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                         snapshot.data![
                                                                 'Battery'] ??
                                                             [];
-                                                    if (battery.isNotEmpty &&
-                                                        battery[widget.index]
-                                                            .isNotEmpty) {
+                                                    if (battery.length >
+                                                            widget.index &&
+                                                        battery[widget.index] !=
+                                                            'null') {
                                                       return Text(
                                                         '${battery[widget.index]}%',
                                                         style: TextStyle(
@@ -1243,10 +1207,10 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                       );
                                                     } else {
                                                       return LoadingAnimationWidget
-                                                          .halfTriangleDot(
-                                                        color: Color.fromARGB(
-                                                            255, 88, 174, 220),
-                                                        size: 70,
+                                                          .staggeredDotsWave(
+                                                        color:
+                                                            Color(0xff0e4f55),
+                                                        size: 40,
                                                       );
                                                     }
                                                   } else {
@@ -1257,8 +1221,8 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                       child:
                                                           LoadingAnimationWidget
                                                               .staggeredDotsWave(
-                                                        color: Color.fromARGB(
-                                                            255, 88, 174, 220),
+                                                        color:
+                                                            Color(0xff0e4f55),
                                                         size: 40,
                                                       ),
                                                     );
