@@ -275,6 +275,37 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
     }
   }
 
+// Button Enemy Api
+  Future<void> _sendselectEnemyLogs(final enemy, final month) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SizedBox(
+            width: 300,
+            height: 100,
+            child: Center(
+              child: LoadingAnimationWidget.halfTriangleDot(
+                color: Color(0xff0e4f55),
+                size: 50,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    try {
+      await Future.wait(
+          {_sendDataToApiListView(enemy, month)});
+    } catch (e) {
+      print('Failed to connect to server: $e');
+    } finally {
+      Navigator.pop(context);
+    }
+  }
+
 // Send Id EnemiesLog to display Image
   Future<void> _showImage(final id) async {
     String? token = await loadData('Token');
@@ -584,7 +615,7 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                                               fontWeight: FontWeight.bold),
                                         ),
                                         onTap: () {
-                                          _sendDataToApiListView(
+                                          _sendselectEnemyLogs(
                                               "Rat", dateSelectApi);
                                           print("Rat");
                                           _updateEnemy("Rat");
@@ -596,7 +627,7 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                                               fontWeight: FontWeight.bold),
                                         ),
                                         onTap: () {
-                                          _sendDataToApiListView(
+                                          _sendselectEnemyLogs(
                                               "Toad", dateSelectApi);
                                           print("Toad");
                                           _updateEnemy("Toad");
@@ -608,7 +639,7 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                                               fontWeight: FontWeight.bold),
                                         ),
                                         onTap: () {
-                                          _sendDataToApiListView(
+                                          _sendselectEnemyLogs(
                                               "Lizard", dateSelectApi);
                                           print("Lizard");
                                           _updateEnemy("Lizard");
