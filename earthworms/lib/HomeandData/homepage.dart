@@ -639,13 +639,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                                                         );
                                                                                                       } else {
                                                                                                         return LoadingAnimationWidget.staggeredDotsWave(
-                                                                                                          color: Color.fromARGB(255, 88, 174, 220),
+                                                                                                          color: Color(0xff0e4f55),
                                                                                                           size: 35 * textScaleFactor,
                                                                                                         );
                                                                                                       }
                                                                                                     } else {
                                                                                                       return LoadingAnimationWidget.staggeredDotsWave(
-                                                                                                        color: Color.fromARGB(255, 88, 174, 220),
+                                                                                                        color: Color(0xff0e4f55),
                                                                                                         size: 35 * textScaleFactor,
                                                                                                       );
                                                                                                     }
@@ -717,13 +717,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                                                         );
                                                                                                       } else {
                                                                                                         return LoadingAnimationWidget.staggeredDotsWave(
-                                                                                                          color: Color.fromARGB(255, 88, 174, 220),
+                                                                                                          color: Color(0xff0e4f55),
                                                                                                           size: 35 * textScaleFactor,
                                                                                                         );
                                                                                                       }
                                                                                                     } else {
                                                                                                       return LoadingAnimationWidget.staggeredDotsWave(
-                                                                                                        color: Color.fromARGB(255, 88, 174, 220),
+                                                                                                        color: Color(0xff0e4f55),
                                                                                                         size: 35 * textScaleFactor,
                                                                                                       );
                                                                                                     }
@@ -771,7 +771,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                                 bottom: 5 * textScaleFactor,
                                                                                 right: 8 * textScaleFactor),
                                                                             child:
-                                                                                Image.asset("images/water-pump.png"),
+                                                                                Image.asset("images/shower.png"),
                                                                           ),
                                                                           Text(
                                                                             "Water Pump Mode: ",

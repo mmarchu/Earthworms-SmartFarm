@@ -834,8 +834,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                                           textScaleFactor),
                                                               child: LoadingAnimationWidget
                                                                   .staggeredDotsWave(
-                                                                color: Color(
-                                                                    0xff0e4f55),
+                                                                color: Color(0xff0e4f55),
                                                                 size: 50 *
                                                                     textScaleFactor,
                                                               ),
@@ -1028,7 +1027,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                       padding: EdgeInsets.only(
                                           left: 20 * textScaleFactor),
                                       child: Image.asset(
-                                        "images/pump.png",
+                                        "images/shower.png",
                                         height: 90 * textScaleFactor,
                                         width: 90 * textScaleFactor,
                                       ),

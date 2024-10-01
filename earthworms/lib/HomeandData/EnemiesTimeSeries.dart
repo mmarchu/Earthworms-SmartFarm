@@ -34,7 +34,10 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
   final ColorList = <Color>[
     Color.fromRGBO(121, 142, 164, 1),
     Color.fromRGBO(252, 126, 52, 1),
-    Color.fromRGBO(2, 117, 144, 1)
+    Color.fromRGBO(2, 117, 144, 1),
+    Color.fromRGBO(255, 0, 0, 1),
+    Color.fromRGBO(69, 52, 252, 1),
+    Color.fromRGBO(255, 0, 242, 1)
   ];
   List<String> idList = [];
   List<String> typeList = [];
@@ -43,6 +46,8 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
   List<String> timeList = [];
   String EnemySelect = 'Rat';
   String base64Image = '';
+
+  List<String> enemies = ['Rat', 'Toad', 'Lizard'];
 
   @override
   void initState() {
@@ -175,6 +180,7 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
           });
         }
       } else {
+        print('else1');
         print('${response.statusCode}: ${response.reasonPhrase}');
         setState(() {
           dataMap.clear();
@@ -297,8 +303,7 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
     );
 
     try {
-      await Future.wait(
-          {_sendDataToApiListView(enemy, month)});
+      await Future.wait({_sendDataToApiListView(enemy, month)});
     } catch (e) {
       print('Failed to connect to server: $e');
     } finally {
@@ -596,56 +601,32 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 AnimatedButtonBar(
-                                  radius: 16.0,
-                                  padding: EdgeInsets.only(
-                                      top: 20 * textScaleFactor,
-                                      right: 20 * textScaleFactor,
-                                      left: 20 * textScaleFactor),
-                                  invertedSelection: true,
-                                  backgroundColor:
-                                      Color.fromRGBO(250, 246, 229, 1),
-                                  foregroundColor: Color(0xff0e4f55),
-                                  borderColor: Colors.white,
-                                  innerVerticalPadding: 12,
-                                  children: [
-                                    ButtonBarEntry(
-                                        child: Text(
-                                          'Rat',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        onTap: () {
-                                          _sendselectEnemyLogs(
-                                              "Rat", dateSelectApi);
-                                          print("Rat");
-                                          _updateEnemy("Rat");
-                                        }),
-                                    ButtonBarEntry(
-                                        child: Text(
-                                          'Toad',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        onTap: () {
-                                          _sendselectEnemyLogs(
-                                              "Toad", dateSelectApi);
-                                          print("Toad");
-                                          _updateEnemy("Toad");
-                                        }),
-                                    ButtonBarEntry(
-                                        child: Text(
-                                          'Lizard',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        onTap: () {
-                                          _sendselectEnemyLogs(
-                                              "Lizard", dateSelectApi);
-                                          print("Lizard");
-                                          _updateEnemy("Lizard");
-                                        })
-                                  ],
-                                )
+                                    radius: 16.0,
+                                    padding: EdgeInsets.only(
+                                        top: 20 * textScaleFactor,
+                                        right: 20 * textScaleFactor,
+                                        left: 20 * textScaleFactor),
+                                    invertedSelection: true,
+                                    backgroundColor:
+                                        Color.fromRGBO(250, 246, 229, 1),
+                                    foregroundColor: Color(0xff0e4f55),
+                                    borderColor: Colors.white,
+                                    innerVerticalPadding: 12,
+                                    children: enemies.map((enemy) {
+                                      return ButtonBarEntry(
+                                          child: Text(
+                                            enemy,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          onTap: () {
+                                            _sendselectEnemyLogs(
+                                                enemy, dateSelectApi);
+                                            print(enemy);
+                                            _updateEnemy(enemy);
+                                          });
+                                    }).toList()
+                                    )
                               ],
                             ),
                           ))),
