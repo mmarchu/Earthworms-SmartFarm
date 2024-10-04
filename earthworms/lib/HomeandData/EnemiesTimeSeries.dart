@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:animated_button_bar/animated_button_bar.dart';
 import 'package:earthworms/HomeandData/Components/url.dart';
+import 'package:earthworms/HomeandData/ImgFullScreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -44,10 +45,10 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
   List<String> is_imageList = [];
   List<String> dateList = [];
   List<String> timeList = [];
-  String EnemySelect = 'Rat';
+  String EnemySelect = 'Toad';
   String base64Image = '';
 
-  List<String> enemies = ['Rat', 'Toad', 'Lizard'];
+  List<String> TypeEnemies = [""];
 
   @override
   void initState() {
@@ -105,7 +106,7 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
     print(displayDate);
     _updateMonthApi(monthSelected);
     _updateDateData(displayDate);
-    _send2Api(json, "Rat", monthSelected);
+    _send2Api(json, "Toad", monthSelected);
   }
 
 // update display Date
@@ -174,6 +175,9 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
               dataMap.clear();
             });
           }
+          final List<dynamic> enemies = JsonData[1];
+          TypeEnemies = enemies.map((e) => e.toString()).toList();
+          print(TypeEnemies);
         } else {
           setState(() {
             dataMap.clear();
@@ -354,7 +358,7 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
         final data = jsonDecode(response.body);
         base64Image = data['image'];
         print(base64Image);
-
+        final ImgDecode = base64Decode(base64Image);
         showDialog(
             context: context,
             barrierDismissible: true,
@@ -364,17 +368,26 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                 actions: <Widget>[
                   Column(
                     children: [
-                      SizedBox(
-                          width: 300,
-                          height: 200,
-                          child: Center(
-                            child: Image.memory(
-                              base64Decode(base64Image),
-                              width: 300,
-                              height: 200,
-                              fit: BoxFit.fill,
-                            ),
-                          )),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      ImgFullScreenPage(ImgDecode: ImgDecode)));
+                        },
+                        child: SizedBox(
+                            width: 300,
+                            height: 200,
+                            child: Center(
+                              child: Image.memory(
+                                ImgDecode,
+                                width: 300,
+                                height: 200,
+                                fit: BoxFit.fill,
+                              ),
+                            )),
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -612,7 +625,7 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                                     foregroundColor: Color(0xff0e4f55),
                                     borderColor: Colors.white,
                                     innerVerticalPadding: 12,
-                                    children: enemies.map((enemy) {
+                                    children: TypeEnemies.map((enemy) {
                                       return ButtonBarEntry(
                                           child: Text(
                                             enemy,
@@ -625,8 +638,7 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                                             print(enemy);
                                             _updateEnemy(enemy);
                                           });
-                                    }).toList()
-                                    )
+                                    }).toList())
                               ],
                             ),
                           ))),
