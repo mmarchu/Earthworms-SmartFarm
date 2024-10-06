@@ -151,30 +151,45 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
           body: jsonEncode(json));
 
       if (response.statusCode == 200) {
+        setState(() {
+          dataMap.clear();
+        });
         final JsonData = jsonDecode(response.body) as List<dynamic>;
         if (JsonData.isNotEmpty) {
-          final data = JsonData[0] as Map<String, dynamic>;
-          final double ratValue = double.parse(data['Rat'].toString());
-          final double toadValue = double.parse(data['Toad'].toString());
-          final double lizardValue = double.parse(data['Lizard'].toString());
-          if (ratValue != 0 || toadValue != 0 || lizardValue != 0) {
-            setState(() {
-              RatLog = data['Rat'].toString();
-              ToadLog = data['Toad'].toString();
-              LizardLog = data['Lizard'].toString();
+          final data = JsonData[0];
 
-              dataMap = {
-                "Lizard": double.parse(LizardLog),
-                "Rat": double.parse(RatLog),
-                "Toad": double.parse(ToadLog),
-              };
+          // Create a dataMap to hold the results for the pie chart
+          Map<String, double> dataMap = {};
+          // Variable to check if all values are 0
+          bool allZero = true;
+
+          // Loop through the keys of the JSON object
+          data.forEach((key, value) {
+            if (key != 'month' && value != null) {
+              double doubleValue = value.toDouble();
+              dataMap[key] =
+                  doubleValue; // Add the key and value to the dataMap
+              // If any value is non-zero, set allZero to false
+              if (doubleValue != 0.0) {
+                allZero = false;
+              }
+            }
+          });
+
+          // After processing, check if all values are zero
+          if (allZero) {
+            setState(() {
+              dataMap.clear(); // Clear dataMap if all values are zero
             });
-            print(dataMap);
+            print('no data');
           } else {
             setState(() {
-              dataMap.clear();
+              this.dataMap =
+                  dataMap; // Update the state with the new dataMap if there is valid data
             });
+            print("DataMap: $dataMap");
           }
+
           final List<dynamic> enemies = JsonData[1];
           TypeEnemies = enemies.map((e) => e.toString()).toList();
           print(TypeEnemies);
@@ -184,7 +199,6 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
           });
         }
       } else {
-        print('else1');
         print('${response.statusCode}: ${response.reasonPhrase}');
         setState(() {
           dataMap.clear();
