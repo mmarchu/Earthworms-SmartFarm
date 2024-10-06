@@ -240,6 +240,7 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
         });
         print(id);
         print("IdList: $idList");
+        //print("is_image: $is_imageList");
       } else {
         setState(() {
           idList.clear();
@@ -312,145 +313,6 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
       print('Failed to connect to server: $e');
     } finally {
       Navigator.pop(context);
-    }
-  }
-
-// Send Id EnemiesLog to display Image
-  Future<void> _showImage(final id) async {
-    String? token = await loadData('Token');
-    var url;
-
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: SizedBox(
-            width: 300,
-            height: 100,
-            child: Center(
-              child: LoadingAnimationWidget.halfTriangleDot(
-                color: Color(0xff0e4f55),
-                size: 50,
-              ),
-            ),
-          ),
-        );
-      },
-    );
-
-    if (Platform.isAndroid) {
-      url = ApiUrl.ANDGetImageEnemy;
-    } else if (Platform.isIOS) {
-      url = ApiUrl.IOSGetImageEnemy;
-    }
-
-    Navigator.pop(context);
-
-    try {
-      final response = await http.post(Uri.parse(url),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charest=UTF-8',
-            'Authorization': 'Bearer $token',
-          },
-          body: jsonEncode({"id": id}));
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        base64Image = data['image'];
-        print(base64Image);
-        final ImgDecode = base64Decode(base64Image);
-        showDialog(
-            context: context,
-            barrierDismissible: true,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text("Enemies Detection"),
-                actions: <Widget>[
-                  Column(
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      ImgFullScreenPage(ImgDecode: ImgDecode)));
-                        },
-                        child: SizedBox(
-                            width: 300,
-                            height: 200,
-                            child: Center(
-                              child: Image.memory(
-                                ImgDecode,
-                                width: 300,
-                                height: 200,
-                                fit: BoxFit.fill,
-                              ),
-                            )),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text(
-                                'Close',
-                                style: TextStyle(
-                                    color: Color(0xff0e4f55),
-                                    fontWeight: FontWeight.bold),
-                              )),
-                        ],
-                      )
-                    ],
-                  )
-                ],
-              );
-            });
-      } else {
-        showDialog(
-            context: context,
-            barrierDismissible: true,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text("Enemies Detection"),
-                actions: <Widget>[
-                  Column(
-                    children: [
-                      SizedBox(
-                          width: 300,
-                          height: 200,
-                          child: Center(
-                              child: Text(
-                            "No image detection",
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
-                          ))),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text(
-                                'Close',
-                                style: TextStyle(
-                                    color: Color(0xff0e4f55),
-                                    fontWeight: FontWeight.bold),
-                              )),
-                        ],
-                      )
-                    ],
-                  )
-                ],
-              );
-            });
-      }
-    } catch (e) {
-      print('Failed to connect to server: $e');
     }
   }
 
@@ -726,7 +588,7 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                                                   child: SizedBox(
                                                     width: ScreenWidth - 40,
                                                     height:
-                                                        50 * textScaleFactor,
+                                                        60 * textScaleFactor,
                                                     child: DecoratedBox(
                                                         decoration: BoxDecoration(
                                                             color:
@@ -821,23 +683,67 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                                                                         .center,
                                                                 children: [
                                                                   Padding(
-                                                                    padding: EdgeInsets.only(
-                                                                        right: 15 *
-                                                                            textScaleFactor),
-                                                                    child: IconButton(
-                                                                        onPressed: () {
-                                                                          _showImage(
-                                                                              idList[Index]);
-                                                                          print(
-                                                                              idList[Index]);
+                                                                      padding: EdgeInsets.only(
+                                                                          right: 15 *
+                                                                              textScaleFactor),
+                                                                      child:
+                                                                          InkWell(
+                                                                        onTap:
+                                                                            () {
+                                                                          if (is_imageList[Index] !=
+                                                                              'false') {
+                                                                            final decodePic =
+                                                                                base64Decode(is_imageList[Index]);
+                                                                            Navigator.push(context,
+                                                                                MaterialPageRoute(builder: (context) => ImgFullScreenPage(ImgDecode: decodePic)));
+                                                                          } else {
+                                                                            showDialog(
+                                                                              context: context,
+                                                                              barrierDismissible: false,
+                                                                              builder: (BuildContext context) {
+                                                                                return AlertDialog(
+                                                                                  title: Text('No image detection'),
+                                                                                  actions: <Widget>[
+                                                                                    TextButton(
+                                                                                      child: Text(
+                                                                                        'Close',
+                                                                                        style: TextStyle(color: Color(0xff0e4f55)),
+                                                                                      ),
+                                                                                      onPressed: () {
+                                                                                        Navigator.pop(context);
+                                                                                      },
+                                                                                    ),
+                                                                                  ],
+                                                                                );
+                                                                              },
+                                                                            );
+                                                                          }
                                                                         },
-                                                                        icon: Icon(
-                                                                          Icons
-                                                                              .collections,
-                                                                          size: 25 *
-                                                                              textScaleFactor,
-                                                                        )),
-                                                                  )
+                                                                        child:
+                                                                            Padding(
+                                                                          padding:
+                                                                              EdgeInsets.only(left: 5 * textScaleFactor),
+                                                                          child:
+                                                                              SizedBox(
+                                                                            width:
+                                                                                70 * textScaleFactor,
+                                                                            height:
+                                                                                50 * textScaleFactor,
+                                                                            child: Center(
+                                                                                child: is_imageList[Index] != 'false' // Check if the value is not 'false'
+                                                                                    ? Image.memory(
+                                                                                        base64Decode(is_imageList[Index]), // Decode the Base64 string
+                                                                                        width: 300,
+                                                                                        height: 200,
+                                                                                        fit: BoxFit.fill,
+                                                                                      )
+                                                                                    : Icon(
+                                                                                        Icons.collections,
+                                                                                        size: 25 * textScaleFactor,
+                                                                                      )),
+                                                                          ),
+                                                                        ),
+                                                                      ))
                                                                 ],
                                                               ),
                                                             )
