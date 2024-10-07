@@ -28,24 +28,23 @@ Future<String?> loadData(String key) async {
 class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
   String dateSelectDisplay = '';
   String dateSelectApi = '';
-  String RatLog = '0';
-  String ToadLog = '0';
-  String LizardLog = '0';
   Map<String, double> dataMap = {};
   final ColorList = <Color>[
-    Color.fromRGBO(121, 142, 164, 1),
     Color.fromRGBO(252, 126, 52, 1),
     Color.fromRGBO(2, 117, 144, 1),
-    Color.fromRGBO(255, 0, 0, 1),
-    Color.fromRGBO(69, 52, 252, 1),
-    Color.fromRGBO(255, 0, 242, 1)
+    Color.fromRGBO(247, 183, 22, 1),
+    Color.fromRGBO(121, 142, 164, 1),
+    Color.fromARGB(172, 108, 41, 1),
+    Color.fromRGBO(175, 164, 206, 1),
+    Color.fromRGBO(119, 199, 82, 1),
+    Color.fromRGBO(249, 215, 221, 1)
   ];
   List<String> idList = [];
   List<String> typeList = [];
   List<String> is_imageList = [];
   List<String> dateList = [];
   List<String> timeList = [];
-  String EnemySelect = 'Toad';
+  String EnemySelect = 'Rat';
   String base64Image = '';
 
   List<String> TypeEnemies = [""];
@@ -106,7 +105,7 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
     print(displayDate);
     _updateMonthApi(monthSelected);
     _updateDateData(displayDate);
-    _send2Api(json, "Toad", monthSelected);
+    _send2Api(json, "Rat", monthSelected);
   }
 
 // update display Date
@@ -157,35 +156,26 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
         final JsonData = jsonDecode(response.body) as List<dynamic>;
         if (JsonData.isNotEmpty) {
           final data = JsonData[0];
-
-          // Create a dataMap to hold the results for the pie chart
-          Map<String, double> dataMap = {};
-          // Variable to check if all values are 0
-          bool allZero = true;
-
-          // Loop through the keys of the JSON object
+          bool allZero = true; // Variable to check if all values are 0
           data.forEach((key, value) {
+            // Loop keys of the JSON object
             if (key != 'month' && value != null) {
               double doubleValue = value.toDouble();
               dataMap[key] =
                   doubleValue; // Add the key and value to the dataMap
-              // If any value is non-zero, set allZero to false
               if (doubleValue != 0.0) {
                 allZero = false;
               }
             }
           });
-
-          // After processing, check if all values are zero
           if (allZero) {
             setState(() {
-              dataMap.clear(); // Clear dataMap if all values are zero
+              dataMap.clear();
             });
             print('no data');
           } else {
             setState(() {
-              this.dataMap =
-                  dataMap; // Update the state with the new dataMap if there is valid data
+              this.dataMap = dataMap;
             });
             print("DataMap: $dataMap");
           }
