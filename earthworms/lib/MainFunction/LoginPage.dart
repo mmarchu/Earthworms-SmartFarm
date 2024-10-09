@@ -19,7 +19,7 @@ class LoginPage extends StatefulWidget {
 
 String? emailError;
 String? passwordError;
-String id ='';
+String id = '';
 String DBname = '';
 String DBlastname = '';
 String DBtoken = '';
@@ -297,10 +297,16 @@ class _LoginPageState extends State<LoginPage> {
                       InkWell(
                         onTap: () async {
                           print('login');
-                          _login();
-                          // if (emailError == null && passwordError == null) {
-                          //   _login();
-                          // }
+                          //_login();
+                          if (emailError == null && passwordError == null) {
+                            _login();
+                          } else {
+                            var snackBar = SnackBar(
+                                content: Text(
+                                    'Please enter your email and password.'));
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          }
                         },
                         child: Container(
                           padding: const EdgeInsets.all(20),
@@ -325,6 +331,8 @@ class _LoginPageState extends State<LoginPage> {
                       InkWell(
                         onTap: () async {
                           print('Register');
+                          emailController.clear();
+                          passwordController.clear();
                           Navigator.push(
                               context,
                               MaterialPageRoute(

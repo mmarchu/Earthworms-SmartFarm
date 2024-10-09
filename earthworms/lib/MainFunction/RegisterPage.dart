@@ -19,11 +19,13 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController ConfirmPassController = TextEditingController();
+  String? nameError;
+  String? lastnameError;
   String? emailError;
   String? passwordError;
   String? ConfirmPasswordError;
   String SavePassword = '';
-
+  bool ispasswordVisible = true;
   Future<void> _regis() async {
     final InputName = nameController.text;
     final InputLastname = lastnameController.text;
@@ -94,7 +96,10 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               title: Text(
                 "Register",
-                style: TextStyle(color: Color.fromRGBO(250, 246, 229, 1)),
+                style: TextStyle(
+                    color: Color.fromRGBO(250, 246, 229, 1),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 25),
               ),
               backgroundColor: Color(0xff0e4f55),
             ),
@@ -125,7 +130,17 @@ class _RegisterPageState extends State<RegisterPage> {
                         hintText: "Name",
                         hintStyle: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.white),
+                        errorText: nameError,
                       ),
+                      onChanged: (value) {
+                        setState(() {
+                          if (value.isEmpty) {
+                            nameError = "Name cannot be empty";
+                          } else {
+                            nameError = null;
+                          }
+                        });
+                      },
                     ),
                   ),
                   const SizedBox(height: 30),
@@ -150,7 +165,17 @@ class _RegisterPageState extends State<RegisterPage> {
                         hintText: "Lastname",
                         hintStyle: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.white),
+                        errorText: lastnameError,
                       ),
+                      onChanged: (value) {
+                        setState(() {
+                          if (value.isEmpty) {
+                            lastnameError = "Lastname cannot be empty";
+                          } else {
+                            lastnameError = null;
+                          }
+                        });
+                      },
                     ),
                   ),
                   const SizedBox(height: 30),
@@ -196,7 +221,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     padding: EdgeInsets.symmetric(horizontal: 25),
                     child: TextFormField(
                       controller: passwordController,
-                      obscureText: true,
+                      obscureText: ispasswordVisible,
                       style: TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.white),
                       decoration: InputDecoration(
@@ -232,7 +257,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     padding: EdgeInsets.symmetric(horizontal: 25),
                     child: TextFormField(
                       controller: ConfirmPassController,
-                      obscureText: true,
+                      obscureText: ispasswordVisible,
                       style: TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.white),
                       decoration: InputDecoration(
@@ -259,13 +284,52 @@ class _RegisterPageState extends State<RegisterPage> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 30),
+                  Padding(
+                    padding: EdgeInsets.only(right: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          style: ElevatedButton.styleFrom(
+                              textStyle: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                          )),
+                          onPressed: () {
+                            setState(() {
+                              ispasswordVisible = !ispasswordVisible;
+                            });
+                          },
+                          child: Text(
+                            ispasswordVisible
+                                ? 'Show Password'
+                                : 'Hide Password',
+                            style: TextStyle(
+                                color: Color.fromRGBO(17, 41, 34, 0.698),
+                                fontSize: 15),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
 
                   // Regis button
                   InkWell(
                     onTap: () {
                       print("register");
-                      _regis();
+                      if (nameError == null &&
+                          lastnameError == null &&
+                          emailError == null &&
+                          passwordError == null &&
+                          ConfirmPasswordError == null) {
+                        _regis();
+                        print("regis success");
+                      } else {
+                        var snackBar = SnackBar(
+                            content: Text('Please fill all the fields'));
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      }
                     },
                     child: Container(
                       padding: const EdgeInsets.all(20),
