@@ -43,7 +43,7 @@ Future<int> CheckToken() async {
     url = ApiUrl.IOSgetoneuser;
   }
 
-  if (token == null&&user_id==null) {
+  if (token == null || user_id == null) {
     // ถ้าไม่มี token, ส่งค่า 400 กลับ
     print('no token jaaa');
     return 401;
