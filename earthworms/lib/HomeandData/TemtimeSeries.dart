@@ -488,7 +488,12 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
           extraLinesData: ExtraLinesData(horizontalLines: [
             HorizontalLine(
                 y: 40,
-                color: Color.fromARGB(255, 143, 48, 48),
+                color: Colors.red,
+                strokeWidth: 3,
+                dashArray: [25, 5]),
+            HorizontalLine(
+                y: 15,
+                color: Colors.blue,
                 strokeWidth: 3,
                 dashArray: [25, 5]),
           ]),

@@ -19,6 +19,7 @@ import 'package:http/http.dart' as http;
 
 // ignore: must_be_immutable
 class SensorDetailPage extends StatefulWidget {
+  final String id;
   final String nameSensor;
   final String macAddress;
   final String email;
@@ -29,7 +30,8 @@ class SensorDetailPage extends StatefulWidget {
   bool power;
 
   SensorDetailPage(
-      {required this.nameSensor,
+      {required this.id,
+      required this.nameSensor,
       required this.macAddress,
       required this.email,
       required this.sensorId,
@@ -93,7 +95,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
 
   Future<void> CheckToken() async {
     String? token = await loadData('Token');
-    String? email = await loadData('email');
+    String? user_id = await loadData('user_id');
     var url;
 
     if (Platform.isAndroid) {
@@ -108,7 +110,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
             'Content-Type': 'application/json; charest=UTF-8',
             'Authorization': 'Bearer $token',
           },
-          body: jsonEncode({'email': email}));
+          body: jsonEncode({'user_id': user_id}));
 
       if (response.statusCode == 401) {
         showDialog(
@@ -153,7 +155,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
 // Lode data after add sensor before back to homepage
   Future<void> LodeDataToHomePage() async {
     String? token = await loadData('Token');
-    String? email = await loadData('email');
+    String? user_id = await loadData('user_id');
     var url;
 
     if (Platform.isAndroid) {
@@ -168,7 +170,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
             'Content-Type': 'application/json; charest=UTF-8',
             'Authorization': 'Bearer $token',
           },
-          body: jsonEncode({'email': email}));
+          body: jsonEncode({'user_id': user_id}));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -196,6 +198,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
           context,
           PageRouteBuilder(
             pageBuilder: (context, animation, secondaryAnimation) => HomePage(
+              id: widget.id,
               name: DBname,
               lastname: DBlastname,
               email: DBemail,
@@ -397,6 +400,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
             context,
             MaterialPageRoute(
                 builder: (context) => SensorDetailPage(
+                  id: widget.id,
                     nameSensor: NewName,
                     macAddress: widget.macAddress,
                     email: widget.email,
@@ -500,7 +504,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
             'Authorization': 'Bearer $token',
           },
           body: jsonEncode({
-            'user_id': widget.email,
+            'user_id': widget.id,
             'gpio_id': widget.GpioList,
             'mode': modeValue,
             'power': powerValue
@@ -566,7 +570,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
             'Authorization': 'Bearer $token',
           },
           body: jsonEncode({
-            'user_id': widget.email,
+            'email': widget.email,
             'gpio_id': widget.GpioList,
             'mode': modeValue,
             'power': powerValue
@@ -834,7 +838,8 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                                           textScaleFactor),
                                                               child: LoadingAnimationWidget
                                                                   .staggeredDotsWave(
-                                                                color: Color(0xff0e4f55),
+                                                                color: Color(
+                                                                    0xff0e4f55),
                                                                 size: 50 *
                                                                     textScaleFactor,
                                                               ),
@@ -1027,7 +1032,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                       padding: EdgeInsets.only(
                                           left: 20 * textScaleFactor),
                                       child: Image.asset(
-                                        "images/shower.png",
+                                        "images/Artwork.png",
                                         height: 90 * textScaleFactor,
                                         width: 90 * textScaleFactor,
                                       ),

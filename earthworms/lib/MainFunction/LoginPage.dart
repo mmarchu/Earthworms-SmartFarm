@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:earthworms/HomeandData/Components/url.dart';
 import 'package:earthworms/MainFunction/RegisterPage.dart';
 import 'package:earthworms/HomeandData/homepage.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
@@ -16,6 +17,9 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
+String? emailError;
+String? passwordError;
+String id ='';
 String DBname = '';
 String DBlastname = '';
 String DBtoken = '';
@@ -75,7 +79,6 @@ class _LoginPageState extends State<LoginPage> {
       final response = await http.post(Uri.parse(url),
           headers: <String, String>{
             'Content-Type': 'application/json; charest=UTF-8',
-            'Authorization': 'Bearer $DBtoken',
           },
           body: jsonEncode({'email': InputEmail, 'password': InputPassword}));
 
@@ -83,6 +86,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        id = data['id'].toString();
         DBemail = data['email'];
         DBname = data['name'];
         DBlastname = data['lastname'];
@@ -115,12 +119,13 @@ class _LoginPageState extends State<LoginPage> {
               DBSensorsDynamic.map((item) => item['power'].toString() == '1')
                   .toList();
         }
-
+        print(sensorIdList);
         ConMqtt(DBemail);
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => HomePage(
+                id: id,
                 name: DBname,
                 lastname: DBlastname,
                 email: DBemail,
@@ -134,8 +139,9 @@ class _LoginPageState extends State<LoginPage> {
             ));
         await saveData('Token', DBtoken);
         await saveData('email', DBemail);
-        print(DBtoken);
-        print(sensorIdList);
+        await saveData('user_id', id);
+        print("Token: " + DBtoken);
+        print("Sensor List: $sensorIdList");
         print(sensorNameList);
         print(macAddressList);
         print(GpioList);
@@ -192,20 +198,32 @@ class _LoginPageState extends State<LoginPage> {
                           obscureText: false,
                           style: TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.white),
-                          decoration: const InputDecoration(
-                            enabledBorder: OutlineInputBorder(
+                          decoration: InputDecoration(
+                            enabledBorder: const OutlineInputBorder(
                               borderSide: BorderSide(
                                   color: Color.fromRGBO(17, 41, 34, 0.9)),
                             ),
-                            focusedBorder: OutlineInputBorder(
+                            focusedBorder: const OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.white)),
-                            fillColor: Color.fromRGBO(42, 62, 54, 1),
+                            fillColor: const Color.fromRGBO(42, 62, 54, 1),
                             filled: true,
                             hintText: 'Email',
-                            hintStyle: TextStyle(
+                            hintStyle: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white),
+                            errorText: emailError, // Display error message
                           ),
+                          onChanged: (value) {
+                            // Validate email after user stops typing
+                            setState(() {
+                              if (EmailValidator.validate(value)) {
+                                emailError = null; // Email is valid
+                              } else {
+                                emailError =
+                                    'Invalid email address'; // Show error message
+                              }
+                            });
+                          },
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -218,7 +236,7 @@ class _LoginPageState extends State<LoginPage> {
                           obscureText: _isPasswordVisible,
                           style: TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.white),
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(
                                   color: Color.fromRGBO(17, 41, 34, 0.9)),
@@ -231,7 +249,18 @@ class _LoginPageState extends State<LoginPage> {
                             hintStyle: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white),
+                            errorText: passwordError,
                           ),
+                          onChanged: (value) {
+                            setState(() {
+                              if (value.length > 5) {
+                                passwordError = null;
+                              } else {
+                                passwordError =
+                                    'Password must be at least 6 characters';
+                              }
+                            });
+                          },
                         ),
                       ),
 
@@ -269,6 +298,9 @@ class _LoginPageState extends State<LoginPage> {
                         onTap: () async {
                           print('login');
                           _login();
+                          // if (emailError == null && passwordError == null) {
+                          //   _login();
+                          // }
                         },
                         child: Container(
                           padding: const EdgeInsets.all(20),

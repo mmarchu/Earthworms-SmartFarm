@@ -18,6 +18,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
+  final String id;
   final String name;
   final String lastname;
   final String email;
@@ -28,7 +29,8 @@ class HomePage extends StatefulWidget {
   final List<bool> modeList;
   final List<bool> powerList;
   HomePage(
-      {required this.name,
+      {required this.id,
+      required this.name,
       required this.lastname,
       required this.email,
       required this.sensorIdList,
@@ -120,7 +122,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   Future<void> CheckToken() async {
     String? token = await loadData('Token');
-    String? email = await loadData('email');
+    String? user_id = await loadData('user_id');
     var url;
 
     if (Platform.isAndroid) {
@@ -134,7 +136,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             'Content-Type': 'application/json; charset=UTF-8',
             'Authorization': 'Bearer $token',
           },
-          body: jsonEncode({'email': email}));
+          body: jsonEncode({'user_id': user_id}));
 
       if (response.statusCode == 200) {
         print("ยังอยู่จ้าาOnHomPage");
@@ -190,6 +192,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             context,
             MaterialPageRoute(
                 builder: (context) => AddSensorPage(
+                      id: widget.id,
                       name: widget.name,
                       lastname: widget.lastname,
                       email: widget.email,
@@ -421,11 +424,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                 ? Center(
                                     child: InkWell(
                                     onTap: () {
+                                      print("id: " + widget.id);
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   AddSensorPage(
+                                                    id: widget.id,
                                                     name: widget.name,
                                                     lastname: widget.lastname,
                                                     email: widget.email,
@@ -520,6 +525,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                     builder:
                                                                         (context) =>
                                                                             SensorDetailPage(
+                                                                              id: widget.id,
                                                                               nameSensor: widget.sensorNameList[sensorIndex],
                                                                               macAddress: widget.macAddressList[sensorIndex],
                                                                               email: widget.email,
@@ -771,7 +777,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                                 bottom: 5 * textScaleFactor,
                                                                                 right: 8 * textScaleFactor),
                                                                             child:
-                                                                                Image.asset("images/shower.png"),
+                                                                                Image.asset("images/Artwork.png"),
                                                                           ),
                                                                           Text(
                                                                             "Water Pump Mode: ",

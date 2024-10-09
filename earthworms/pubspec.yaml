@@ -50,6 +50,7 @@ dependencies:
   connectivity_plus: ^6.0.5
   pie_chart: ^5.4.0
   photo_view: ^0.15.0
+  email_validator: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -103,6 +104,7 @@ flutter:
      - images/toad.png
      - images/pump.png
      - images/shower.png
+     - images/Artwork.png
      - message.txt
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

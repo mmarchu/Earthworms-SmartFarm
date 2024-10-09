@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:earthworms/HomeandData/Components/url.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -18,6 +19,10 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController ConfirmPassController = TextEditingController();
+  String? emailError;
+  String? passwordError;
+  String? ConfirmPasswordError;
+  String SavePassword = '';
 
   Future<void> _regis() async {
     final InputName = nameController.text;
@@ -169,7 +174,19 @@ class _RegisterPageState extends State<RegisterPage> {
                         hintText: "Email",
                         hintStyle: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.white),
+                        errorText: emailError,
                       ),
+                      onChanged: (value) {
+                        // Validate email after user stops typing
+                        setState(() {
+                          if (EmailValidator.validate(value)) {
+                            emailError = null; // Email is valid
+                          } else {
+                            emailError =
+                                'Invalid email address'; // Show error message
+                          }
+                        });
+                      },
                     ),
                   ),
                   const SizedBox(height: 30),
@@ -193,7 +210,19 @@ class _RegisterPageState extends State<RegisterPage> {
                         hintText: "Password",
                         hintStyle: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.white),
+                        errorText: passwordError,
                       ),
+                      onChanged: (value) {
+                        setState(() {
+                          if (value.length > 5) {
+                            passwordError = null;
+                            SavePassword = passwordController.text;
+                          } else {
+                            passwordError =
+                                'Password must be at least 6 characters';
+                          }
+                        });
+                      },
                     ),
                   ),
                   const SizedBox(height: 30),
@@ -217,7 +246,17 @@ class _RegisterPageState extends State<RegisterPage> {
                         hintText: "Confirm Password",
                         hintStyle: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.white),
+                        errorText: ConfirmPasswordError,
                       ),
+                      onChanged: (value) {
+                        setState(() {
+                          if (value == SavePassword) {
+                            ConfirmPasswordError = null;
+                          } else {
+                            ConfirmPasswordError = 'Password does not match';
+                          }
+                        });
+                      },
                     ),
                   ),
                   const SizedBox(height: 30),

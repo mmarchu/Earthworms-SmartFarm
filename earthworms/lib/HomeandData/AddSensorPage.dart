@@ -13,12 +13,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:earthworms/mqtt/mqttmanage.dart';
 
 class AddSensorPage extends StatefulWidget {
+  final String id;
   final String name;
   final String lastname;
   final String email;
   final String topic;
   AddSensorPage(
-      {required this.name,
+      {required this.id,
+      required this.name,
       required this.lastname,
       required this.email,
       required this.topic});
@@ -97,7 +99,7 @@ class _AddSensorPageState extends State<AddSensorPage>
 
   Future<void> CheckToken() async {
     String? token = await loadData('Token');
-    String? email = await loadData('email');
+    String? user_id = await loadData('user_id');
     var url;
 
     if (Platform.isAndroid) {
@@ -112,7 +114,7 @@ class _AddSensorPageState extends State<AddSensorPage>
             'Content-Type': 'application/json; charest=UTF-8',
             'Authorization': 'Bearer $token',
           },
-          body: jsonEncode({'email': email}));
+          body: jsonEncode({'user_id': user_id}));
 
       if (response.statusCode == 401) {
         showDialog(
@@ -157,7 +159,7 @@ class _AddSensorPageState extends State<AddSensorPage>
 // Lode data after add sensor before back to homepage
   Future<void> LodeDataToHomePage() async {
     String? token = await loadData('Token');
-    String? email = await loadData('email');
+    String? user_id = await loadData('user_id');
     var url;
 
     if (Platform.isAndroid) {
@@ -172,7 +174,7 @@ class _AddSensorPageState extends State<AddSensorPage>
             'Content-Type': 'application/json; charest=UTF-8',
             'Authorization': 'Bearer $token',
           },
-          body: jsonEncode({'email': email}));
+          body: jsonEncode({'user_id': user_id}));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -200,6 +202,7 @@ class _AddSensorPageState extends State<AddSensorPage>
             context,
             MaterialPageRoute(
                 builder: (context) => HomePage(
+                      id: id,
                       name: DBname,
                       lastname: DBlastname,
                       email: DBemail,
@@ -221,6 +224,7 @@ class _AddSensorPageState extends State<AddSensorPage>
   Future<void> SensorsListAPI() async {
     final email = widget.email;
     String? token = await loadData('Token');
+    String? user_id = await loadData('user_id');
     var url;
     if (Platform.isAndroid) {
       //IP Localhost
@@ -236,55 +240,55 @@ class _AddSensorPageState extends State<AddSensorPage>
             'Content-Type': 'application/json; charesr=UTF-8',
             'Authorization': 'Bearer $token'
           },
-          body: jsonEncode({'email': email, 'createSensor': 'false'}));
+          body: jsonEncode({'email': email, 'createSensor': 'false', 'user_id': user_id}));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        try{
-        if (data['data'] != null && data['data'] is List) {
-          List<Map<String, String>> sensorList =
-              List<Map<String, String>>.from(data['data'].map((item) => {
-                    //'status': int.parse(item['status'].toString()),
-                    'address': item['address'].toString(),
-                    'name': item['name'].toString()
-                  }));
-          print(sensorList);
-          _streamController.add(sensorList);
-        } else {
-          //throw Exception('Data format is incorrect');
-        }
+        try {
+          if (data['data'] != null && data['data'] is List) {
+            List<Map<String, String>> sensorList =
+                List<Map<String, String>>.from(data['data'].map((item) => {
+                      //'status': int.parse(item['status'].toString()),
+                      'address': item['address'].toString(),
+                      'name': item['name'].toString()
+                    }));
+            print(sensorList);
+            _streamController.add(sensorList);
+          } else {
+            //throw Exception('Data format is incorrect');
+          }
 
-        final Map<String, dynamic> jsonData = jsonDecode(response.body);
+          final Map<String, dynamic> jsonData = jsonDecode(response.body);
 
-        GPIO_Port = List<int>.from(
-            jsonData['gpio'].map((item) => item['gpio_id'] as int));
-        print(GPIO_Port);
-        Navigator.pop(context);
-        }catch(e){
+          GPIO_Port = List<int>.from(
+              jsonData['gpio'].map((item) => item['gpio_id'] as int));
+          print(GPIO_Port);
+          Navigator.pop(context);
+        } catch (e) {
           showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Sensor not found'),
-              actions: <Widget>[
-                TextButton(
-                  child: Text(
-                    'Try Again',
-                    style: TextStyle(color: Color(0xff0e4f55)),
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Sensor not found'),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                      'Try Again',
+                      style: TextStyle(color: Color(0xff0e4f55)),
+                    ),
+                    onPressed: () {
+                      // Navigator.pop(context);
+                      // DialogScanSenser(context);
+                      // SensorsListAPI();
+                      //CheckToken();
+                      LodeDataToHomePage();
+                    },
                   ),
-                  onPressed: () {
-                    // Navigator.pop(context);
-                    // DialogScanSenser(context);
-                    // SensorsListAPI();
-                    //CheckToken();
-                    LodeDataToHomePage();
-                  },
-                ),
-              ],
-            );
-          },
-        );
+                ],
+              );
+            },
+          );
         }
       } else {
         Navigator.pop(context);
@@ -321,7 +325,6 @@ class _AddSensorPageState extends State<AddSensorPage>
 // API add sensor to board
   Future<void> _addSensor(
       String MacAdd, String NameSensor, int? Gpio_selected) async {
-    final email = widget.email;
     final MacAddress = MacAdd;
     final SensorName = NameSensor;
     String? token = await loadData('Token');
@@ -341,7 +344,7 @@ class _AddSensorPageState extends State<AddSensorPage>
           },
           body: jsonEncode({
             'createSensor': 'true',
-            'user_id': email,
+            'user_id': widget.id, 
             'mac_address': MacAddress,
             'sensor_name': SensorName,
             'gpio_id': Gpio_selected

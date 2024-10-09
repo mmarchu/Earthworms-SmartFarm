@@ -15,6 +15,7 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
+String id ='';
 String DBname = '';
 String DBlastname = '';
 String DBemail = '';
@@ -34,7 +35,7 @@ Future<String?> loadData(String key) async {
 
 Future<int> CheckToken() async {
   String? token = await loadData('Token');
-  String? email = await loadData('email');
+  String ? user_id = await loadData('id');
   var url;
   if (Platform.isAndroid) {
     url = ApiUrl.ANDgetoneuser;
@@ -42,13 +43,9 @@ Future<int> CheckToken() async {
     url = ApiUrl.IOSgetoneuser;
   }
 
-  if (token == null) {
+  if (token == null&&user_id==null) {
     // ถ้าไม่มี token, ส่งค่า 400 กลับ
     print('no token jaaa');
-    return 401;
-  }
-
-  if (email == null) {
     return 401;
   }
 
@@ -58,10 +55,11 @@ Future<int> CheckToken() async {
           'Content-Type': 'application/json; charest=UTF-8',
           'Authorization': 'Bearer $token',
         },
-        body: jsonEncode({'email': email}));
+        body: jsonEncode({'user_id': user_id}));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
+      id = data['id'];
       DBemail = data['email'];
       DBname = data['name'];
       DBlastname = data['lastname'];
@@ -125,6 +123,7 @@ class MyApp extends StatelessWidget {
                 }
                 ConMqtt(DBemail);
                 return HomePage(
+                  id: id,
                   name: DBname,
                   lastname: DBlastname,
                   email: DBemail,
