@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:earthworms/HomeandData/Components/url.dart';
+import 'package:earthworms/HomeandData/ProfilePage.dart';
 import 'package:earthworms/HomeandData/homepage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:flutter/material.dart';
@@ -240,7 +241,8 @@ class _AddSensorPageState extends State<AddSensorPage>
             'Content-Type': 'application/json; charesr=UTF-8',
             'Authorization': 'Bearer $token'
           },
-          body: jsonEncode({'email': email, 'createSensor': 'false', 'user_id': user_id}));
+          body: jsonEncode(
+              {'email': email, 'createSensor': 'false', 'user_id': user_id}));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -344,7 +346,7 @@ class _AddSensorPageState extends State<AddSensorPage>
           },
           body: jsonEncode({
             'createSensor': 'true',
-            'user_id': widget.id, 
+            'user_id': widget.id,
             'mac_address': MacAddress,
             'sensor_name': SensorName,
             'gpio_id': Gpio_selected
@@ -508,37 +510,45 @@ class _AddSensorPageState extends State<AddSensorPage>
         SensorsListAPI();
         break;
       case 2:
-        showCupertinoModalPopup<void>(
-            context: context,
-            builder: (BuildContext context) => CupertinoAlertDialog(
-                  title: Text('Are you sure?'),
-                  content: Text(
-                      'Are you sure you want to logout of the application'),
-                  actions: <CupertinoDialogAction>[
-                    CupertinoDialogAction(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          "No",
-                          style: TextStyle(color: Colors.blue),
-                        )),
-                    CupertinoDialogAction(
-                        onPressed: () {
-                          _logout();
-                          unsubscribe(widget.topic);
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LoginPage()),
-                              (Route<dynamic> Route) => false);
-                        },
-                        child: Text(
-                          "Yes",
-                          style: TextStyle(color: Colors.blue),
-                        ))
-                  ],
-                ));
+        // showCupertinoModalPopup<void>(
+        //     context: context,
+        //     builder: (BuildContext context) => CupertinoAlertDialog(
+        //           title: Text('Are you sure?'),
+        //           content: Text(
+        //               'Are you sure you want to logout of the application'),
+        //           actions: <CupertinoDialogAction>[
+        //             CupertinoDialogAction(
+        //                 onPressed: () {
+        //                   Navigator.pop(context);
+        //                 },
+        //                 child: Text(
+        //                   "No",
+        //                   style: TextStyle(color: Colors.blue),
+        //                 )),
+        //             CupertinoDialogAction(
+        //                 onPressed: () {
+        //                   _logout();
+        //                   unsubscribe(widget.topic);
+        //                   Navigator.pushAndRemoveUntil(
+        //                       context,
+        //                       MaterialPageRoute(
+        //                           builder: (context) => LoginPage()),
+        //                       (Route<dynamic> Route) => false);
+        //                 },
+        //                 child: Text(
+        //                   "Yes",
+        //                   style: TextStyle(color: Colors.blue),
+        //                 ))
+        //           ],
+        //         ));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Profilepage(
+                    id: widget.id,
+                    name: widget.name,
+                    lastname: widget.lastname,
+                    email: widget.email)));
         break;
     }
   }
@@ -570,8 +580,11 @@ class _AddSensorPageState extends State<AddSensorPage>
                 label: 'Refresh',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.logout_rounded),
-                label: 'Logout',
+                icon: Icon(
+                  Icons.person_2,
+                  size: 29 * textScaleFactor,
+                ),
+                label: 'Profile',
               ),
             ],
             currentIndex: 1,

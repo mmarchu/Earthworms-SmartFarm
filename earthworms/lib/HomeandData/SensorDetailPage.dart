@@ -16,6 +16,7 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // ignore: must_be_immutable
 class SensorDetailPage extends StatefulWidget {
@@ -56,11 +57,11 @@ Future<String?> loadData(String key) async {
   return prefs.getString(key);
 }
 
-void _logout() async {
-  await removeData('Token');
-  await removeData('email');
-  print("Log out");
-}
+// void _logout() async {
+//   await removeData('Token');
+//   await removeData('email');
+//   print("Log out");
+// }
 
 class _SensorDetailPageState extends State<SensorDetailPage>
     with WidgetsBindingObserver {
@@ -93,64 +94,64 @@ class _SensorDetailPageState extends State<SensorDetailPage>
     super.dispose();
   }
 
-  Future<void> CheckToken() async {
-    String? token = await loadData('Token');
-    String? user_id = await loadData('user_id');
-    var url;
+  // Future<void> CheckToken() async {
+  //   String? token = await loadData('Token');
+  //   String? user_id = await loadData('user_id');
+  //   var url;
 
-    if (Platform.isAndroid) {
-      url = ApiUrl.ANDgetoneuser;
-    } else if (Platform.isIOS) {
-      url = ApiUrl.IOSgetoneuser;
-    }
+  //   if (Platform.isAndroid) {
+  //     url = ApiUrl.ANDgetoneuser;
+  //   } else if (Platform.isIOS) {
+  //     url = ApiUrl.IOSgetoneuser;
+  //   }
 
-    try {
-      final response = await http.post(Uri.parse(url),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charest=UTF-8',
-            'Authorization': 'Bearer $token',
-          },
-          body: jsonEncode({'user_id': user_id}));
+  //   try {
+  //     final response = await http.post(Uri.parse(url),
+  //         headers: <String, String>{
+  //           'Content-Type': 'application/json; charest=UTF-8',
+  //           'Authorization': 'Bearer $token',
+  //         },
+  //         body: jsonEncode({'user_id': user_id}));
 
-      if (response.statusCode == 401) {
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Session Timeout'),
-              actions: <Widget>[
-                Column(
-                  children: [
-                    Text(
-                        "Session expired. You will be redirected to Login page"),
-                    TextButton(
-                      child: Text(
-                        'OK',
-                        style: TextStyle(color: Color(0xff0e4f55)),
-                      ),
-                      onPressed: () {
-                        _logout();
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginPage()),
-                            (Route<dynamic> Route) => false);
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            );
-          },
-        );
-      } else {
-        print("ยังอยู่จ้าาOnDetailPage");
-      }
-    } catch (e) {
-      print('Failed to connect to server: $e');
-    }
-  }
+  //     if (response.statusCode == 401) {
+  //       showDialog(
+  //         context: context,
+  //         barrierDismissible: false,
+  //         builder: (BuildContext context) {
+  //           return AlertDialog(
+  //             title: Text('Session Timeout'),
+  //             actions: <Widget>[
+  //               Column(
+  //                 children: [
+  //                   Text(
+  //                       "Session expired. You will be redirected to Login page"),
+  //                   TextButton(
+  //                     child: Text(
+  //                       'OK',
+  //                       style: TextStyle(color: Color(0xff0e4f55)),
+  //                     ),
+  //                     onPressed: () {
+  //                       _logout();
+  //                       Navigator.pushAndRemoveUntil(
+  //                           context,
+  //                           MaterialPageRoute(
+  //                               builder: (context) => LoginPage()),
+  //                           (Route<dynamic> Route) => false);
+  //                     },
+  //                   ),
+  //                 ],
+  //               ),
+  //             ],
+  //           );
+  //         },
+  //       );
+  //     } else {
+  //       print("ยังอยู่จ้าาOnDetailPage");
+  //     }
+  //   } catch (e) {
+  //     print('Failed to connect to server: $e');
+  //   }
+  // }
 
 // Lode data after add sensor before back to homepage
   Future<void> LodeDataToHomePage() async {
@@ -400,7 +401,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
             context,
             MaterialPageRoute(
                 builder: (context) => SensorDetailPage(
-                  id: widget.id,
+                    id: widget.id,
                     nameSensor: NewName,
                     macAddress: widget.macAddress,
                     email: widget.email,
@@ -650,23 +651,17 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                     child: Stack(
                       children: [
                         Positioned(
-                          top: 35 * textScaleFactor,
+                          top: 40 * textScaleFactor,
                           right: 25 * textScaleFactor,
-                          child: TextButton(
-                            onPressed: () {
-                              _DialogUpdateSensorName();
-                            },
-                            child: Text(
-                              'edit',
-                              style: TextStyle(
-                                fontSize: 20 * textScaleFactor,
+                          child: IconButton(
+                              onPressed: () {
+                                _DialogUpdateSensorName();
+                              },
+                              icon: Icon(
+                                Icons.edit,
+                                size: 25 * textScaleFactor,
                                 color: Color.fromRGBO(250, 246, 229, 1),
-                                decoration: TextDecoration.underline,
-                                decorationColor:
-                                    Color.fromRGBO(250, 246, 229, 1),
-                              ),
-                            ),
-                          ),
+                              )),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,

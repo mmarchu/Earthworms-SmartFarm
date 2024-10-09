@@ -370,7 +370,7 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                             },
                             icon: Icon(
                               Icons.arrow_back_ios_rounded,
-                              size: 35,
+                              size: 35 * textScaleFactor,
                               color: Color.fromRGBO(250, 246, 229, 1),
                             ),
                           ),

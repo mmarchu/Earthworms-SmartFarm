@@ -16,6 +16,7 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:http/http.dart' as http;
+import 'package:earthworms/HomeandData/ProfilePage.dart';
 
 class HomePage extends StatefulWidget {
   final String id;
@@ -200,36 +201,44 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     )));
         break;
       case 2:
-        showCupertinoModalPopup<void>(
-            context: context,
-            builder: (BuildContext context) => CupertinoAlertDialog(
-                  title: Text('Are you sure?'),
-                  content: Text(
-                      'Are you sure you want to logout of the application'),
-                  actions: <CupertinoDialogAction>[
-                    CupertinoDialogAction(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          "No",
-                          style: TextStyle(color: Colors.blue),
-                        )),
-                    CupertinoDialogAction(
-                        onPressed: () {
-                          _logout();
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LoginPage()),
-                              (Route<dynamic> Route) => false);
-                        },
-                        child: Text(
-                          "Yes",
-                          style: TextStyle(color: Colors.blue),
-                        ))
-                  ],
-                ));
+        // showCupertinoModalPopup<void>(
+        //     context: context,
+        //     builder: (BuildContext context) => CupertinoAlertDialog(
+        //           title: Text('Are you sure?'),
+        //           content: Text(
+        //               'Are you sure you want to logout of the application'),
+        //           actions: <CupertinoDialogAction>[
+        //             CupertinoDialogAction(
+        //                 onPressed: () {
+        //                   Navigator.pop(context);
+        //                 },
+        //                 child: Text(
+        //                   "No",
+        //                   style: TextStyle(color: Colors.blue),
+        //                 )),
+        //             CupertinoDialogAction(
+        //                 onPressed: () {
+        //                   _logout();
+        //                   Navigator.pushAndRemoveUntil(
+        //                       context,
+        //                       MaterialPageRoute(
+        //                           builder: (context) => LoginPage()),
+        //                       (Route<dynamic> Route) => false);
+        //                 },
+        //                 child: Text(
+        //                   "Yes",
+        //                   style: TextStyle(color: Colors.blue),
+        //                 ))
+        //           ],
+        //         ));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Profilepage(
+                    id: widget.id,
+                    name: widget.name,
+                    lastname: widget.lastname,
+                    email: widget.email)));
         break;
     }
   }
@@ -326,8 +335,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   label: 'Add Sensor',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.logout_rounded),
-                  label: 'Logout',
+                  icon: Icon(
+                    Icons.person_2,
+                    size: 29 * textScaleFactor,
+                  ),
+                  label: 'Profile',
                 ),
               ],
               currentIndex: 0,
