@@ -124,6 +124,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   Future<void> CheckToken() async {
     String? token = await loadData('Token');
     String? user_id = await loadData('user_id');
+    //int? id = int.tryParse(user_id!);
     var url;
 
     if (Platform.isAndroid) {
@@ -201,36 +202,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     )));
         break;
       case 2:
-        // showCupertinoModalPopup<void>(
-        //     context: context,
-        //     builder: (BuildContext context) => CupertinoAlertDialog(
-        //           title: Text('Are you sure?'),
-        //           content: Text(
-        //               'Are you sure you want to logout of the application'),
-        //           actions: <CupertinoDialogAction>[
-        //             CupertinoDialogAction(
-        //                 onPressed: () {
-        //                   Navigator.pop(context);
-        //                 },
-        //                 child: Text(
-        //                   "No",
-        //                   style: TextStyle(color: Colors.blue),
-        //                 )),
-        //             CupertinoDialogAction(
-        //                 onPressed: () {
-        //                   _logout();
-        //                   Navigator.pushAndRemoveUntil(
-        //                       context,
-        //                       MaterialPageRoute(
-        //                           builder: (context) => LoginPage()),
-        //                       (Route<dynamic> Route) => false);
-        //                 },
-        //                 child: Text(
-        //                   "Yes",
-        //                   style: TextStyle(color: Colors.blue),
-        //                 ))
-        //           ],
-        //         ));
         Navigator.push(
             context,
             MaterialPageRoute(

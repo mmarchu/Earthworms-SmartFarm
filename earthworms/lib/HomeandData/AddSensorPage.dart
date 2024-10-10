@@ -7,11 +7,9 @@ import 'package:earthworms/HomeandData/homepage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:earthworms/mqtt/mqttmanage.dart';
 
 class AddSensorPage extends StatefulWidget {
   final String id;
@@ -30,12 +28,6 @@ class AddSensorPage extends StatefulWidget {
   State<AddSensorPage> createState() => _AddSensorPageState();
 }
 
-// Delete Token in SharePref
-Future<void> removeData(String key) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.remove(key);
-}
-
 //Load Token
 Future<String?> loadData(String key) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -51,8 +43,6 @@ class _AddSensorPageState extends State<AddSensorPage>
   List<dynamic> GPIOlist = [];
   List<int> GPIO_Port = [];
   int? SelectedGPIO;
-  late String topic;
-  late String email;
 
   @override
   void initState() {
@@ -63,98 +53,6 @@ class _AddSensorPageState extends State<AddSensorPage>
     NameSensor.addListener(_handleTextFieldChange);
     SensorsListAPI();
     WidgetsBinding.instance.addObserver(this);
-    email = widget.email;
-    topic = '$email/flora';
-  }
-
-  @override
-  void dispose() {
-    // Remove observer when the state is disposed
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-// Unsubscribe mqtt topic
-  void unsubscribe(String topic) {
-    client.unsubscribe(topic);
-    print("UnSubscribe topic: $topic");
-  }
-
-  //Func. Logout
-  void _logout() async {
-    await removeData('Token');
-    await removeData('email');
-    unsubscribe(topic);
-    print("Log out");
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
-      print("Paused");
-    }
-    if (state == AppLifecycleState.resumed) {
-      CheckToken();
-    }
-  }
-
-  Future<void> CheckToken() async {
-    String? token = await loadData('Token');
-    String? user_id = await loadData('user_id');
-    var url;
-
-    if (Platform.isAndroid) {
-      url = ApiUrl.ANDgetoneuser;
-    } else if (Platform.isIOS) {
-      url = ApiUrl.IOSgetoneuser;
-    }
-
-    try {
-      final response = await http.post(Uri.parse(url),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charest=UTF-8',
-            'Authorization': 'Bearer $token',
-          },
-          body: jsonEncode({'user_id': user_id}));
-
-      if (response.statusCode == 401) {
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Session Timeout'),
-              actions: <Widget>[
-                Column(
-                  children: [
-                    Text(
-                        "Session expired. You will be redirected to Login page"),
-                    TextButton(
-                      child: Text(
-                        'OK',
-                        style: TextStyle(color: Color(0xff0e4f55)),
-                      ),
-                      onPressed: () {
-                        _logout();
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginPage()),
-                            (Route<dynamic> Route) => false);
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            );
-          },
-        );
-      } else {
-        print("ยังอยู่จ้าาOnAddSensorPage");
-      }
-    } catch (e) {
-      print('Failed to connect to server: $e');
-    }
   }
 
 // Lode data after add sensor before back to homepage
@@ -510,37 +408,6 @@ class _AddSensorPageState extends State<AddSensorPage>
         SensorsListAPI();
         break;
       case 2:
-        // showCupertinoModalPopup<void>(
-        //     context: context,
-        //     builder: (BuildContext context) => CupertinoAlertDialog(
-        //           title: Text('Are you sure?'),
-        //           content: Text(
-        //               'Are you sure you want to logout of the application'),
-        //           actions: <CupertinoDialogAction>[
-        //             CupertinoDialogAction(
-        //                 onPressed: () {
-        //                   Navigator.pop(context);
-        //                 },
-        //                 child: Text(
-        //                   "No",
-        //                   style: TextStyle(color: Colors.blue),
-        //                 )),
-        //             CupertinoDialogAction(
-        //                 onPressed: () {
-        //                   _logout();
-        //                   unsubscribe(widget.topic);
-        //                   Navigator.pushAndRemoveUntil(
-        //                       context,
-        //                       MaterialPageRoute(
-        //                           builder: (context) => LoginPage()),
-        //                       (Route<dynamic> Route) => false);
-        //                 },
-        //                 child: Text(
-        //                   "Yes",
-        //                   style: TextStyle(color: Colors.blue),
-        //                 ))
-        //           ],
-        //         ));
         Navigator.push(
             context,
             MaterialPageRoute(

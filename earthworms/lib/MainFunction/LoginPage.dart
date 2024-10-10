@@ -32,6 +32,11 @@ Future<void> saveData(String key, String value) async {
   prefs.setString(key, value);
 }
 
+Future<String?> loadData(String key) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString(key);
+}
+
 class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -78,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
     try {
       final response = await http.post(Uri.parse(url),
           headers: <String, String>{
-            'Content-Type': 'application/json; charest=UTF-8',
+            'Content-Type': 'application/json; charset=UTF-8',
           },
           body: jsonEncode({'email': InputEmail, 'password': InputPassword}));
 
@@ -119,7 +124,6 @@ class _LoginPageState extends State<LoginPage> {
               DBSensorsDynamic.map((item) => item['power'].toString() == '1')
                   .toList();
         }
-        print(sensorIdList);
         ConMqtt(DBemail);
         Navigator.pushReplacement(
             context,
@@ -137,15 +141,19 @@ class _LoginPageState extends State<LoginPage> {
                 powerList: powerList,
               ),
             ));
+        
         await saveData('Token', DBtoken);
-        await saveData('email', DBemail);
         await saveData('user_id', id);
-        print("Token: " + DBtoken);
+        String? token = await loadData('Token');
+        String? user_id = await loadData('user_id');
+        print("SharePreference Token: $token");
+        print("SharePreference user_id: $user_id");
+        print("sensorIdList: $sensorIdList");
         print("Sensor List: $sensorIdList");
-        print(sensorNameList);
-        print(macAddressList);
-        print(GpioList);
-        print(modeList);
+        print("SensornameList: $sensorNameList");
+        print("macAddressList: $macAddressList");
+        print("GpioList: $GpioList");
+        print("modeList: $modeList");
       } else {
         var snackBar = SnackBar(
             content:

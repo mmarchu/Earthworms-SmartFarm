@@ -5,6 +5,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 // ignore: must_be_immutable
 class RegisterPage extends StatefulWidget {
@@ -40,6 +41,25 @@ class _RegisterPageState extends State<RegisterPage> {
       url = ApiUrl.IOSregister;
     }
 
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SizedBox(
+            width: 300,
+            height: 100,
+            child: Center(
+              child: LoadingAnimationWidget.halfTriangleDot(
+                color: Color(0xff0e4f55),
+                size: 50,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
     try {
       final response = await http.post(Uri.parse(url),
           headers: <String, String>{
@@ -52,6 +72,8 @@ class _RegisterPageState extends State<RegisterPage> {
             'password': InputPassword,
             'confirmpassword': InputConfirmPass
           }));
+
+      Navigator.pop(context);
 
       if (response.statusCode == 400) {
         var snackBar = SnackBar(content: Text("Already have this email."));
@@ -241,7 +263,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         setState(() {
                           if (value.length > 5) {
                             passwordError = null;
-                            SavePassword = passwordController.text;
                           } else {
                             passwordError =
                                 'Password must be at least 6 characters';
@@ -275,7 +296,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       onChanged: (value) {
                         setState(() {
-                          if (value == SavePassword) {
+                          if (value == passwordController.text) {
                             ConfirmPasswordError = null;
                           } else {
                             ConfirmPasswordError = 'Password does not match';

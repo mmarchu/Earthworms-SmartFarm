@@ -4,8 +4,6 @@ import 'package:earthworms/HomeandData/Components/url.dart';
 import 'package:earthworms/HomeandData/homepage.dart';
 import 'package:earthworms/MainFunction/LoginPage.dart';
 import 'package:earthworms/MainFunction/SessionToken.dart';
-import 'package:earthworms/TestFunc/DropDown.dart';
-import 'package:earthworms/TestFunc/base64toIMG.dart';
 import 'package:earthworms/mqtt/mqttmanage.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,7 +13,7 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
-String id ='';
+String id = '';
 String DBname = '';
 String DBlastname = '';
 String DBemail = '';
@@ -35,7 +33,7 @@ Future<String?> loadData(String key) async {
 
 Future<int> CheckToken() async {
   String? token = await loadData('Token');
-  String ? user_id = await loadData('id');
+  String? idString = await loadData('user_id');
   var url;
   if (Platform.isAndroid) {
     url = ApiUrl.ANDgetoneuser;
@@ -43,19 +41,32 @@ Future<int> CheckToken() async {
     url = ApiUrl.IOSgetoneuser;
   }
 
-  if (token == null || user_id == null) {
+  if (token == null) {
     // ถ้าไม่มี token, ส่งค่า 400 กลับ
     print('no token jaaa');
+    return 401;
+  }
+
+  if (idString == null) {
+    // ถ้าไม่มี user_id, ส่งค่า 400 กลับ
+    print('no idString jaaa');
+    return 401;
+  }
+
+  // Convert idString to an integer
+  int? id = int.tryParse(idString);
+  if (id == null) {
+    print('int id null jaaa');
     return 401;
   }
 
   try {
     final response = await http.post(Uri.parse(url),
         headers: <String, String>{
-          'Content-Type': 'application/json; charest=UTF-8',
+          'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token',
         },
-        body: jsonEncode({'user_id': user_id}));
+        body: jsonEncode({'user_id': id}));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -71,6 +82,7 @@ Future<int> CheckToken() async {
     }
   } catch (e) {
     print('Failed to connect to server: $e');
+    print(401);
     return 401;
   }
 }

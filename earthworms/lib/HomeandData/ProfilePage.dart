@@ -1,6 +1,17 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:earthworms/HomeandData/Components/url.dart';
+import 'package:earthworms/HomeandData/homepage.dart';
+import 'package:earthworms/MainFunction/LoginPage.dart';
+import 'package:earthworms/mqtt/mqttmanage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class Profilepage extends StatefulWidget {
   final String id;
@@ -18,7 +29,312 @@ class Profilepage extends StatefulWidget {
   State<Profilepage> createState() => _ProfilepageState();
 }
 
+// Delete Token in SharePref
+Future<void> removeData(String key) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.remove(key);
+}
+
+//Load Token
+Future<String?> loadData(String key) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString(key);
+}
+
 class _ProfilepageState extends State<Profilepage> {
+  late String topic;
+  late String email;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController newPasswordController = TextEditingController();
+  TextEditingController confirmNewPasswordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    email = widget.email;
+    topic = '$email/flora';
+  }
+
+// Unsubscribe mqtt topic
+  void unsubscribe(String topic) {
+    client.unsubscribe(topic);
+    print("UnSubscribe topic: $topic");
+  }
+
+//Func. Logout
+  void _logout() async {
+    await removeData('Token');
+    await removeData('user_id');
+    unsubscribe(topic);
+    print("Log out");
+    String? token = await loadData('Token');
+    String? user_id = await loadData('user_id');
+    print("SharePreference Token: $token");
+    print("SharePreference user_id: $user_id");
+  }
+
+//Func. back to homePage after change email or password
+  Future<void> LodeDataToHomePage() async {
+    String? token = await loadData('Token');
+    String? user_id = await loadData('user_id');
+    var url;
+
+    if (Platform.isAndroid) {
+      url = ApiUrl.ANDgetoneuser;
+    } else if (Platform.isIOS) {
+      url = ApiUrl.IOSgetoneuser;
+    }
+
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charest=UTF-8',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({'user_id': user_id}));
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        DBemail = data['email'];
+        DBname = data['name'];
+        DBlastname = data['lastname'];
+        DBSensorsDynamic = data['sensors'];
+        List<String> sensorIdList =
+            DBSensorsDynamic.map((item) => item['id'].toString()).toList();
+        List<String> macAddressList =
+            DBSensorsDynamic.map((item) => item['macAddress'].toString())
+                .toList();
+        List<String> sensorNameList =
+            DBSensorsDynamic.map((item) => item['name'].toString()).toList();
+        List<String> GpioList =
+            DBSensorsDynamic.map((item) => item['gpio'].toString()).toList();
+        List<bool> modeList =
+            DBSensorsDynamic.map((item) => item['mode'].toString() == '1')
+                .toList();
+        List<bool> powerList =
+            DBSensorsDynamic.map((item) => item['power'].toString() == '1')
+                .toList()
+                .toList();
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomePage(
+                      id: id,
+                      name: DBname,
+                      lastname: DBlastname,
+                      email: DBemail,
+                      sensorIdList: sensorIdList,
+                      macAddressList: macAddressList,
+                      sensorNameList: sensorNameList,
+                      GpioList: GpioList,
+                      modeList: modeList,
+                      powerList: powerList,
+                    )),
+            (Route<dynamic> Route) => false);
+      }
+    } catch (e) {
+      print('Failed to connect to server: $e');
+    }
+  }
+
+// dialog change password
+  void _changePasswordDialog() {
+    String? passwordError;
+    String? newPasswordError;
+    String? confirmNewPasswordError;
+    bool isOldPasswordVisible = true;
+    bool ispasswordVisible = true;
+    ValueNotifier<bool> isButtonEnabled = ValueNotifier<bool>(false);
+    void updateButtonState() {
+      isButtonEnabled.value = passwordError == null &&
+          newPasswordError == null &&
+          confirmNewPasswordError == null &&
+          passwordController.text.isNotEmpty &&
+          newPasswordController.text.isNotEmpty &&
+          confirmNewPasswordController.text.isNotEmpty;
+    }
+
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Change Password"),
+            content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Container(
+                  width: 350,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        // Old Password
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: TextFormField(
+                            controller: passwordController,
+                            obscureText: ispasswordVisible,
+                            decoration: InputDecoration(
+                              hintText: "Current password",
+                              errorText: passwordError,
+                              // suffixIcon: IconButton(
+                              //   icon: Icon(isOldPasswordVisible
+                              //       ? Icons.visibility
+                              //       : Icons.visibility_off),
+                              //   onPressed: () {
+                              //     setState(() {
+                              //       isOldPasswordVisible =
+                              //           !isOldPasswordVisible;
+                              //     });
+                              //   },
+                              // ),
+                              // focusedBorder: UnderlineInputBorder(
+                              //   borderSide: BorderSide(
+                              //       color: Color(0xff0e4f55), width: 2),
+                              // ),
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                passwordError = null;
+                                updateButtonState();
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 15),
+
+                        // New Password
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: TextFormField(
+                            controller: newPasswordController,
+                            obscureText: ispasswordVisible,
+                            decoration: InputDecoration(
+                              hintText: "New password",
+                              errorText: newPasswordError,
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color(0xff0e4f55), width: 2),
+                              ),
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                if (value.length < 6) {
+                                  newPasswordError =
+                                      'Password must be at least 6 characters';
+                                } else {
+                                  newPasswordError = null;
+                                }
+                                if (confirmNewPasswordController.text !=
+                                    value) {
+                                  confirmNewPasswordError =
+                                      'Passwords do not match';
+                                } else {
+                                  confirmNewPasswordError = null;
+                                }
+                                updateButtonState();
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 15),
+
+                        // Confirm New Password
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: TextFormField(
+                            controller: confirmNewPasswordController,
+                            obscureText: ispasswordVisible,
+                            decoration: InputDecoration(
+                              hintText: "Confirm password",
+                              errorText: confirmNewPasswordError,
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color(0xff0e4f55), width: 2),
+                              ),
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                if (value != newPasswordController.text) {
+                                  confirmNewPasswordError =
+                                      'Passwords do not match';
+                                } else {
+                                  confirmNewPasswordError = null;
+                                }
+                                updateButtonState();
+                              });
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(right: 5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              TextButton(
+                                style: ElevatedButton.styleFrom(
+                                    textStyle: const TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                                onPressed: () {
+                                  setState(() {
+                                    ispasswordVisible = !ispasswordVisible;
+                                  });
+                                },
+                                child: Text(
+                                  ispasswordVisible
+                                      ? 'Show Password'
+                                      : 'Hide Password',
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(17, 41, 34, 0.698),
+                                      fontSize: 15),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  passwordController.clear();
+                  newPasswordController.clear();
+                  confirmNewPasswordController.clear();
+                },
+                child: Text(
+                  'CANCEL',
+                  style: TextStyle(color: Color(0xff0e4f55)),
+                ),
+              ),
+              ValueListenableBuilder<bool>(
+                valueListenable: isButtonEnabled,
+                builder: (context, isEnabled, child) {
+                  return TextButton(
+                    onPressed: isEnabled
+                        ? () {
+                            print("HIHI"); // ทำอะไรบางอย่างเมื่อปุ่มถูกกด
+                          }
+                        : null,
+                    child: Text(
+                      'DONE',
+                      style: TextStyle(
+                          color: isEnabled ? Color(0xff0e4f55) : Colors.grey),
+                    ),
+                  );
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, Constraints) {
@@ -30,7 +346,6 @@ class _ProfilepageState extends State<Profilepage> {
       return AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.light,
           child: Scaffold(
-            //backgroundColor: Color.fromRGBO(250, 246, 229, 1),
             body: Container(
               child: SingleChildScrollView(
                 child: Stack(
@@ -183,6 +498,121 @@ class _ProfilepageState extends State<Profilepage> {
                                     ),
                                   ),
                                 ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    top: 20 * TextScaleFacetor,
+                                  ),
+                                  child: InkWell(
+                                    onTap: () {
+                                      print("Change Password");
+                                      _changePasswordDialog();
+                                    },
+                                    child: SizedBox(
+                                      width: ScreenWidth - 50,
+                                      height: 65 * TextScaleFacetor,
+                                      child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                          color:
+                                              Color.fromRGBO(239, 165, 38, 1),
+                                          borderRadius:
+                                              BorderRadius.circular(27),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              "Change Password",
+                                              style: TextStyle(
+                                                  color: Color.fromRGBO(
+                                                      250, 246, 229, 1),
+                                                  fontSize:
+                                                      18 * TextScaleFacetor,
+                                                  fontWeight: FontWeight.bold),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    top: 20 * TextScaleFacetor,
+                                  ),
+                                  child: InkWell(
+                                    onTap: () {
+                                      print("Logout");
+                                      showCupertinoModalPopup<void>(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              CupertinoAlertDialog(
+                                                title: Text('Are you sure?'),
+                                                content: Text(
+                                                    'Are you sure you want to logout of the application'),
+                                                actions: <CupertinoDialogAction>[
+                                                  CupertinoDialogAction(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text(
+                                                        "No",
+                                                        style: TextStyle(
+                                                            color: Colors.blue),
+                                                      )),
+                                                  CupertinoDialogAction(
+                                                      onPressed: () {
+                                                        _logout();
+                                                        unsubscribe(topic);
+                                                        Navigator.pushAndRemoveUntil(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        LoginPage()),
+                                                            (Route<dynamic>
+                                                                    Route) =>
+                                                                false);
+                                                      },
+                                                      child: Text(
+                                                        "Yes",
+                                                        style: TextStyle(
+                                                            color: Colors.blue),
+                                                      ))
+                                                ],
+                                              ));
+                                    },
+                                    child: SizedBox(
+                                      width: ScreenWidth - 50,
+                                      height: 65 * TextScaleFacetor,
+                                      child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(27),
+                                            border: Border.all(
+                                              color: Color.fromARGB(
+                                                  255, 143, 48, 48),
+                                              width: 3,
+                                            )),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              "Logout",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Color.fromARGB(
+                                                    255, 143, 48, 48),
+                                                fontSize: 18 * TextScaleFacetor,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
                               ],
                             ),
                           ),
