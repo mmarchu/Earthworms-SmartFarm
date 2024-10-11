@@ -50,7 +50,6 @@ Future<String?> loadData(String key) async {
   return prefs.getString(key);
 }
 
-
 class _SensorDetailPageState extends State<SensorDetailPage>
     with WidgetsBindingObserver {
   final BehaviorSubject<Map<String, List<String>>> _dataController =
@@ -757,7 +756,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                                   .staggeredDotsWave(
                                                                 color: Color(
                                                                     0xff0e4f55),
-                                                                size: 50 *
+                                                                size: 40 *
                                                                     textScaleFactor,
                                                               ),
                                                             );
@@ -772,7 +771,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                                 .staggeredDotsWave(
                                                               color: Color(
                                                                   0xff0e4f55),
-                                                              size: 50 *
+                                                              size: 40 *
                                                                   textScaleFactor,
                                                             ),
                                                           );
@@ -896,7 +895,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                                   .staggeredDotsWave(
                                                                 color: Color(
                                                                     0xff0e4f55),
-                                                                size: 50 *
+                                                                size: 40 *
                                                                     textScaleFactor,
                                                               ),
                                                             );
@@ -911,7 +910,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                                 .staggeredDotsWave(
                                                               color: Color(
                                                                   0xff0e4f55),
-                                                              size: 50 *
+                                                              size: 40 *
                                                                   textScaleFactor,
                                                             ),
                                                           );

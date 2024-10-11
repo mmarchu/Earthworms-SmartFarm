@@ -72,12 +72,17 @@ class _ProfilepageState extends State<Profilepage> {
     String? user_id = await loadData('user_id');
     print("SharePreference Token: $token");
     print("SharePreference user_id: $user_id");
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+        (Route<dynamic> Route) => false);
   }
 
 //Func. back to homePage after change email or password
   Future<void> LodeDataToHomePage() async {
     String? token = await loadData('Token');
-    String? user_id = await loadData('user_id');
+    String? idString = await loadData('user_id');
+    int? user_id = int.tryParse(idString!);
     var url;
 
     if (Platform.isAndroid) {
@@ -138,12 +143,76 @@ class _ProfilepageState extends State<Profilepage> {
     }
   }
 
-// dialog change password
-  void _changePasswordDialog() {
+//Api Change Password
+  Future<void> _changePassword() async {
+    String? token = await loadData('Token');
+    String? idString = await loadData('user_id');
+    int? user_id = int.tryParse(idString!);
+    final password = passwordController.text;
+    final newPassword = newPasswordController.text;
+    final confirmNewPassword = confirmNewPasswordController.text;
+    var url;
+
+    if (Platform.isAndroid) {
+      url = ApiUrl.ANDchangePassword;
+    } else if (Platform.isIOS) {
+      url = ApiUrl.IOSchangePassword;
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SizedBox(
+            width: 300,
+            height: 100,
+            child: Center(
+              child: LoadingAnimationWidget.halfTriangleDot(
+                color: Color(0xff0e4f55),
+                size: 50,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charest=UTF-8',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({
+            'user_id': user_id,
+            'oldPassword': password,
+            'newPassword': newPassword,
+            'confirmPassword': confirmNewPassword
+          }));
+
+      Navigator.pop(context);
+
+      if (response.statusCode == 200) {
+        var snackBar = SnackBar(content: Text("Change password successfully."));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        _logout();
+      } else {
+        var snackBar = SnackBar(content: Text("please try again."));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      print('Failed to connect to server: $e');
+    }
+  }
+
+//dialog change password
+  void changePasswordDialog() {
     String? passwordError;
     String? newPasswordError;
     String? confirmNewPasswordError;
-    bool isOldPasswordVisible = true;
+    //bool isOldPasswordVisible = true;
     bool ispasswordVisible = true;
     ValueNotifier<bool> isButtonEnabled = ValueNotifier<bool>(false);
     void updateButtonState() {
@@ -188,10 +257,10 @@ class _ProfilepageState extends State<Profilepage> {
                               //     });
                               //   },
                               // ),
-                              // focusedBorder: UnderlineInputBorder(
-                              //   borderSide: BorderSide(
-                              //       color: Color(0xff0e4f55), width: 2),
-                              // ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color(0xff0e4f55), width: 2),
+                              ),
                             ),
                             onChanged: (value) {
                               setState(() {
@@ -319,7 +388,7 @@ class _ProfilepageState extends State<Profilepage> {
                   return TextButton(
                     onPressed: isEnabled
                         ? () {
-                            print("HIHI"); // ทำอะไรบางอย่างเมื่อปุ่มถูกกด
+                            _changePassword();
                           }
                         : null,
                     child: Text(
@@ -330,6 +399,207 @@ class _ProfilepageState extends State<Profilepage> {
                   );
                 },
               ),
+            ],
+          );
+        });
+  }
+
+//Api Change Email
+  Future<void> _changeEmail() async {
+    String? token = await loadData('Token');
+    String? idString = await loadData('user_id');
+    int? user_id = int.tryParse(idString!);
+    var url;
+
+    if (Platform.isAndroid) {
+      url = ApiUrl.ANDchangeEmail;
+    } else if (Platform.isIOS) {
+      url = ApiUrl.IOSchangeEmail;
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SizedBox(
+            width: 300,
+            height: 100,
+            child: Center(
+              child: LoadingAnimationWidget.halfTriangleDot(
+                color: Color(0xff0e4f55),
+                size: 50,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charest=UTF-8',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({
+            'user_id': user_id,
+            'password': passwordController.text,
+            'email': widget.email,
+            'new_email': emailController.text
+          }));
+
+      Navigator.pop(context);
+      if (response.statusCode == 200) {
+        var snackBar = SnackBar(content: Text("Change email successfully."));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        LodeDataToHomePage();
+      } else if (response.statusCode == 401) {
+        var snackBar = SnackBar(content: Text("Password is incorrect."));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        Navigator.pop(context);
+        emailController.clear();
+        passwordController.clear();
+      } else {
+        var snackBar = SnackBar(content: Text("Please try again."));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        Navigator.pop(context);
+        emailController.clear();
+        passwordController.clear();
+      }
+    } catch (e) {}
+  }
+
+//dialog Change Email
+  void changeEmailDialog() {
+    String? passwordError;
+    String? emailError;
+    bool isPasswordVisible = true;
+    ValueNotifier<bool> isButtonEnabled = ValueNotifier<bool>(false);
+
+    void _resetvalues() {
+      emailController.clear();
+      passwordController.clear();
+      isButtonEnabled.value = false;
+    }
+
+    void updateButtonState() {
+      isButtonEnabled.value = passwordError == null &&
+          passwordController.text.isNotEmpty &&
+          emailError == null &&
+          emailController.text.isNotEmpty;
+    }
+
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Change Email"),
+            content: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+              return Container(
+                width: 350,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: TextFormField(
+                          controller: emailController,
+                          decoration: InputDecoration(
+                            hintText: "New Email",
+                            errorText: emailError,
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color(0xff0e4f55), width: 2),
+                            ),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              if (EmailValidator.validate(value)) {
+                                emailError = null; // Email is valid
+                              } else {
+                                emailError =
+                                    'Invalid email address'; // Show error message
+                              }
+                              updateButtonState();
+                            });
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: TextFormField(
+                          controller: passwordController,
+                          obscureText: isPasswordVisible,
+                          decoration: InputDecoration(
+                            hintText: "Current password",
+                            errorText: passwordError,
+                            suffixIcon: IconButton(
+                              icon: Icon(isPasswordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off),
+                              onPressed: () {
+                                setState(() {
+                                  isPasswordVisible = !isPasswordVisible;
+                                });
+                              },
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color(0xff0e4f55), width: 2),
+                            ),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              if (value.length < 6) {
+                                passwordError =
+                                    'Password must be at least 6 characters';
+                              } else {
+                                passwordError = null;
+                              }
+                              updateButtonState();
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _resetvalues();
+                },
+                child: Text(
+                  'CANCEL',
+                  style: TextStyle(color: Color(0xff0e4f55)),
+                ),
+              ),
+              ValueListenableBuilder(
+                  valueListenable: isButtonEnabled,
+                  builder: (context, isEnabled, child) {
+                    return TextButton(
+                        child: Text(
+                          'NEXT',
+                          style: TextStyle(
+                              color:
+                                  isEnabled ? Color(0xff0e4f55) : Colors.grey),
+                        ),
+                        onPressed: isEnabled
+                            ? () {
+                                print("NEXT");
+                                _changeEmail();
+                              }
+                            : null);
+                  })
             ],
           );
         });
@@ -491,6 +761,7 @@ class _ProfilepageState extends State<Profilepage> {
                                             color: Color(0xff0e4f55),
                                           ),
                                           onPressed: () {
+                                            changeEmailDialog();
                                             print("Edit Email");
                                           },
                                         )
@@ -505,7 +776,7 @@ class _ProfilepageState extends State<Profilepage> {
                                   child: InkWell(
                                     onTap: () {
                                       print("Change Password");
-                                      _changePasswordDialog();
+                                      changePasswordDialog();
                                     },
                                     child: SizedBox(
                                       width: ScreenWidth - 50,
@@ -563,16 +834,6 @@ class _ProfilepageState extends State<Profilepage> {
                                                   CupertinoDialogAction(
                                                       onPressed: () {
                                                         _logout();
-                                                        unsubscribe(topic);
-                                                        Navigator.pushAndRemoveUntil(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                                builder:
-                                                                    (context) =>
-                                                                        LoginPage()),
-                                                            (Route<dynamic>
-                                                                    Route) =>
-                                                                false);
                                                       },
                                                       child: Text(
                                                         "Yes",
