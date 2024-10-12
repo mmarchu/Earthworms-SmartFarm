@@ -605,6 +605,180 @@ class _ProfilepageState extends State<Profilepage> {
         });
   }
 
+//Api Delete Account
+  Future<void> _deleteAccount() async {
+    String? token = await loadData('Token');
+    String? idString = await loadData('user_id');
+    int? user_id = int.tryParse(idString!);
+    final password = passwordController.text;
+    var url;
+
+    if (Platform.isAndroid) {
+      url = ApiUrl.ANDdeleteAccount;
+    } else if (Platform.isIOS) {
+      url = ApiUrl.IOSdeleteAccount;
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SizedBox(
+            width: 300,
+            height: 100,
+            child: Center(
+              child: LoadingAnimationWidget.halfTriangleDot(
+                color: Color(0xff0e4f55),
+                size: 50,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charest=UTF-8',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({
+            'user_id': user_id,
+            'confirmPassword': password,
+          }));
+
+      Navigator.pop(context);
+
+      if (response.statusCode == 200) {
+        var snackBar = SnackBar(content: Text("Delete Account Successfully."));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        _logout();
+      } else {
+        var snackBar = SnackBar(content: Text("please try again."));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      print('Failed to connect to server: $e');
+    }
+  }
+
+//dialog Delete Account
+  void DeleteAccountDialog() {
+    String? passwordError;
+    bool isPasswordVisible = true;
+    final ValueNotifier<bool> _isButtonEnabled = ValueNotifier<bool>(false);
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Delete Account"),
+            content: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+              return Container(
+                width: 350,
+                child: SingleChildScrollView(
+                  child: Column(children: [
+                    TextFormField(
+                      controller: passwordController,
+                      obscureText: isPasswordVisible,
+                      decoration: InputDecoration(
+                          hintText: "Password",
+                          errorText: passwordError,
+                          suffixIcon: IconButton(
+                            icon: Icon(isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off),
+                            onPressed: () {
+                              setState(() {
+                                isPasswordVisible = !isPasswordVisible;
+                              });
+                            },
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Color(0xff0e4f55), width: 2),
+                          )),
+                      onChanged: (value) {
+                        setState(() {
+                          if (value.length < 6) {
+                            passwordError =
+                                'Password must be at least 6 characters';
+                          } else {
+                            passwordError = null;
+                          }
+                          _isButtonEnabled.value = passwordError == null;
+                        });
+                      },
+                    )
+                  ]),
+                ),
+              );
+            }),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  passwordController.clear();
+                },
+                child: Text(
+                  'CANCEL',
+                  style: TextStyle(color: Color(0xff0e4f55)),
+                ),
+              ),
+              ValueListenableBuilder<bool>(
+                valueListenable: _isButtonEnabled,
+                builder: (context, isEnabled, child) {
+                  return TextButton(
+                    onPressed: isEnabled
+                        ? () {
+                            showDialog<String>(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) => AlertDialog(
+                                      title: Text(
+                                        "Delete Account",
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                      actions: <Widget>[
+                                        TextButton(
+                                            onPressed: () => Navigator.pop(
+                                                context, 'Cancel'),
+                                            child: Text(
+                                              "Cancel",
+                                              style: TextStyle(
+                                                color: Color(0xff0e4f55),
+                                              ),
+                                            )),
+                                        TextButton(
+                                            onPressed: () {
+                                              _deleteAccount();
+                                            },
+                                            child: Text(
+                                              "Delete",
+                                              style: TextStyle(
+                                                  color: Color(0xff0e4f55)),
+                                            ))
+                                      ],
+                                    ));
+                          }
+                        : null,
+                    child: Text(
+                      'NEXT',
+                      style: TextStyle(
+                          color: isEnabled ? Color(0xff0e4f55) : Colors.grey),
+                    ),
+                  );
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, Constraints) {
@@ -877,7 +1051,21 @@ class _ProfilepageState extends State<Profilepage> {
                               ],
                             ),
                           ),
-                        ))
+                        )),
+                    Positioned(
+                        right: 40 * TextScaleFacetor,
+                        bottom: 30 * TextScaleFacetor,
+                        child: FloatingActionButton(
+                          onPressed: () {
+                            DeleteAccountDialog();
+                          },
+                          child: Icon(
+                            Icons.delete,
+                            size: 30,
+                            color: Colors.white,
+                          ),
+                          backgroundColor: Color.fromARGB(255, 143, 48, 48),
+                        )),
                   ],
                 ),
               ),

@@ -426,7 +426,6 @@ class _SensorDetailPageState extends State<SensorDetailPage>
             'Authorization': 'Bearer $token',
           },
           body: jsonEncode({
-            'user_id': widget.id,
             'gpio_id': widget.GpioList,
             'mode': modeValue,
             'power': powerValue

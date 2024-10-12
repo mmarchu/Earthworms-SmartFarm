@@ -407,7 +407,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                 ? Center(
                                     child: InkWell(
                                     onTap: () {
-                                      print("id: " + widget.id);
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(

@@ -228,6 +228,8 @@ class _AddSensorPageState extends State<AddSensorPage>
     final MacAddress = MacAdd;
     final SensorName = NameSensor;
     String? token = await loadData('Token');
+    String? idString = await loadData('user_id');
+    int? user_id = int.tryParse(idString!);
 
     var url;
     if (Platform.isAndroid) {
@@ -244,7 +246,7 @@ class _AddSensorPageState extends State<AddSensorPage>
           },
           body: jsonEncode({
             'createSensor': 'true',
-            'user_id': widget.id,
+            'user_id': user_id,
             'mac_address': MacAddress,
             'sensor_name': SensorName,
             'gpio_id': Gpio_selected
