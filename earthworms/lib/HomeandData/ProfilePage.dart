@@ -45,6 +45,7 @@ Future<String?> loadData(String key) async {
 class _ProfilepageState extends State<Profilepage> {
   late String topic;
   late String email;
+  late String notify;
   TextEditingController nameController = TextEditingController();
   TextEditingController lastnameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -57,24 +58,33 @@ class _ProfilepageState extends State<Profilepage> {
     super.initState();
     email = widget.email;
     topic = '$email/flora';
+    notify = '$email/notify';
   }
 
 // Unsubscribe mqtt topic
   void unsubscribe(String topic) {
+    String subTopicEnemiesNotify = 'Enemies/notify';
     client.unsubscribe(topic);
+    client.unsubscribe(notify);
+    client.unsubscribe(subTopicEnemiesNotify);
     print("UnSubscribe topic: $topic");
+    print("UnSubscribe topic: $notify");
+    print("UnSubscribe topic: $subTopicEnemiesNotify");
   }
 
 //Func. Logout
   void _logout() async {
     await removeData('Token');
     await removeData('user_id');
+    await removeData('email');
     unsubscribe(topic);
     print("Log out");
     String? token = await loadData('Token');
     String? user_id = await loadData('user_id');
+    String? email = await loadData('email');
     print("SharePreference Token: $token");
     print("SharePreference user_id: $user_id");
+    print("SharePreference email: $email");
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => LoginPage()),
@@ -124,6 +134,11 @@ class _ProfilepageState extends State<Profilepage> {
             DBSensorsDynamic.map((item) => item['power'].toString() == '1')
                 .toList()
                 .toList();
+        client.unsubscribe(topic);
+        client.unsubscribe(notify);
+        print("UnSubscribe topic: $topic");
+        print("UnSubscribe topic: $notify");
+        ConMqtt(DBemail);
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(

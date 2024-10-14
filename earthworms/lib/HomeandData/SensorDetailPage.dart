@@ -59,6 +59,8 @@ class _SensorDetailPageState extends State<SensorDetailPage>
   late bool defaultMode;
   late bool defaultPower;
   late String Mac_Address;
+  late String email;
+  late String topic;
   TextEditingController UpdateNameSensor = TextEditingController();
   final ValueNotifier<bool> _isButtonEnabled = ValueNotifier<bool>(false);
 
@@ -71,6 +73,8 @@ class _SensorDetailPageState extends State<SensorDetailPage>
     Mac_Address = widget.macAddress;
     defaultMode = widget.mode;
     defaultPower = widget.power;
+    email = widget.email;
+    topic = "$email/flora";
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -343,11 +347,16 @@ class _SensorDetailPageState extends State<SensorDetailPage>
   Future<void> _updateMQTT() async {
     Timer.periodic(Duration(seconds: 1), (timer) {
       client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
-        final recMess = c![0].payload as MqttPublishMessage;
-        final pt =
-            MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-        print(pt);
-        _MQTTtoJsonList(pt);
+        if (c != null && c.isNotEmpty) {
+          final recMess = c[0].payload as MqttPublishMessage;
+          final pt =
+              MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+          //print(pt);
+          if (c[0].topic == topic) {
+            _MQTTtoJsonList(pt);
+            print(pt);
+          }
+        }
       });
     });
   }
@@ -379,12 +388,12 @@ class _SensorDetailPageState extends State<SensorDetailPage>
       'Battery': batteries,
     });
 
-    print(macAddresses);
-    print(temperatures);
-    print(moisture);
-    print(lights);
-    print(conductivities);
-    print(batteries);
+    // print(macAddresses);
+    // print(temperatures);
+    // print(moisture);
+    // print(lights);
+    // print(conductivities);
+    // print(batteries);
   }
 
 // WaterPump Mode Update Function

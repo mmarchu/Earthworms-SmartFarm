@@ -33,12 +33,12 @@ dependencies:
 
   http: ^1.0.0
   cupertino_icons: ^1.0.2
-  responsive_framework: ^1.5.1
-  dropdown_button2: ^2.3.9
+  # responsive_framework: ^1.5.1
+  # dropdown_button2: ^2.3.9
   shared_preferences: ^2.2.2
-  toggle_switch: ^2.1.0
+  # toggle_switch: ^2.1.0
   fl_chart: ^0.66.2
-  syncfusion_flutter_charts: ^24.2.4+1
+  # syncfusion_flutter_charts: ^24.2.4+1
   mqtt_client: ^10.2.0
   auto_size_text: ^3.0.0
   loading_animation_widget: ^1.2.1
@@ -52,6 +52,8 @@ dependencies:
   photo_view: ^0.15.0
   email_validator: ^3.0.0
   font_awesome_flutter: ^10.7.0
+  flutter_background_service: ^5.0.10
+  flutter_local_notifications: ^17.2.3
 
 dev_dependencies:
   flutter_test:

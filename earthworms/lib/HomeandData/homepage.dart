@@ -217,11 +217,16 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   Future<void> _updateMQTT() async {
     Timer.periodic(Duration(seconds: 1), (timer) {
       client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
-        final recMess = c![0].payload as MqttPublishMessage;
-        final pt =
-            MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-        //print(pt);
-        _MQTTtoJsonList(pt);
+        if (c != null && c.isNotEmpty) {
+          final recMess = c[0].payload as MqttPublishMessage;
+          final pt =
+              MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+          //print(pt);
+          if (c[0].topic == topic) {
+            _MQTTtoJsonList(pt);
+            print(pt);
+          }
+        }
       });
     });
   }
