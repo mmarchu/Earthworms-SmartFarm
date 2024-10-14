@@ -267,6 +267,11 @@ class _RegisterPageState extends State<RegisterPage> {
                             passwordError =
                                 'Password must be at least 6 characters';
                           }
+                          if (ConfirmPassController.text != value) {
+                            ConfirmPasswordError = 'Passwords do not match';
+                          } else {
+                            ConfirmPasswordError = null;
+                          }
                         });
                       },
                     ),

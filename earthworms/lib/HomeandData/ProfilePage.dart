@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:earthworms/HomeandData/Components/url.dart';
@@ -44,6 +45,8 @@ Future<String?> loadData(String key) async {
 class _ProfilepageState extends State<Profilepage> {
   late String topic;
   late String email;
+  TextEditingController nameController = TextEditingController();
+  TextEditingController lastnameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
@@ -141,6 +144,190 @@ class _ProfilepageState extends State<Profilepage> {
     } catch (e) {
       print('Failed to connect to server: $e');
     }
+  }
+
+//dialog Change Name
+  void changeNameDialog() {
+    String? nameError;
+    ValueNotifier<bool> isButtonEnabled = ValueNotifier<bool>(false);
+
+    void _resetvalues() {
+      nameController.clear();
+    }
+
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Change Name"),
+            content: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+              return Container(
+                width: 350,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: TextFormField(
+                          controller: nameController,
+                          textCapitalization: TextCapitalization.words,
+                          decoration: InputDecoration(
+                            hintText: "Enter your name",
+                            errorText: nameError,
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color(0xff0e4f55), width: 2),
+                            ),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              if (nameController.text.isNotEmpty) {
+                                nameError = null;
+                                isButtonEnabled.value = true;
+                              } else {
+                                nameError = 'Please enter your name';
+                                isButtonEnabled.value = false;
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _resetvalues();
+                },
+                child: Text(
+                  'CANCEL',
+                  style: TextStyle(color: Color(0xff0e4f55)),
+                ),
+              ),
+              ValueListenableBuilder(
+                  valueListenable: isButtonEnabled,
+                  builder: (context, isEnabled, child) {
+                    return TextButton(
+                        child: Text(
+                          'DONE',
+                          style: TextStyle(
+                              color:
+                                  isEnabled ? Color(0xff0e4f55) : Colors.grey),
+                        ),
+                        onPressed: isEnabled
+                            ? () {
+                                print("Change name done");
+                              }
+                            : null);
+                  })
+            ],
+          );
+        });
+  }
+
+// //Api Change Name
+//   Future<void> changeName() async {
+//     String? token = await loadData('Token');
+//     String? idString = await loadData('user_id');
+//     int? user_id = int.tryParse(idString!);
+//     var url;
+//     final name = nameController.text;
+
+//     if (Platform.isAndroid) {
+//       url = ApiUrl.ANDchangeName;
+//     } else if (Platform.isIOS) {
+//       url = ApiUrl.IOSchangeName;
+//     }
+
+//dialog Change Name
+  void changeLastnameDialog() {
+    String? lastnameError;
+    ValueNotifier<bool> isButtonEnabled = ValueNotifier<bool>(false);
+
+    void _resetvalues() {
+      lastnameController.clear();
+    }
+
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Change Lastname"),
+            content: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+              return Container(
+                width: 350,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: TextFormField(
+                          controller: lastnameController,
+                          textCapitalization: TextCapitalization.words,
+                          decoration: InputDecoration(
+                            hintText: "Enter your lastname",
+                            errorText: lastnameError,
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color(0xff0e4f55), width: 2),
+                            ),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              if (lastnameController.text.isNotEmpty) {
+                                lastnameError = null;
+                                isButtonEnabled.value = true;
+                              } else {
+                                lastnameError = 'Please enter your name';
+                                isButtonEnabled.value = false;
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _resetvalues();
+                },
+                child: Text(
+                  'CANCEL',
+                  style: TextStyle(color: Color(0xff0e4f55)),
+                ),
+              ),
+              ValueListenableBuilder(
+                  valueListenable: isButtonEnabled,
+                  builder: (context, isEnabled, child) {
+                    return TextButton(
+                        child: Text(
+                          'DONE',
+                          style: TextStyle(
+                              color:
+                                  isEnabled ? Color(0xff0e4f55) : Colors.grey),
+                        ),
+                        onPressed: isEnabled
+                            ? () {
+                                print("Change Lastname done");
+                              }
+                            : null);
+                  })
+            ],
+          );
+        });
   }
 
 //Api Change Password
@@ -246,17 +433,6 @@ class _ProfilepageState extends State<Profilepage> {
                             decoration: InputDecoration(
                               hintText: "Current password",
                               errorText: passwordError,
-                              // suffixIcon: IconButton(
-                              //   icon: Icon(isOldPasswordVisible
-                              //       ? Icons.visibility
-                              //       : Icons.visibility_off),
-                              //   onPressed: () {
-                              //     setState(() {
-                              //       isOldPasswordVisible =
-                              //           !isOldPasswordVisible;
-                              //     });
-                              //   },
-                              // ),
                               focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
                                     color: Color(0xff0e4f55), width: 2),
@@ -846,39 +1022,149 @@ class _ProfilepageState extends State<Profilepage> {
                             color: Color.fromRGBO(250, 246, 229, 1),
                             child: Column(
                               children: [
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    top: 20 * TextScaleFacetor,
-                                  ),
-                                  child: SizedBox(
-                                    width: ScreenWidth - 25,
-                                    height: 60 * TextScaleFacetor,
-                                    child: Center(
-                                      child: AutoSizeText(
-                                        widget.name,
+                                SizedBox(height: 10 * TextScaleFacetor),
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        top: 5 * TextScaleFacetor,
+                                        left: 40 * TextScaleFacetor,
+                                        bottom: 2 * TextScaleFacetor,
+                                      ),
+                                      child: Text(
+                                        "Name",
                                         style: TextStyle(
-                                            fontSize: 35 * TextScaleFacetor,
+                                            fontSize: 15 * TextScaleFacetor,
+                                            color: const Color.fromARGB(
+                                                255, 51, 51, 51),
                                             fontWeight: FontWeight.bold),
-                                        maxLines: 1,
-                                        textAlign: TextAlign.center,
                                       ),
                                     ),
-                                  ),
+                                  ],
                                 ),
                                 SizedBox(
-                                  width: ScreenWidth - 25,
+                                  width: ScreenWidth - 50,
                                   height: 60 * TextScaleFacetor,
-                                  child: Center(
-                                    child: AutoSizeText(
-                                      widget.lastname,
-                                      style: TextStyle(
-                                          fontSize: 35 * TextScaleFacetor,
-                                          fontWeight: FontWeight.bold),
-                                      maxLines: 1,
-                                      textAlign: TextAlign.center,
+                                  child: DecoratedBox(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        border: Border.all(
+                                            color: Color(0xff0e4f55),
+                                            width: 2)),
+                                    child: Row(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 10 * TextScaleFacetor),
+                                          child: SizedBox(
+                                            width: ScreenWidth - 120,
+                                            height: 60 * TextScaleFacetor,
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Padding(
+                                                padding: EdgeInsets.only(
+                                                    left:
+                                                        30 * TextScaleFacetor),
+                                                child: AutoSizeText(
+                                                  widget.name,
+                                                  style: TextStyle(
+                                                    fontSize:
+                                                        17 * TextScaleFacetor,
+                                                    color: Colors.black,
+                                                  ),
+                                                  maxLines: 1,
+                                                  textAlign: TextAlign.left,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        IconButton(
+                                          icon: Icon(
+                                            Icons.edit,
+                                            color: Color(0xff0e4f55),
+                                          ),
+                                          onPressed: () {
+                                            changeNameDialog();
+                                            print("Edit Name");
+                                          },
+                                        )
+                                      ],
                                     ),
                                   ),
                                 ),
+                                SizedBox(height: 5 * TextScaleFacetor),
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        top: 5 * TextScaleFacetor,
+                                        left: 40 * TextScaleFacetor,
+                                        bottom: 2 * TextScaleFacetor,
+                                      ),
+                                      child: Text(
+                                        "Lastname",
+                                        style: TextStyle(
+                                            fontSize: 15 * TextScaleFacetor,
+                                            color: const Color.fromARGB(
+                                                255, 51, 51, 51),
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  width: ScreenWidth - 50,
+                                  height: 60 * TextScaleFacetor,
+                                  child: DecoratedBox(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        border: Border.all(
+                                            color: Color(0xff0e4f55),
+                                            width: 2)),
+                                    child: Row(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 10 * TextScaleFacetor),
+                                          child: SizedBox(
+                                            width: ScreenWidth - 120,
+                                            height: 60 * TextScaleFacetor,
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Padding(
+                                                padding: EdgeInsets.only(
+                                                  left: 30 * TextScaleFacetor,
+                                                ),
+                                                child: AutoSizeText(
+                                                  widget.lastname,
+                                                  style: TextStyle(
+                                                    fontSize:
+                                                        17 * TextScaleFacetor,
+                                                    color: Colors.black,
+                                                  ),
+                                                  maxLines: 1,
+                                                  textAlign: TextAlign.left,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        IconButton(
+                                          icon: Icon(
+                                            Icons.edit,
+                                            color: Color(0xff0e4f55),
+                                          ),
+                                          onPressed: () {
+                                            changeLastnameDialog();
+                                            print("Edit lastname");
+                                          },
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 5 * TextScaleFacetor),
                                 Row(
                                   children: [
                                     Padding(
@@ -915,16 +1201,22 @@ class _ProfilepageState extends State<Profilepage> {
                                           child: SizedBox(
                                             width: ScreenWidth - 120,
                                             height: 60 * TextScaleFacetor,
-                                            child: Center(
-                                              child: AutoSizeText(
-                                                widget.email,
-                                                style: TextStyle(
-                                                  fontSize:
-                                                      17 * TextScaleFacetor,
-                                                  color: Colors.black,
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Padding(
+                                                padding: EdgeInsets.only(
+                                                  left: 30 * TextScaleFacetor,
                                                 ),
-                                                maxLines: 1,
-                                                textAlign: TextAlign.left,
+                                                child: AutoSizeText(
+                                                  widget.email,
+                                                  style: TextStyle(
+                                                    fontSize:
+                                                        17 * TextScaleFacetor,
+                                                    color: Colors.black,
+                                                  ),
+                                                  maxLines: 1,
+                                                  textAlign: TextAlign.left,
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -1066,6 +1358,18 @@ class _ProfilepageState extends State<Profilepage> {
                           ),
                           backgroundColor: Color.fromARGB(255, 143, 48, 48),
                         )),
+                    // Positioned(
+                    //     right: 35 * TextScaleFacetor,
+                    //     top: 135 * TextScaleFacetor,
+                    //     child: IconButton(
+                    //         onPressed: () {
+                    //           print("Edit Profile");
+                    //         },
+                    //         icon: Icon(
+                    //           Icons.edit,
+                    //           size: 25 * TextScaleFacetor,
+                    //           color: Color(0xff0e4f55),
+                    //         ))),
                   ],
                 ),
               ),

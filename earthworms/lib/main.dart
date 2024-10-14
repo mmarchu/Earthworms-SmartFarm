@@ -19,12 +19,6 @@ String DBlastname = '';
 String DBemail = '';
 List<dynamic> DBSensorsDynamic = [];
 
-class MainColors {
-  final GreenTextFieldANDmainButton = Color.fromRGBO(42, 62, 54, 1);
-  final Yellow = Color.fromRGBO(239, 165, 38, 1);
-  final GreenText = Color(0xff0e4f55);
-}
-
 //Token--------------------------------------------
 Future<String?> loadData(String key) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
