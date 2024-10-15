@@ -19,12 +19,6 @@ String DBlastname = '';
 String DBemail = '';
 List<dynamic> DBSensorsDynamic = [];
 
-// Unsubscribe mqtt topic
-void unsubscribe(String topic) {
-  client.unsubscribe(topic);
-  print("UnSubscribe topic: $topic");
-}
-
 //Token--------------------------------------------
 Future<String?> loadData(String key) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -88,19 +82,19 @@ Future<int> CheckToken() async {
 }
 //-------------------------------------------------
 
-Future<void> UnSubMQTT() async {
-  String? email = await loadData('email');
-  String subTopicEmailNotofy = '$email/notify';
-  String subTopicEmailSensor = '$email/flora';
-  String subTopicEnemiesNotify = 'Enemies/notify';
+// Future<void> UnSubMQTT() async {
+//   String? email = await loadData('email');
+//   String subTopicEmailNotofy = '$email/notify';
+//   String subTopicEmailSensor = '$email/flora';
+//   String subTopicEnemiesNotify = 'Enemies/notify';
 
-  unsubscribe(subTopicEnemiesNotify);
-  unsubscribe(subTopicEmailNotofy);
-  unsubscribe(subTopicEmailSensor);
-  print("UnSubscribe topic: $subTopicEmailNotofy");
-  print("UnSubscribe topic: $subTopicEmailSensor");
-  print("UnSubscribe topic: $subTopicEnemiesNotify");
-}
+//   client.unsubscribe(subTopicEnemiesNotify);
+//   client.unsubscribe(subTopicEmailNotofy);
+//   client.unsubscribe(subTopicEmailSensor);
+//   print("UnSubscribe topic: $subTopicEmailNotofy");
+//   print("UnSubscribe topic: $subTopicEmailSensor");
+//   print("UnSubscribe topic: $subTopicEnemiesNotify");
+// }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -120,7 +114,7 @@ class MyApp extends StatelessWidget {
             } else {
               if (snapshot.hasError || snapshot.data == 401) {
                 print('back to login');
-                UnSubMQTT();
+                // UnSubMQTT();
                 return LoginPage();
               } else {
                 print('go to homepage');

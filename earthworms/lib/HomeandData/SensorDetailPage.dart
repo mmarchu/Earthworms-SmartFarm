@@ -344,20 +344,35 @@ class _SensorDetailPageState extends State<SensorDetailPage>
   }
 
 // Get data from sensor by MQTT
-  Future<void> _updateMQTT() async {
-    Timer.periodic(Duration(seconds: 1), (timer) {
-      client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
-        if (c != null && c.isNotEmpty) {
-          final recMess = c[0].payload as MqttPublishMessage;
-          final pt =
-              MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-          //print(pt);
-          if (c[0].topic == topic) {
-            _MQTTtoJsonList(pt);
-            print(pt);
-          }
+  // Future<void> _updateMQTT() async {
+  //   Timer.periodic(Duration(seconds: 1), (timer) {
+  //     client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
+  //       if (c != null && c.isNotEmpty) {
+  //         final recMess = c[0].payload as MqttPublishMessage;
+  //         final pt =
+  //             MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+  //         //print(pt);
+  //         if (c[0].topic == topic) {
+  //           _MQTTtoJsonList(pt);
+  //           print(pt);
+  //         }
+  //       }
+  //     });
+  //   });
+  // }
+
+  void _updateMQTT() {
+    client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
+      if (c != null && c.isNotEmpty) {
+        final recMess = c[0].payload as MqttPublishMessage;
+        final pt =
+            MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+        //print(pt);
+        if (c[0].topic == topic) {
+          _MQTTtoJsonList(pt);
+          print(pt);
         }
-      });
+      }
     });
   }
 

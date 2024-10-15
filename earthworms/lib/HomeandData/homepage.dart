@@ -71,7 +71,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    _updateMQTT();
+    //_updateMQTT();
+    client.onConnected = () {
+      print('Connected to MQTT broker');
+      _updateMQTT();
+    };
     _TokenChenkTimeout();
     WidgetsBinding.instance.addObserver(this);
     email = widget.email;
@@ -214,20 +218,18 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
 //Get data from sensor by MQTT
-  Future<void> _updateMQTT() async {
-    Timer.periodic(Duration(seconds: 1), (timer) {
-      client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
-        if (c != null && c.isNotEmpty) {
-          final recMess = c[0].payload as MqttPublishMessage;
-          final pt =
-              MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-          //print(pt);
-          if (c[0].topic == topic) {
-            _MQTTtoJsonList(pt);
-            print(pt);
-          }
+  void _updateMQTT() {
+    client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
+      if (c != null && c.isNotEmpty) {
+        final recMess = c[0].payload as MqttPublishMessage;
+        final pt =
+            MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+        //print(pt);
+        if (c[0].topic == topic) {
+          _MQTTtoJsonList(pt);
+          print(pt);
         }
-      });
+      }
     });
   }
 
