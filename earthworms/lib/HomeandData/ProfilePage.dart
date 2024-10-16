@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:earthworms/HomeandData/Components/url.dart';
@@ -13,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Profilepage extends StatefulWidget {
   final String id;
@@ -58,18 +58,18 @@ class _ProfilepageState extends State<Profilepage> {
     super.initState();
     email = widget.email;
     topic = '$email/flora';
-    notify = '$email/notify';
+    // notify = '$email/notify';
   }
 
 // Unsubscribe mqtt topic
   void unsubscribe(String topic) {
-    String subTopicEnemiesNotify = 'Enemies/notify';
+    // String subTopicEnemiesNotify = 'Enemies/notify';
     client.unsubscribe(topic);
-    client.unsubscribe(notify);
-    client.unsubscribe(subTopicEnemiesNotify);
+    // client.unsubscribe(notify);
+    // client.unsubscribe(subTopicEnemiesNotify);
     print("UnSubscribe topic: $topic");
-    print("UnSubscribe topic: $notify");
-    print("UnSubscribe topic: $subTopicEnemiesNotify");
+    // print("UnSubscribe topic: $notify");
+    // print("UnSubscribe topic: $subTopicEnemiesNotify");
   }
 
 //Func. Logout
@@ -414,7 +414,6 @@ class _ProfilepageState extends State<Profilepage> {
     String? passwordError;
     String? newPasswordError;
     String? confirmNewPasswordError;
-    //bool isOldPasswordVisible = true;
     bool ispasswordVisible = true;
     ValueNotifier<bool> isButtonEnabled = ValueNotifier<bool>(false);
     void updateButtonState() {
@@ -970,6 +969,20 @@ class _ProfilepageState extends State<Profilepage> {
         });
   }
 
+  void _openLineAPP() async {
+    const url = "https://lin.ee/Uc51ZBq";
+    final Uri uri = Uri.parse(url); // แป
+    try {
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
+      } else {
+        throw 'Could not launch $url';
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, Constraints) {
@@ -1247,6 +1260,52 @@ class _ProfilepageState extends State<Profilepage> {
                                           },
                                         )
                                       ],
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    top: 20 * TextScaleFacetor,
+                                  ),
+                                  child: InkWell(
+                                    onTap: () {
+                                      print("Line connection");
+                                      _openLineAPP();
+                                    },
+                                    child: SizedBox(
+                                      width: ScreenWidth - 50,
+                                      height: 65 * TextScaleFacetor,
+                                      child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                          color: Color.fromRGBO(74, 163, 97, 1),
+                                          borderRadius:
+                                              BorderRadius.circular(27),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  right: 10 * TextScaleFacetor),
+                                              child: Image.asset(
+                                                'images/line.png',
+                                                width: 50 * TextScaleFacetor,
+                                                height: 50 * TextScaleFacetor,
+                                              ),
+                                            ),
+                                            Text(
+                                              "Connect to Line Notification",
+                                              style: TextStyle(
+                                                  color: Color.fromRGBO(
+                                                      250, 246, 229, 1),
+                                                  fontSize:
+                                                      15 * TextScaleFacetor,
+                                                  fontWeight: FontWeight.bold),
+                                            )
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),

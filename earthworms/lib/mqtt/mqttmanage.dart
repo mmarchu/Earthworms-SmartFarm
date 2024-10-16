@@ -57,21 +57,21 @@ Future<int> ConMqtt(String email) async {
   }
 
   // Subscribe Sensor Topic
-  // const subTopicSensor = 'flora_detail';
-  // print('Subscribing to $subTopicSensor topic');
-  // client.subscribe(subTopicSensor, MqttQos.atMostOnce);
+  const subTopicSensor = 'flora_detail';
+  print('Subscribing to $subTopicSensor topic');
+  client.subscribe(subTopicSensor, MqttQos.atMostOnce);
 
   final subTopicEmailSensor = '$email/flora';
   print('Subscribing to $subTopicEmailSensor topic');
   client.subscribe(subTopicEmailSensor, MqttQos.atMostOnce);
 
-  final subTopicEmailNotofy = '$email/notify';
-  print('Subscribing to $subTopicEmailNotofy topic');
-  client.subscribe(subTopicEmailNotofy, MqttQos.atMostOnce);
+  // final subTopicEmailNotofy = '$email/notify';
+  // print('Subscribing to $subTopicEmailNotofy topic');
+  // client.subscribe(subTopicEmailNotofy, MqttQos.atMostOnce);
 
-  const subTopicEnimies = 'enemies/notify';
-  print('Subscribing to $subTopicEnimies topic');
-  client.subscribe(subTopicEnimies, MqttQos.atMostOnce);
+  // const subTopicEnimies = 'enemies/notify';
+  // print('Subscribing to $subTopicEnimies topic');
+  // client.subscribe(subTopicEnimies, MqttQos.atMostOnce);
 
   return 0;
 }

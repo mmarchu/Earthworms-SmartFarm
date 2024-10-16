@@ -54,6 +54,7 @@ dependencies:
   font_awesome_flutter: ^10.7.0
   flutter_background_service: ^5.0.10
   flutter_local_notifications: ^17.2.3
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:
@@ -108,6 +109,7 @@ flutter:
      - images/pump.png
      - images/shower.png
      - images/Artwork.png
+     - images/line.png
      - message.txt
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
