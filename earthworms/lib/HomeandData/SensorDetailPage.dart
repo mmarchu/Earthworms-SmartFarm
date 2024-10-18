@@ -725,7 +725,8 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                     child: Icon(
                                                       Icons
                                                           .arrow_forward_ios_rounded,
-                                                      size: 30,
+                                                      size:
+                                                          25 * textScaleFactor,
                                                     ),
                                                   )
                                                 ],
@@ -865,7 +866,8 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                     child: Icon(
                                                       Icons
                                                           .arrow_forward_ios_rounded,
-                                                      size: 30,
+                                                      size:
+                                                          25 * textScaleFactor,
                                                     ),
                                                   )
                                                 ],
