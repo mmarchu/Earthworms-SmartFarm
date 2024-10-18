@@ -6,7 +6,7 @@ import 'package:flutter/services.dart' show rootBundle;
 
 final client = MqttServerClient(
     'e076141ea6a943a5b775dae136735d83.s1.eu.hivemq.cloud', '8883');
-
+final String clientId = 'client_${DateTime.now().millisecondsSinceEpoch}';
 Future<int> ConMqtt(String email) async {
   client.port = 8883;
   client.logging(on: false);
@@ -26,7 +26,7 @@ Future<int> ConMqtt(String email) async {
 
   final connMess = MqttConnectMessage()
       .authenticateAs('march', 'Third0804151646')
-      .withClientIdentifier('dart_client')
+      .withClientIdentifier(clientId) //dart_client
       .withWillTopic('flora_detail')
       .withWillMessage('My Will message')
       .startClean()
@@ -72,7 +72,7 @@ Future<int> ConMqtt(String email) async {
   // const subTopicEnimies = 'enemies/notify';
   // print('Subscribing to $subTopicEnimies topic');
   // client.subscribe(subTopicEnimies, MqttQos.atMostOnce);
-
+  print(clientId);
   return 0;
 }
 
