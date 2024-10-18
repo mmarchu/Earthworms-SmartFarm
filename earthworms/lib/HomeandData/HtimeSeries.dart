@@ -488,7 +488,7 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
             HorizontalLine(
                 y: 40, color: Colors.red, strokeWidth: 3, dashArray: [25, 5]),
             HorizontalLine(
-                y: 80, color: Colors.red, strokeWidth: 3, dashArray: [25, 5]),
+                y: 70, color: Colors.red, strokeWidth: 3, dashArray: [25, 5]),
           ]),
         ),
       ),

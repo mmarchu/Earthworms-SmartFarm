@@ -71,11 +71,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    //_updateMQTT();
-    client.onConnected = () {
-      print('Connected to MQTT broker');
-      _updateMQTT();
-    };
+    _updateMQTT();
+    // client.onConnected = () {
+    //   print('Connected to MQTT broker');
+    //   _updateMQTT();
+    // };
     _TokenChenkTimeout();
     WidgetsBinding.instance.addObserver(this);
     email = widget.email;
