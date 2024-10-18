@@ -246,20 +246,6 @@ class _ProfilepageState extends State<Profilepage> {
         });
   }
 
-// //Api Change Name
-//   Future<void> changeName() async {
-//     String? token = await loadData('Token');
-//     String? idString = await loadData('user_id');
-//     int? user_id = int.tryParse(idString!);
-//     var url;
-//     final name = nameController.text;
-
-//     if (Platform.isAndroid) {
-//       url = ApiUrl.ANDchangeName;
-//     } else if (Platform.isIOS) {
-//       url = ApiUrl.IOSchangeName;
-//     }
-
 //dialog Change Name
   void changeLastnameDialog() {
     String? lastnameError;
@@ -1107,16 +1093,16 @@ class _ProfilepageState extends State<Profilepage> {
                                             ),
                                           ),
                                         ),
-                                        IconButton(
-                                          icon: Icon(
-                                            Icons.edit,
-                                            color: Color(0xff0e4f55),
-                                          ),
-                                          onPressed: () {
-                                            changeNameDialog();
-                                            print("Edit Name");
-                                          },
-                                        )
+                                        // IconButton(
+                                        //   icon: Icon(
+                                        //     Icons.edit,
+                                        //     color: Color(0xff0e4f55),
+                                        //   ),
+                                        //   onPressed: () {
+                                        //     changeNameDialog();
+                                        //     print("Edit Name");
+                                        //   },
+                                        // )
                                       ],
                                     ),
                                   ),
@@ -1178,16 +1164,16 @@ class _ProfilepageState extends State<Profilepage> {
                                             ),
                                           ),
                                         ),
-                                        IconButton(
-                                          icon: Icon(
-                                            Icons.edit,
-                                            color: Color(0xff0e4f55),
-                                          ),
-                                          onPressed: () {
-                                            changeLastnameDialog();
-                                            print("Edit lastname");
-                                          },
-                                        )
+                                        // IconButton(
+                                        //   icon: Icon(
+                                        //     Icons.edit,
+                                        //     color: Color(0xff0e4f55),
+                                        //   ),
+                                        //   onPressed: () {
+                                        //     changeLastnameDialog();
+                                        //     print("Edit lastname");
+                                        //   },
+                                        // )
                                       ],
                                     ),
                                   ),
