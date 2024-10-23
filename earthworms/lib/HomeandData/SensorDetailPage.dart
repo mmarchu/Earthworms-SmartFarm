@@ -763,7 +763,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                             return Text(
                                                               '${humidity[widget.index]}%',
                                                               style: TextStyle(
-                                                                fontSize: 40 *
+                                                                fontSize: 38 *
                                                                     textScaleFactor,
                                                                 fontWeight:
                                                                     FontWeight
@@ -903,7 +903,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                                             return Text(
                                                               '${temp[widget.index]}°C',
                                                               style: TextStyle(
-                                                                fontSize: 40 *
+                                                                fontSize: 38 *
                                                                     textScaleFactor,
                                                                 fontWeight:
                                                                     FontWeight
@@ -1192,7 +1192,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
                                           children: [
                                             Padding(
                                               padding: EdgeInsets.only(
-                                                  top: 12 * textScaleFactor),
+                                                  top: 8 * textScaleFactor),
                                               child: Text(
                                                 "GPIO",
                                                 style: TextStyle(

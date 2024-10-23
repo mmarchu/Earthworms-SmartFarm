@@ -592,7 +592,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                                     ),
                                                                                     child: Padding(
                                                                                       padding: EdgeInsets.only(
-                                                                                        top: 15 * textScaleFactor,
+                                                                                        top: 10 * textScaleFactor,
                                                                                         left: 15 * textScaleFactor,
                                                                                         right: 15 * textScaleFactor,
                                                                                       ),
@@ -605,7 +605,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                                                 padding: EdgeInsets.only(top: 8 * textScaleFactor),
                                                                                                 child: Text(
                                                                                                   "Humidity",
-                                                                                                  style: TextStyle(fontSize: 19 * textScaleFactor, fontWeight: FontWeight.bold),
+                                                                                                  style: TextStyle(fontSize: 18 * textScaleFactor, fontWeight: FontWeight.bold),
                                                                                                 ),
                                                                                               ),
                                                                                               Image.asset(
@@ -670,7 +670,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                                     ),
                                                                                     child: Padding(
                                                                                       padding: EdgeInsets.only(
-                                                                                        top: 15 * textScaleFactor,
+                                                                                        top: 10 * textScaleFactor,
                                                                                         left: 15 * textScaleFactor,
                                                                                         right: 15 * textScaleFactor,
                                                                                       ),

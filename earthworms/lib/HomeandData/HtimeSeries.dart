@@ -590,7 +590,7 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                               children: [
                                 if (Platform.isAndroid)
                                   _buildBarChart(375 * textScaleFactor,
-                                      480 * textScaleFactor)
+                                      460 * textScaleFactor)
                                 else if (Platform.isIOS)
                                   _buildBarChart(380 * textScaleFactor,
                                       493 * textScaleFactor)

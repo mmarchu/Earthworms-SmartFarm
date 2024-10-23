@@ -426,7 +426,7 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                                         chartLegendSpacing: 32,
                                         chartRadius:
                                             MediaQuery.of(context).size.width /
-                                                1.5,
+                                                1.57,
                                         colorList: ColorList,
                                         initialAngleInDegree: 0,
                                         chartType: ChartType.disc,
