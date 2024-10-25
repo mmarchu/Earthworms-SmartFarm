@@ -161,176 +161,6 @@ class _ProfilepageState extends State<Profilepage> {
     }
   }
 
-//dialog Change Name
-  void changeNameDialog() {
-    String? nameError;
-    ValueNotifier<bool> isButtonEnabled = ValueNotifier<bool>(false);
-
-    void _resetvalues() {
-      nameController.clear();
-    }
-
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("Change Name"),
-            content: StatefulBuilder(
-                builder: (BuildContext context, StateSetter setState) {
-              return Container(
-                width: 350,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        child: TextFormField(
-                          controller: nameController,
-                          textCapitalization: TextCapitalization.words,
-                          decoration: InputDecoration(
-                            hintText: "Enter your name",
-                            errorText: nameError,
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Color(0xff0e4f55), width: 2),
-                            ),
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              if (nameController.text.isNotEmpty) {
-                                nameError = null;
-                                isButtonEnabled.value = true;
-                              } else {
-                                nameError = 'Please enter your name';
-                                isButtonEnabled.value = false;
-                              }
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _resetvalues();
-                },
-                child: Text(
-                  'CANCEL',
-                  style: TextStyle(color: Color(0xff0e4f55)),
-                ),
-              ),
-              ValueListenableBuilder(
-                  valueListenable: isButtonEnabled,
-                  builder: (context, isEnabled, child) {
-                    return TextButton(
-                        child: Text(
-                          'DONE',
-                          style: TextStyle(
-                              color:
-                                  isEnabled ? Color(0xff0e4f55) : Colors.grey),
-                        ),
-                        onPressed: isEnabled
-                            ? () {
-                                print("Change name done");
-                              }
-                            : null);
-                  })
-            ],
-          );
-        });
-  }
-
-//dialog Change Name
-  void changeLastnameDialog() {
-    String? lastnameError;
-    ValueNotifier<bool> isButtonEnabled = ValueNotifier<bool>(false);
-
-    void _resetvalues() {
-      lastnameController.clear();
-    }
-
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("Change Lastname"),
-            content: StatefulBuilder(
-                builder: (BuildContext context, StateSetter setState) {
-              return Container(
-                width: 350,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        child: TextFormField(
-                          controller: lastnameController,
-                          textCapitalization: TextCapitalization.words,
-                          decoration: InputDecoration(
-                            hintText: "Enter your lastname",
-                            errorText: lastnameError,
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Color(0xff0e4f55), width: 2),
-                            ),
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              if (lastnameController.text.isNotEmpty) {
-                                lastnameError = null;
-                                isButtonEnabled.value = true;
-                              } else {
-                                lastnameError = 'Please enter your name';
-                                isButtonEnabled.value = false;
-                              }
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _resetvalues();
-                },
-                child: Text(
-                  'CANCEL',
-                  style: TextStyle(color: Color(0xff0e4f55)),
-                ),
-              ),
-              ValueListenableBuilder(
-                  valueListenable: isButtonEnabled,
-                  builder: (context, isEnabled, child) {
-                    return TextButton(
-                        child: Text(
-                          'DONE',
-                          style: TextStyle(
-                              color:
-                                  isEnabled ? Color(0xff0e4f55) : Colors.grey),
-                        ),
-                        onPressed: isEnabled
-                            ? () {
-                                print("Change Lastname done");
-                              }
-                            : null);
-                  })
-            ],
-          );
-        });
-  }
-
 //Api Change Password
   Future<void> _changePassword() async {
     String? token = await loadData('Token');
@@ -831,6 +661,43 @@ class _ProfilepageState extends State<Profilepage> {
         var snackBar = SnackBar(content: Text("Delete Account Successfully."));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         _logout();
+      } else if (response.statusCode == 402) {
+        final data = jsonDecode(response.body);
+        String message = data['message'];
+        List<dynamic> list = data['list'];
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Attention"),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      Text(message),
+                      for (var item in list)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15),
+                          child: Text("- $item"),
+                        ),
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                      "OK",
+                      style: TextStyle(color: Color(0xff0e4f55)),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            });
       } else {
         var snackBar = SnackBar(content: Text("please try again."));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);

@@ -202,6 +202,11 @@ class _SensorDetailPageState extends State<SensorDetailPage>
         var snackBar = SnackBar(content: Text("delete successful"));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         LodeDataToHomePage();
+      } else if (response.statusCode == 402) {
+        var snackBar = SnackBar(content: Text("please turn off the water pump before deleting"));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        Navigator.pop(context);
+        Navigator.pop(context);
       } else {
         var snackBar = SnackBar(content: Text("Can't Delete! Try again."));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -344,23 +349,6 @@ class _SensorDetailPageState extends State<SensorDetailPage>
   }
 
 // Get data from sensor by MQTT
-  // Future<void> _updateMQTT() async {
-  //   Timer.periodic(Duration(seconds: 1), (timer) {
-  //     client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
-  //       if (c != null && c.isNotEmpty) {
-  //         final recMess = c[0].payload as MqttPublishMessage;
-  //         final pt =
-  //             MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-  //         //print(pt);
-  //         if (c[0].topic == topic) {
-  //           _MQTTtoJsonList(pt);
-  //           print(pt);
-  //         }
-  //       }
-  //     });
-  //   });
-  // }
-
   void _updateMQTT() {
     client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
       if (c != null && c.isNotEmpty) {
