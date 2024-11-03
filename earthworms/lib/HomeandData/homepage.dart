@@ -625,7 +625,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                                                   builder: (context, snapshot) {
                                                                                                     if (snapshot.hasData) {
                                                                                                       List<String> humidity = snapshot.data!['Moisture'] ?? [];
-                                                                                                      if (humidity.isNotEmpty && humidity[index] != 'null') {
+                                                                                                      if (humidity.isNotEmpty && humidity.length > index && humidity[index] != 'null') {
                                                                                                         return Text(
                                                                                                           '${humidity[index]}%',
                                                                                                           style: TextStyle(
@@ -703,7 +703,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                                                   builder: (context, snapshot) {
                                                                                                     if (snapshot.hasData) {
                                                                                                       List<String> temp = snapshot.data!['Temperature'] ?? [];
-                                                                                                      if (temp.isNotEmpty && temp[index] != 'null') {
+                                                                                                      if (temp.isNotEmpty && temp.length > index && temp[index] != 'null') {
                                                                                                         return Text(
                                                                                                           '${temp[index]}°C',
                                                                                                           style: TextStyle(

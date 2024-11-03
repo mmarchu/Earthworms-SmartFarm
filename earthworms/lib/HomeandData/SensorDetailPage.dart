@@ -455,7 +455,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
           New_mode = defaultMode;
           //New_power = defaultPower;
         });
-        print('Pump mode response ');
+        print('Pump mode response ${response.statusCode}');
         var snackBar = SnackBar(content: Text("Try Again!"));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
@@ -552,7 +552,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
           //New_mode = defaultMode;
           New_power = defaultPower;
         });
-        print('Pump mode response 400');
+        print('Pump mode response ${response.statusCode}');
         var snackBar = SnackBar(content: Text("Try Again!"));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }

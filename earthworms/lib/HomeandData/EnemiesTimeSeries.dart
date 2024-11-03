@@ -41,7 +41,7 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
   ];
   List<String> idList = [];
   List<String> typeList = [];
-  List<String> is_imageList = [];
+  List<String> image_pathList = [];
   List<String> dateList = [];
   List<String> timeList = [];
   String EnemySelect = 'Rat';
@@ -220,17 +220,18 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
 
       if (response.statusCode == 200) {
         final List<dynamic> parsedData = jsonDecode(response.body);
+        List<dynamic> logEnemies = parsedData[0]['logEnemies'];
         List<String> id = [];
         List<String> type = [];
-        List<String> is_image = [];
+        List<String> image_path = [];
         List<String> createdAt = [];
         List<String> date = [];
         List<String> time = [];
 
-        for (var item in parsedData) {
+        for (var item in logEnemies) {
           id.add(item['id'].toString());
           type.add(item['type'].toString());
-          is_image.add(item['is_image'].toString());
+          image_path.add(item['image_path'].toString());
           createdAt.add(item['createdAt'].toString());
           date.add(item['date'].toString());
           time.add(item['time'].toString());
@@ -238,18 +239,18 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
         setState(() {
           idList = id;
           typeList = type;
-          is_imageList = is_image;
+          image_pathList = image_path;
           dateList = date;
           timeList = time;
         });
         print(id);
         print("IdList: $idList");
-        //print("is_image: $is_imageList");
+        //print("image_path: $image_pathList");
       } else {
         setState(() {
           idList.clear();
           typeList.clear();
-          is_imageList.clear();
+          image_pathList.clear();
           dateList.clear();
           timeList.clear();
         });
@@ -694,10 +695,10 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                                                                           InkWell(
                                                                         onTap:
                                                                             () {
-                                                                          if (is_imageList[Index] !=
+                                                                          if (image_pathList[Index] !=
                                                                               'false') {
                                                                             final decodePic =
-                                                                                base64Decode(is_imageList[Index]);
+                                                                                base64Decode(image_pathList[Index]);
                                                                             Navigator.push(context,
                                                                                 MaterialPageRoute(builder: (context) => ImgFullScreenPage(ImgDecode: decodePic)));
                                                                           } else {
@@ -734,9 +735,9 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                                                                             height:
                                                                                 50 * textScaleFactor,
                                                                             child: Center(
-                                                                                child: is_imageList[Index] != 'false' // Check if the value is not 'false'
+                                                                                child: image_pathList[Index] != 'false' // Check if the value is not 'false'
                                                                                     ? Image.memory(
-                                                                                        base64Decode(is_imageList[Index]), // Decode the Base64 string
+                                                                                        base64Decode(image_pathList[Index]), // Decode the Base64 string
                                                                                         width: 300,
                                                                                         height: 200,
                                                                                         fit: BoxFit.fill,
