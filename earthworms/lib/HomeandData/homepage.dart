@@ -72,10 +72,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     _updateMQTT();
-    // client.onConnected = () {
-    //   print('Connected to MQTT broker');
-    //   _updateMQTT();
-    // };
     _TokenChenkTimeout();
     WidgetsBinding.instance.addObserver(this);
     email = widget.email;
@@ -509,22 +505,97 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                 .indexOf(
                                                                     FilterSensorName[
                                                                         index]);
-                                                            Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                    builder:
-                                                                        (context) =>
-                                                                            SensorDetailPage(
-                                                                              id: widget.id,
-                                                                              nameSensor: widget.sensorNameList[sensorIndex],
-                                                                              macAddress: widget.macAddressList[sensorIndex],
-                                                                              email: widget.email,
-                                                                              sensorId: widget.sensorIdList[sensorIndex],
-                                                                              index: sensorIndex,
-                                                                              mode: widget.modeList[sensorIndex],
-                                                                              power: widget.powerList[sensorIndex],
-                                                                              GpioList: widget.GpioList[sensorIndex],
-                                                                            )));
+                                                            // Navigator.push(
+                                                            //     context,
+                                                            //     MaterialPageRoute(
+                                                            //         builder:
+                                                            //             (context) =>
+                                                            //                 SensorDetailPage(
+                                                            //                   id: widget.id,
+                                                            //                   nameSensor: widget.sensorNameList[sensorIndex],
+                                                            //                   macAddress: widget.macAddressList[sensorIndex],
+                                                            //                   email: widget.email,
+                                                            //                   sensorId: widget.sensorIdList[sensorIndex],
+                                                            //                   index: sensorIndex,
+                                                            //                   mode: widget.modeList[sensorIndex],
+                                                            //                   power: widget.powerList[sensorIndex],
+                                                            //                   GpioList: widget.GpioList[sensorIndex],
+                                                            //                 )));
+                                                            Navigator
+                                                                .pushAndRemoveUntil(
+                                                              context,
+                                                              PageRouteBuilder(
+                                                                pageBuilder: (context,
+                                                                        animation,
+                                                                        secondaryAnimation) =>
+                                                                    SensorDetailPage(
+                                                                  id: widget.id,
+                                                                  nameSensor: widget
+                                                                          .sensorNameList[
+                                                                      sensorIndex],
+                                                                  macAddress: widget
+                                                                          .macAddressList[
+                                                                      sensorIndex],
+                                                                  email: widget
+                                                                      .email,
+                                                                  sensorId: widget
+                                                                          .sensorIdList[
+                                                                      sensorIndex],
+                                                                  index:
+                                                                      sensorIndex,
+                                                                  mode: widget
+                                                                          .modeList[
+                                                                      sensorIndex],
+                                                                  power: widget
+                                                                          .powerList[
+                                                                      sensorIndex],
+                                                                  GpioList: widget
+                                                                          .GpioList[
+                                                                      sensorIndex],
+                                                                ),
+                                                                transitionsBuilder:
+                                                                    (context,
+                                                                        animation,
+                                                                        secondaryAnimation,
+                                                                        child) {
+                                                                  const begin =
+                                                                      Offset(
+                                                                          -1.0,
+                                                                          0.0);
+                                                                  const end =
+                                                                      Offset
+                                                                          .zero;
+                                                                  const curve =
+                                                                      Curves
+                                                                          .easeInOut;
+                                                                  var tween = Tween(
+                                                                          begin:
+                                                                              begin,
+                                                                          end:
+                                                                              end)
+                                                                      .chain(CurveTween(
+                                                                          curve:
+                                                                              curve));
+                                                                  var offsetAnimation =
+                                                                      animation
+                                                                          .drive(
+                                                                              tween);
+
+                                                                  return SlideTransition(
+                                                                      position:
+                                                                          offsetAnimation,
+                                                                      child:
+                                                                          child);
+                                                                },
+                                                                transitionDuration:
+                                                                    const Duration(
+                                                                        milliseconds:
+                                                                            95),
+                                                              ),
+                                                              (Route<dynamic>
+                                                                      route) =>
+                                                                  false,
+                                                            );
                                                           },
                                                           child: SizedBox(
                                                             width: 360 *
@@ -623,11 +694,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                                                 child: StreamBuilder<Map<String, List<String>>>(
                                                                                                   stream: _dataController.stream,
                                                                                                   builder: (context, snapshot) {
+                                                                                                    int sensorIndex = widget.sensorNameList.indexOf(FilterSensorName[index]);
                                                                                                     if (snapshot.hasData) {
                                                                                                       List<String> humidity = snapshot.data!['Moisture'] ?? [];
-                                                                                                      if (humidity.isNotEmpty && humidity.length > index && humidity[index] != 'null') {
+                                                                                                      if (humidity.isNotEmpty && humidity.length > index && humidity[sensorIndex] != 'null') {
                                                                                                         return Text(
-                                                                                                          '${humidity[index]}%',
+                                                                                                          '${humidity[sensorIndex]}%',
                                                                                                           style: TextStyle(
                                                                                                             fontSize: 25 * textScaleFactor,
                                                                                                             fontWeight: FontWeight.normal,
@@ -701,11 +773,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                                                 child: StreamBuilder<Map<String, List<String>>>(
                                                                                                   stream: _dataController.stream,
                                                                                                   builder: (context, snapshot) {
+                                                                                                    int sensorIndex = widget.sensorNameList.indexOf(FilterSensorName[index]);
                                                                                                     if (snapshot.hasData) {
                                                                                                       List<String> temp = snapshot.data!['Temperature'] ?? [];
-                                                                                                      if (temp.isNotEmpty && temp.length > index && temp[index] != 'null') {
+                                                                                                      if (temp.isNotEmpty && temp.length > index && temp[sensorIndex] != 'null') {
                                                                                                         return Text(
-                                                                                                          '${temp[index]}°C',
+                                                                                                          '${temp[sensorIndex]}°C',
                                                                                                           style: TextStyle(
                                                                                                             fontSize: 25 * textScaleFactor,
                                                                                                             fontWeight: FontWeight.normal,
@@ -775,7 +848,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                                                 TextStyle(fontSize: 17 * textScaleFactor),
                                                                           ),
                                                                           Text(
-                                                                            widget.modeList[index]
+                                                                            widget.modeList[widget.sensorNameList.indexOf(FilterSensorName[index])]
                                                                                 ? "Auto"
                                                                                 : "Manual",
                                                                             style:

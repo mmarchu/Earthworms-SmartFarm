@@ -90,6 +90,25 @@ class _SensorDetailPageState extends State<SensorDetailPage>
       url = ApiUrl.IOSgetoneuser;
     }
 
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SizedBox(
+            width: 300,
+            height: 100,
+            child: Center(
+              child: LoadingAnimationWidget.halfTriangleDot(
+                color: Color(0xff0e4f55),
+                size: 50,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
     try {
       final response = await http.post(Uri.parse(url),
           headers: <String, String>{
@@ -97,7 +116,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
             'Authorization': 'Bearer $token',
           },
           body: jsonEncode({'user_id': user_id}));
-
+      Navigator.pop(context);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         DBemail = data['email'];
@@ -203,7 +222,8 @@ class _SensorDetailPageState extends State<SensorDetailPage>
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         LodeDataToHomePage();
       } else if (response.statusCode == 402) {
-        var snackBar = SnackBar(content: Text("please turn off the water pump before deleting"));
+        var snackBar = SnackBar(
+            content: Text("please turn off the water pump before deleting"));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         Navigator.pop(context);
         Navigator.pop(context);
