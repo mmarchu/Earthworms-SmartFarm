@@ -587,175 +587,178 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
                                             return Column(
                                               children: [
                                                 Padding(
-                                                  padding: EdgeInsets.only(
-                                                      bottom:
-                                                          5 * textScaleFactor),
-                                                  child: SizedBox(
-                                                    width: ScreenWidth - 40,
-                                                    height:
-                                                        60 * textScaleFactor,
-                                                    child: DecoratedBox(
-                                                        decoration: BoxDecoration(
-                                                            color:
-                                                                Color.fromRGBO(
-                                                                    232,
-                                                                    225,
-                                                                    198,
-                                                                    1),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        15)),
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            SizedBox(
-                                                              width: 110 *
-                                                                  textScaleFactor,
-                                                              height: 70 *
-                                                                  textScaleFactor,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  Padding(
-                                                                    padding: EdgeInsets.only(
-                                                                        left: 10 *
-                                                                            textScaleFactor),
-                                                                    child:
-                                                                        AutoSizeText(
-                                                                      dateList[
-                                                                          Index],
+                                                    padding: EdgeInsets.only(
+                                                        bottom: 5 *
+                                                            textScaleFactor),
+                                                    child: InkWell(
+                                                      onTap: () {
+                                                        if (image_pathList[
+                                                                Index] !=
+                                                            'false') {
+                                                          final decodePic =
+                                                              base64Decode(
+                                                                  image_pathList[
+                                                                      Index]);
+                                                          Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (context) =>
+                                                                      ImgFullScreenPage(
+                                                                          ImgDecode:
+                                                                              decodePic)));
+                                                        } else {
+                                                          showDialog(
+                                                            context: context,
+                                                            barrierDismissible:
+                                                                false,
+                                                            builder:
+                                                                (BuildContext
+                                                                    context) {
+                                                              return AlertDialog(
+                                                                title: Text(
+                                                                    'No image detection'),
+                                                                actions: <Widget>[
+                                                                  TextButton(
+                                                                    child: Text(
+                                                                      'Close',
                                                                       style: TextStyle(
-                                                                          fontSize: 13 *
-                                                                              textScaleFactor,
-                                                                          fontWeight:
-                                                                              FontWeight.bold),
-                                                                      maxLines:
-                                                                          1,
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .center,
+                                                                          color:
+                                                                              Color(0xff0e4f55)),
                                                                     ),
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                    },
                                                                   ),
                                                                 ],
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              width: 110 *
-                                                                  textScaleFactor,
-                                                              height: 70 *
-                                                                  textScaleFactor,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  Padding(
-                                                                    padding: EdgeInsets.only(
-                                                                        left: 10 *
-                                                                            textScaleFactor),
-                                                                    child:
-                                                                        AutoSizeText(
-                                                                      timeList[
-                                                                          Index],
-                                                                      style: TextStyle(
-                                                                          fontSize: 13 *
-                                                                              textScaleFactor,
-                                                                          fontWeight:
-                                                                              FontWeight.bold),
-                                                                      maxLines:
-                                                                          1,
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .center,
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              width: 110 *
-                                                                  textScaleFactor,
-                                                              height: 70 *
-                                                                  textScaleFactor,
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  Padding(
-                                                                      padding: EdgeInsets.only(
-                                                                          right: 15 *
-                                                                              textScaleFactor),
-                                                                      child:
-                                                                          InkWell(
-                                                                        onTap:
-                                                                            () {
-                                                                          if (image_pathList[Index] !=
-                                                                              'false') {
-                                                                            final decodePic =
-                                                                                base64Decode(image_pathList[Index]);
-                                                                            Navigator.push(context,
-                                                                                MaterialPageRoute(builder: (context) => ImgFullScreenPage(ImgDecode: decodePic)));
-                                                                          } else {
-                                                                            showDialog(
-                                                                              context: context,
-                                                                              barrierDismissible: false,
-                                                                              builder: (BuildContext context) {
-                                                                                return AlertDialog(
-                                                                                  title: Text('No image detection'),
-                                                                                  actions: <Widget>[
-                                                                                    TextButton(
-                                                                                      child: Text(
-                                                                                        'Close',
-                                                                                        style: TextStyle(color: Color(0xff0e4f55)),
-                                                                                      ),
-                                                                                      onPressed: () {
-                                                                                        Navigator.pop(context);
-                                                                                      },
-                                                                                    ),
-                                                                                  ],
-                                                                                );
-                                                                              },
-                                                                            );
-                                                                          }
-                                                                        },
+                                                              );
+                                                            },
+                                                          );
+                                                        }
+                                                      },
+                                                      child: SizedBox(
+                                                        width: ScreenWidth - 40,
+                                                        height: 60 *
+                                                            textScaleFactor,
+                                                        child: DecoratedBox(
+                                                            decoration: BoxDecoration(
+                                                                color: Color
+                                                                    .fromRGBO(
+                                                                        232,
+                                                                        225,
+                                                                        198,
+                                                                        1),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            15)),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                SizedBox(
+                                                                  width: 110 *
+                                                                      textScaleFactor,
+                                                                  height: 70 *
+                                                                      textScaleFactor,
+                                                                  child: Column(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .center,
+                                                                    children: [
+                                                                      Padding(
+                                                                        padding:
+                                                                            EdgeInsets.only(left: 10 * textScaleFactor),
                                                                         child:
-                                                                            Padding(
-                                                                          padding:
-                                                                              EdgeInsets.only(left: 5 * textScaleFactor),
-                                                                          child:
-                                                                              SizedBox(
-                                                                            width:
-                                                                                70 * textScaleFactor,
-                                                                            height:
-                                                                                50 * textScaleFactor,
-                                                                            child: Center(
-                                                                                child: image_pathList[Index] != 'false' // Check if the value is not 'false'
-                                                                                    ? Image.memory(
-                                                                                        base64Decode(image_pathList[Index]), // Decode the Base64 string
-                                                                                        width: 300,
-                                                                                        height: 200,
-                                                                                        fit: BoxFit.fill,
-                                                                                      )
-                                                                                    : Icon(
-                                                                                        Icons.collections,
-                                                                                        size: 25 * textScaleFactor,
-                                                                                      )),
-                                                                          ),
+                                                                            AutoSizeText(
+                                                                          dateList[
+                                                                              Index],
+                                                                          style: TextStyle(
+                                                                              fontSize: 13 * textScaleFactor,
+                                                                              fontWeight: FontWeight.bold),
+                                                                          maxLines:
+                                                                              1,
+                                                                          textAlign:
+                                                                              TextAlign.center,
                                                                         ),
-                                                                      ))
-                                                                ],
-                                                              ),
-                                                            )
-                                                          ],
-                                                        )),
-                                                  ),
-                                                )
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                SizedBox(
+                                                                  width: 110 *
+                                                                      textScaleFactor,
+                                                                  height: 70 *
+                                                                      textScaleFactor,
+                                                                  child: Column(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .center,
+                                                                    children: [
+                                                                      Padding(
+                                                                        padding:
+                                                                            EdgeInsets.only(left: 10 * textScaleFactor),
+                                                                        child:
+                                                                            AutoSizeText(
+                                                                          timeList[
+                                                                              Index],
+                                                                          style: TextStyle(
+                                                                              fontSize: 13 * textScaleFactor,
+                                                                              fontWeight: FontWeight.bold),
+                                                                          maxLines:
+                                                                              1,
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                SizedBox(
+                                                                  width: 110 *
+                                                                      textScaleFactor,
+                                                                  height: 70 *
+                                                                      textScaleFactor,
+                                                                  child: Column(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .center,
+                                                                    children: [
+                                                                      Padding(
+                                                                          padding: EdgeInsets.only(
+                                                                              right: 15 *
+                                                                                  textScaleFactor),
+                                                                          child:
+                                                                              Padding(
+                                                                            padding:
+                                                                                EdgeInsets.only(left: 5 * textScaleFactor),
+                                                                            child:
+                                                                                SizedBox(
+                                                                              width: 70 * textScaleFactor,
+                                                                              height: 50 * textScaleFactor,
+                                                                              child: Center(
+                                                                                  child: image_pathList[Index] != 'false' // Check if the value is not 'false'
+                                                                                      ? Image.memory(
+                                                                                          base64Decode(image_pathList[Index]), // Decode the Base64 string
+                                                                                          width: 300,
+                                                                                          height: 200,
+                                                                                          fit: BoxFit.fill,
+                                                                                        )
+                                                                                      : Icon(
+                                                                                          Icons.collections,
+                                                                                          size: 25 * textScaleFactor,
+                                                                                        )),
+                                                                            ),
+                                                                          ))
+                                                                    ],
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            )),
+                                                      ),
+                                                    ))
                                               ],
                                             );
                                           }))

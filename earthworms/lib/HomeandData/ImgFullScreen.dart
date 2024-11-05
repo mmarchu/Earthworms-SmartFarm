@@ -29,17 +29,9 @@ class ImgFullScreenPage extends StatelessWidget {
           backgroundDecoration: BoxDecoration(color: Colors.black),
           minScale: PhotoViewComputedScale.contained,
           maxScale: PhotoViewComputedScale.covered * 3.0,
-          enableRotation: true,
+          enableRotation: false,
         ),
       ),
     );
   }
 }
-
-//  body: PhotoView(
-//         imageProvider: MemoryImage(ImgDecode),
-//         backgroundDecoration: BoxDecoration(color: Colors.black),
-//         minScale: PhotoViewComputedScale.contained,
-//         maxScale: PhotoViewComputedScale.covered * 3.0,
-//         enableRotation: true, // Optional for rotating the image
-//       ),
