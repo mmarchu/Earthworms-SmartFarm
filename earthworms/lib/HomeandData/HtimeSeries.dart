@@ -307,13 +307,14 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
             });
           } else if (_period == 'Year') {
             _data = List.generate(12, (index) {
-              final String x = index.toString().padLeft(2, '0');
+              final String x = (index+1).toString().padLeft(2, '0');
               final data = decodedData.firstWhere((item) => item['x'] == x,
                   orElse: () => {"x": x, "avg_humidity": 0});
               return data;
             });
           }
         });
+        print("_data: $_data");
       } else if (response.statusCode == 404) {
         showDialog(
             context: context,
