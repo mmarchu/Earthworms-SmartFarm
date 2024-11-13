@@ -45,7 +45,6 @@ Future<String?> loadData(String key) async {
 class _ProfilepageState extends State<Profilepage> {
   late String topic;
   late String email;
-  late String notify;
   TextEditingController nameController = TextEditingController();
   TextEditingController lastnameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -58,18 +57,13 @@ class _ProfilepageState extends State<Profilepage> {
     super.initState();
     email = widget.email;
     topic = '$email/flora';
-    // notify = '$email/notify';
+
   }
 
 // Unsubscribe mqtt topic
   void unsubscribe(String topic) {
-    // String subTopicEnemiesNotify = 'Enemies/notify';
     client.unsubscribe(topic);
-    // client.unsubscribe(notify);
-    // client.unsubscribe(subTopicEnemiesNotify);
     print("UnSubscribe topic: $topic");
-    // print("UnSubscribe topic: $notify");
-    // print("UnSubscribe topic: $subTopicEnemiesNotify");
   }
 
 //Func. Logout
@@ -135,9 +129,7 @@ class _ProfilepageState extends State<Profilepage> {
                 .toList()
                 .toList();
         client.unsubscribe(topic);
-        client.unsubscribe(notify);
         print("UnSubscribe topic: $topic");
-        print("UnSubscribe topic: $notify");
         ConMqtt(DBemail);
         Navigator.pushAndRemoveUntil(
             context,
@@ -459,6 +451,7 @@ class _ProfilepageState extends State<Profilepage> {
       if (response.statusCode == 200) {
         var snackBar = SnackBar(content: Text("Change email successfully."));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        Navigator.pop(context);
         LodeDataToHomePage();
       } else if (response.statusCode == 401) {
         var snackBar = SnackBar(content: Text("Password is incorrect."));

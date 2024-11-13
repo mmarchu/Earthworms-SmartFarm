@@ -65,13 +65,6 @@ Future<int> ConMqtt(String email) async {
   print('Subscribing to $subTopicEmailSensor topic');
   client.subscribe(subTopicEmailSensor, MqttQos.atMostOnce);
 
-  // final subTopicEmailNotofy = '$email/notify';
-  // print('Subscribing to $subTopicEmailNotofy topic');
-  // client.subscribe(subTopicEmailNotofy, MqttQos.atMostOnce);
-
-  // const subTopicEnimies = 'enemies/notify';
-  // print('Subscribing to $subTopicEnimies topic');
-  // client.subscribe(subTopicEnimies, MqttQos.atMostOnce);
   print(clientId);
   return 0;
 }

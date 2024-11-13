@@ -82,20 +82,6 @@ Future<int> CheckToken() async {
 }
 //-------------------------------------------------
 
-// Future<void> UnSubMQTT() async {
-//   String? email = await loadData('email');
-//   String subTopicEmailNotofy = '$email/notify';
-//   String subTopicEmailSensor = '$email/flora';
-//   String subTopicEnemiesNotify = 'Enemies/notify';
-
-//   client.unsubscribe(subTopicEnemiesNotify);
-//   client.unsubscribe(subTopicEmailNotofy);
-//   client.unsubscribe(subTopicEmailSensor);
-//   print("UnSubscribe topic: $subTopicEmailNotofy");
-//   print("UnSubscribe topic: $subTopicEmailSensor");
-//   print("UnSubscribe topic: $subTopicEnemiesNotify");
-// }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
