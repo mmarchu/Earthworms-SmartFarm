@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:earthworms/HomeandData/Components/url.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
@@ -90,11 +91,14 @@ class _RegisterPageState extends State<RegisterPage> {
         var snackBar =
             SnackBar(content: Text("Those passwords didn't match. Try again."));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      } else {
+      } else if (response.statusCode == 200) {
         var snackBar = SnackBar(
             content: Text("You account has been successfully created."));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         Navigator.pop(context);
+      } else {
+        var snackBar = SnackBar(content: Text("Failed to register."));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
     } catch (e) {
       print('Failed to connect to server: $e');
