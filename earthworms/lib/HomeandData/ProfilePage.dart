@@ -57,7 +57,6 @@ class _ProfilepageState extends State<Profilepage> {
     super.initState();
     email = widget.email;
     topic = '$email/flora';
-
   }
 
 // Unsubscribe mqtt topic
@@ -686,6 +685,7 @@ class _ProfilepageState extends State<Profilepage> {
                       Navigator.of(context).pop();
                       Navigator.of(context).pop();
                       Navigator.of(context).pop();
+                      passwordController.clear();
                     },
                   ),
                 ],
