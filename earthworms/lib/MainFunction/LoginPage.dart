@@ -145,18 +145,6 @@ class _LoginPageState extends State<LoginPage> {
         await saveData('Token', DBtoken);
         await saveData('user_id', id);
         await saveData('email', DBemail);
-        String? token = await loadData('Token');
-        String? user_id = await loadData('user_id');
-        String? email = await loadData('email');
-        print("SharePreference Token: $token");
-        print("SharePreference user_id: $user_id");
-        print("SharePreference email: $email");
-        print("sensorIdList: $sensorIdList");
-        print("Sensor List: $sensorIdList");
-        print("SensornameList: $sensorNameList");
-        print("macAddressList: $macAddressList");
-        print("GpioList: $GpioList");
-        print("modeList: $modeList");
       } else {
         var snackBar = SnackBar(
             content:
