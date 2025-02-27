@@ -7,6 +7,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -277,6 +278,25 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
       url = ApiUrl.IOSgetTimeseries;
     }
 
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SizedBox(
+            width: 300,
+            height: 100,
+            child: Center(
+              child: LoadingAnimationWidget.halfTriangleDot(
+                color: Color(0xff0e4f55),
+                size: 50,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
     try {
       final response = await http.post(Uri.parse(url),
           headers: <String, String>{
@@ -284,7 +304,7 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
             'Authorization': 'Bearer $token',
           },
           body: jsonEncode(json));
-
+      Navigator.pop(context);
       if (response.statusCode == 200) {
         var decodedData = jsonDecode(response.body);
         print('Decoded Data: $decodedData');
@@ -307,7 +327,7 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
             });
           } else if (_period == 'Year') {
             _data = List.generate(12, (index) {
-              final String x = (index+1).toString().padLeft(2, '0');
+              final String x = (index + 1).toString().padLeft(2, '0');
               final data = decodedData.firstWhere((item) => item['x'] == x,
                   orElse: () => {"x": x, "avg_humidity": 0});
               return data;
@@ -487,15 +507,9 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
           ),
           extraLinesData: ExtraLinesData(horizontalLines: [
             HorizontalLine(
-                y: 40,
-                color: Colors.red,
-                strokeWidth: 3,
-                dashArray: [25, 5]),
+                y: 40, color: Colors.red, strokeWidth: 3, dashArray: [25, 5]),
             HorizontalLine(
-                y: 15,
-                color: Colors.blue,
-                strokeWidth: 3,
-                dashArray: [25, 5]),
+                y: 15, color: Colors.blue, strokeWidth: 3, dashArray: [25, 5]),
           ]),
         ),
       ),

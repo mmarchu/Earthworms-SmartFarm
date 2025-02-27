@@ -224,7 +224,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           //print(pt);
           if (c[0].topic == topic) {
             _MQTTtoJsonList(pt);
-            print(pt);
+            //print(pt);
           }
         }
       });

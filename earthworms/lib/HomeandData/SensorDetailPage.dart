@@ -378,7 +378,7 @@ class _SensorDetailPageState extends State<SensorDetailPage>
         //print(pt);
         if (c[0].topic == topic) {
           _MQTTtoJsonList(pt);
-          print(pt);
+          //print(pt);
         }
       }
     });

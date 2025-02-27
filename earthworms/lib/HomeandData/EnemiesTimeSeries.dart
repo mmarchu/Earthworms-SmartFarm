@@ -95,7 +95,7 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
   }
 
 // Send this month to Api
-  void _SendThisMonthToApi() {
+  void _SendThisMonthToApi() async {
     final today = DateTime.now();
     final json = {
       "date": DateFormat('yyyy-MM-dd').format(today),
@@ -105,7 +105,13 @@ class _EnemiesTimeSeriesState extends State<EnemiesTimeSeries> {
     print(displayDate);
     _updateMonthApi(monthSelected);
     _updateDateData(displayDate);
-    _send2Api(json, "Rat", monthSelected);
+    await _sendDataToApiPieChart(json);
+
+    if (TypeEnemies.isNotEmpty) {
+      _send2Api(json, TypeEnemies[0], monthSelected);
+    } else {
+      print("TypeEnemies is empty, cannot send data.");
+    }
   }
 
 // update display Date

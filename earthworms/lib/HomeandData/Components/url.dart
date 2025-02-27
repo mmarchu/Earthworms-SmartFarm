@@ -331,185 +331,185 @@
 // }
 
 //Server Third PC
-// class ApiUrl {
-//   //Login
-//   static const String ANDlogin =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/auth/login'; // 'http://192.168.1.40:4000/api/auth/login';
-//   static const String IOSlogin =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/auth/login'; // 'http://192.168.1.40:4000/api/auth/login';
-//   //Register
-//   static const String ANDregister =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/auth/register'; // 'http://192.168.1.40:4000/api/auth/register'
-//   static const String IOSregister =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/auth/register'; // 'http://192.168.1.40:4000/api/auth/register'
-
-//   //Get One User
-//   static const String ANDgetoneuser =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/auth/getoneuser'; // 'http://192.168.1.40:4000/api/auth/getoneuser'
-//   static const String IOSgetoneuser =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/auth/getoneuser'; // 'http://192.168.1.40:4000/api/auth/getoneuser'
-
-//   //Create Sensor
-//   static const String ANDcreatesensor =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/sensor/create'; //  'http://192.168.1.40:4000/api/sensor/create'
-//   static const String IOScreatesensor =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/sensor/create'; // 'http://192.168.1.40:4000/api/sensor/create'
-
-//   //Delete Sensor
-//   static const String ANDdeletesensor =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/sensor/delete'; // 'http://192.168.1.40:4000/api/sensor/delete'
-//   static const String IOSdeletesensor =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/sensor/delete'; // 'http://192.168.1.40:4000/api/sensor/delete';
-
-//   //Update Sensor Name
-//   static const String ANDupdateSensorName =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/sensor/update'; // 'http://192.168.1.40:4000/api/sensor/update'
-//   static const String IOSupdateSensorName =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/sensor/update'; // 'http://192.168.1.40:4000/api/sensor/update'
-
-//   //WaterPump Mode Update
-//   static const String ANDwaterpumpMode =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/gpio/update'; // 'http://192.168.1.40:4000/api/gpio/state;
-//   static const String IOSwaterpumpMode =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/gpio/update'; // 'http://192.168.1.40:4000/api/gpio/state';
-
-//   //WaterPump Power Update
-//   static const String ANDwaterpumpPower =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/gpio/state'; // 'http://192.168.1.40:4000/api/gpio/state;
-//   static const String IOSwaterpumpPower =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/gpio/state'; // 'http://192.168.1.40:4000/api/gpio/state';
-
-//   //Get Data TimeSeries
-//   static const String ANDgetTimeseries =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/timeSeries/get'; // 'http://192.168.1.40:4000/api/timeSeries/get'
-//   static const String IOSgetTimeseries =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/timeSeries/get'; // 'http://192.168.1.40:4000/api/timeSeries/get'
-
-//   //Log Enemies PieChart
-//   static const String ANDGetLogEnemiesPieChart =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/logEnemies/getAll';
-//   static const String IOSGetLogEnemiesPieChart =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/logEnemies/getAll';
-
-//   //Log Enemies ListView
-//   static const String ANDGetLogEnemieListView =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/logEnemies/getDetail';
-//   static const String IOSGetLogEnemiesListview =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/logEnemies/getDetail';
-
-//   //Get Image Enemies
-//   static const String ANDGetImageEnemy =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/logEnemies/getimg';
-//   static const String IOSGetImageEnemy =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/logEnemies/getimg';
-
-//   //Change Password
-//   static const String ANDchangePassword =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/auth/changepassword';
-//   static const String IOSchangePassword =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/auth/changepassword';
-
-//   //Change Email
-//   static const String ANDchangeEmail =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/auth/changemail';
-//   static const String IOSchangeEmail =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/auth/changemail';
-
-//   //Delete Account
-//   static const String ANDdeleteAccount =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/auth/delete_user';
-//   static const String IOSdeleteAccount =
-//       'https://xw5g98r7-4000.asse.devtunnels.ms/api/auth/delete_user';
-// }
-
-// //Server Third Macbook
 class ApiUrl {
   //Login
   static const String ANDlogin =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/auth/login'; // 'http://192.168.1.40:4000/api/auth/login';
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/auth/login'; // 'http://192.168.1.40:4000/api/auth/login';
   static const String IOSlogin =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/auth/login'; // 'http://192.168.1.40:4000/api/auth/login';
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/auth/login'; // 'http://192.168.1.40:4000/api/auth/login';
   //Register
   static const String ANDregister =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/auth/register'; // 'http://192.168.1.40:4000/api/auth/register'
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/auth/register'; // 'http://192.168.1.40:4000/api/auth/register'
   static const String IOSregister =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/auth/register'; // 'http://192.168.1.40:4000/api/auth/register'
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/auth/register'; // 'http://192.168.1.40:4000/api/auth/register'
 
   //Get One User
   static const String ANDgetoneuser =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/auth/getoneuser'; // 'http://192.168.1.40:4000/api/auth/getoneuser'
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/auth/getoneuser'; // 'http://192.168.1.40:4000/api/auth/getoneuser'
   static const String IOSgetoneuser =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/auth/getoneuser'; // 'http://192.168.1.40:4000/api/auth/getoneuser'
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/auth/getoneuser'; // 'http://192.168.1.40:4000/api/auth/getoneuser'
 
   //Create Sensor
   static const String ANDcreatesensor =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/sensor/create'; //  'http://192.168.1.40:4000/api/sensor/create'
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/sensor/create'; //  'http://192.168.1.40:4000/api/sensor/create'
   static const String IOScreatesensor =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/sensor/create'; // 'http://192.168.1.40:4000/api/sensor/create'
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/sensor/create'; // 'http://192.168.1.40:4000/api/sensor/create'
 
   //Delete Sensor
   static const String ANDdeletesensor =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/sensor/delete'; // 'http://192.168.1.40:4000/api/sensor/delete'
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/sensor/delete'; // 'http://192.168.1.40:4000/api/sensor/delete'
   static const String IOSdeletesensor =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/sensor/delete'; // 'http://192.168.1.40:4000/api/sensor/delete';
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/sensor/delete'; // 'http://192.168.1.40:4000/api/sensor/delete';
 
   //Update Sensor Name
   static const String ANDupdateSensorName =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/sensor/update'; // 'http://192.168.1.40:4000/api/sensor/update'
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/sensor/update'; // 'http://192.168.1.40:4000/api/sensor/update'
   static const String IOSupdateSensorName =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/sensor/update'; // 'http://192.168.1.40:4000/api/sensor/update'
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/sensor/update'; // 'http://192.168.1.40:4000/api/sensor/update'
 
   //WaterPump Mode Update
   static const String ANDwaterpumpMode =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/gpio/update'; // 'http://192.168.1.40:4000/api/gpio/state;
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/gpio/update'; // 'http://192.168.1.40:4000/api/gpio/state;
   static const String IOSwaterpumpMode =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/gpio/update'; // 'http://192.168.1.40:4000/api/gpio/state';
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/gpio/update'; // 'http://192.168.1.40:4000/api/gpio/state';
 
   //WaterPump Power Update
   static const String ANDwaterpumpPower =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/gpio/state'; // 'http://192.168.1.40:4000/api/gpio/state;
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/gpio/state'; // 'http://192.168.1.40:4000/api/gpio/state;
   static const String IOSwaterpumpPower =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/gpio/state'; // 'http://192.168.1.40:4000/api/gpio/state';
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/gpio/state'; // 'http://192.168.1.40:4000/api/gpio/state';
 
   //Get Data TimeSeries
   static const String ANDgetTimeseries =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/timeSeries/get'; // 'http://192.168.1.40:4000/api/timeSeries/get'
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/timeSeries/get'; // 'http://192.168.1.40:4000/api/timeSeries/get'
   static const String IOSgetTimeseries =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/timeSeries/get'; // 'http://192.168.1.40:4000/api/timeSeries/get'
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/timeSeries/get'; // 'http://192.168.1.40:4000/api/timeSeries/get'
 
   //Log Enemies PieChart
   static const String ANDGetLogEnemiesPieChart =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/logEnemies/getAll';
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/logEnemies/getAll';
   static const String IOSGetLogEnemiesPieChart =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/logEnemies/getAll';
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/logEnemies/getAll';
 
   //Log Enemies ListView
   static const String ANDGetLogEnemieListView =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/logEnemies/getDetail';
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/logEnemies/getDetail';
   static const String IOSGetLogEnemiesListview =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/logEnemies/getDetail';
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/logEnemies/getDetail';
 
   //Get Image Enemies
   static const String ANDGetImageEnemy =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/logEnemies/getimg';
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/logEnemies/getimg';
   static const String IOSGetImageEnemy =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/logEnemies/getimg';
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/logEnemies/getimg';
 
   //Change Password
   static const String ANDchangePassword =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/auth/changepassword';
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/auth/changepassword';
   static const String IOSchangePassword =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/auth/changepassword';
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/auth/changepassword';
 
   //Change Email
   static const String ANDchangeEmail =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/auth/changemail';
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/auth/changemail';
   static const String IOSchangeEmail =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/auth/changemail';
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/auth/changemail';
 
   //Delete Account
   static const String ANDdeleteAccount =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/auth/delete_user';
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/auth/delete_user';
   static const String IOSdeleteAccount =
-      'https://t6gnkw3g-4000.asse.devtunnels.ms/api/auth/delete_user';
+      'https://2jfd14df-4000.asse.devtunnels.ms/api/auth/delete_user';
 }
+
+// //Server Third Macbook
+// class ApiUrl {
+//   //Login
+//   static const String ANDlogin =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/auth/login'; // 'http://192.168.1.40:4000/api/auth/login';
+//   static const String IOSlogin =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/auth/login'; // 'http://192.168.1.40:4000/api/auth/login';
+//   //Register
+//   static const String ANDregister =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/auth/register'; // 'http://192.168.1.40:4000/api/auth/register'
+//   static const String IOSregister =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/auth/register'; // 'http://192.168.1.40:4000/api/auth/register'
+
+//   //Get One User
+//   static const String ANDgetoneuser =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/auth/getoneuser'; // 'http://192.168.1.40:4000/api/auth/getoneuser'
+//   static const String IOSgetoneuser =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/auth/getoneuser'; // 'http://192.168.1.40:4000/api/auth/getoneuser'
+
+//   //Create Sensor
+//   static const String ANDcreatesensor =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/sensor/create'; //  'http://192.168.1.40:4000/api/sensor/create'
+//   static const String IOScreatesensor =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/sensor/create'; // 'http://192.168.1.40:4000/api/sensor/create'
+
+//   //Delete Sensor
+//   static const String ANDdeletesensor =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/sensor/delete'; // 'http://192.168.1.40:4000/api/sensor/delete'
+//   static const String IOSdeletesensor =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/sensor/delete'; // 'http://192.168.1.40:4000/api/sensor/delete';
+
+//   //Update Sensor Name
+//   static const String ANDupdateSensorName =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/sensor/update'; // 'http://192.168.1.40:4000/api/sensor/update'
+//   static const String IOSupdateSensorName =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/sensor/update'; // 'http://192.168.1.40:4000/api/sensor/update'
+
+//   //WaterPump Mode Update
+//   static const String ANDwaterpumpMode =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/gpio/update'; // 'http://192.168.1.40:4000/api/gpio/state;
+//   static const String IOSwaterpumpMode =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/gpio/update'; // 'http://192.168.1.40:4000/api/gpio/state';
+
+//   //WaterPump Power Update
+//   static const String ANDwaterpumpPower =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/gpio/state'; // 'http://192.168.1.40:4000/api/gpio/state;
+//   static const String IOSwaterpumpPower =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/gpio/state'; // 'http://192.168.1.40:4000/api/gpio/state';
+
+//   //Get Data TimeSeries
+//   static const String ANDgetTimeseries =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/timeSeries/get'; // 'http://192.168.1.40:4000/api/timeSeries/get'
+//   static const String IOSgetTimeseries =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/timeSeries/get'; // 'http://192.168.1.40:4000/api/timeSeries/get'
+
+//   //Log Enemies PieChart
+//   static const String ANDGetLogEnemiesPieChart =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/logEnemies/getAll';
+//   static const String IOSGetLogEnemiesPieChart =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/logEnemies/getAll';
+
+//   //Log Enemies ListView
+//   static const String ANDGetLogEnemieListView =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/logEnemies/getDetail';
+//   static const String IOSGetLogEnemiesListview =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/logEnemies/getDetail';
+
+//   //Get Image Enemies
+//   static const String ANDGetImageEnemy =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/logEnemies/getimg';
+//   static const String IOSGetImageEnemy =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/logEnemies/getimg';
+
+//   //Change Password
+//   static const String ANDchangePassword =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/auth/changepassword';
+//   static const String IOSchangePassword =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/auth/changepassword';
+
+//   //Change Email
+//   static const String ANDchangeEmail =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/auth/changemail';
+//   static const String IOSchangeEmail =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/auth/changemail';
+
+//   //Delete Account
+//   static const String ANDdeleteAccount =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/auth/delete_user';
+//   static const String IOSdeleteAccount =
+//       'https://t6gnkw3g-4000.asse.devtunnels.ms/api/auth/delete_user';
+// }
