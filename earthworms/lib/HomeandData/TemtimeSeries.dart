@@ -191,7 +191,7 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
       final json = {
         "sensor_id": widget.sensorId,
         "period": "monthly",
-        "date": DateFormat('yyyy-MM').format(selectedDate),
+        "date": DateFormat('yyyy-MM-dd').format(selectedDate),
       };
       final displayDate = DateFormat.MMMM('en_US').format(selectedDate);
       print(displayDate);
@@ -308,6 +308,13 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
       if (response.statusCode == 200) {
         var decodedData = jsonDecode(response.body);
         print('Decoded Data: $decodedData');
+        if (_period == 'Week') {
+          decodedData.sort((a, b) {
+            final dateA = DateTime.parse(a['x']);
+            final dateB = DateTime.parse(b['x']);
+            return dateA.compareTo(dateB);
+          });
+        }
         setState(() {
           _data = decodedData;
           period = _period;
@@ -479,7 +486,13 @@ class _TemtimeSeriesPageState extends State<TemtimeSeriesPage> {
                       title = TitleDay[value.toInt()] ?? '';
                     } else if (period == 'Week') {
                       if (value.toInt() < _data.length) {
-                        title = _data[value.toInt()]['x'].toString();
+                        final rawDate = _data[value.toInt()]['x'];
+                        if (rawDate != null) {
+                          DateTime parsedDate = DateTime.parse(rawDate);
+                          title = parsedDate.day.toString();
+                        } else {
+                          title = '';
+                        }
                       }
                     } else if (period == 'Month') {
                       title = TitleMonth[value.toInt()] ?? '';

@@ -146,7 +146,7 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
       final displayDate = DateFormat.MMMM('en_US').format(selectedDate);
       print(displayDate);
       _updateDateData(displayDate);
-      //print(json);
+      print(json);
       _sendDataToApi(json, 'Month');
     }
   }
@@ -278,7 +278,7 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
       url = ApiUrl.IOSgetTimeseries;
     }
 
-   showDialog(
+    showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
@@ -308,6 +308,13 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
       if (response.statusCode == 200) {
         var decodedData = jsonDecode(response.body);
         print('Decoded Data: $decodedData');
+        if (_period == 'Week') {
+          decodedData.sort((a, b) {
+            final dateA = DateTime.parse(a['x']);
+            final dateB = DateTime.parse(b['x']);
+            return dateA.compareTo(dateB);
+          });
+        }
         setState(() {
           _data = decodedData;
           period = _period;
@@ -327,7 +334,7 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
             });
           } else if (_period == 'Year') {
             _data = List.generate(12, (index) {
-              final String x = (index+1).toString().padLeft(2, '0');
+              final String x = (index + 1).toString().padLeft(2, '0');
               final data = decodedData.firstWhere((item) => item['x'] == x,
                   orElse: () => {"x": x, "avg_humidity": 0});
               return data;
@@ -479,7 +486,13 @@ class _HTimeSeriesPageState extends State<HTimeSeriesPage> {
                       title = TitleDay[value.toInt()] ?? '';
                     } else if (period == 'Week') {
                       if (value.toInt() < _data.length) {
-                        title = _data[value.toInt()]['x'].toString();
+                        final rawDate = _data[value.toInt()]['x'];
+                        if (rawDate != null) {
+                          DateTime parsedDate = DateTime.parse(rawDate);
+                          title = parsedDate.day.toString();
+                        } else {
+                          title = '';
+                        }
                       }
                     } else if (period == 'Month') {
                       title = TitleMonth[value.toInt()] ?? '';
