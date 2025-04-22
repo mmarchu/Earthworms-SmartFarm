@@ -28,6 +28,7 @@ Future<String?> loadData(String key) async {
 Future<int> CheckToken() async {
   String? token = await loadData('Token');
   String? idString = await loadData('user_id');
+  String? email = await loadData('email');
   var url;
   if (Platform.isAndroid) {
     url = ApiUrl.ANDgetoneuser;
@@ -51,6 +52,12 @@ Future<int> CheckToken() async {
   int? id = int.tryParse(idString);
   if (id == null) {
     print('int id null jaaa');
+    return 401;
+  }
+
+  int MQTTresult = await ConMqtt(email!);
+  if(MQTTresult == 401){
+    print("Can not connect MQTT");
     return 401;
   }
 
@@ -100,7 +107,6 @@ class MyApp extends StatelessWidget {
             } else {
               if (snapshot.hasError || snapshot.data == 401) {
                 print('back to login');
-                // UnSubMQTT();
                 return LoginPage();
               } else {
                 print('go to homepage');
@@ -129,7 +135,7 @@ class MyApp extends StatelessWidget {
                   powerList = DBSensorsDynamic.map(
                       (item) => item['power'].toString() == '1').toList();
                 }
-                ConMqtt(DBemail);
+                //ConMqtt(DBemail);
                 return HomePage(
                   id: id,
                   name: DBname,

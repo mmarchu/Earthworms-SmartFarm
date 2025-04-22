@@ -53,7 +53,7 @@ Future<int> ConMqtt(String email) async {
     print(
         'Client connection failed - disconnecting, status is ${client.connectionStatus}');
     client.disconnect();
-    exit(-1);
+    return 401;
   }
 
   // Subscribe Sensor Topic
@@ -81,7 +81,7 @@ void onDisconnected() {
       MqttDisconnectionOrigin.solicited) {
     print('OnDisconnected callback is solicited, this is correct');
   }
-  exit(-1);
+  // exit(-1);
 }
 
 /// The successful connect callback
