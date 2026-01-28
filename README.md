@@ -34,3 +34,12 @@ The mobile application communicates with the backend system using the MQTT proto
 - No in-app notifications are provided
 - All alert and notification messages are handled externally through LINE Messaging API
 - The application does not perform AI processing
+
+<h2>Project Contributors</h2>
+<ul>
+  <li>Ammar Chuapoodee</li>
+    <span>Role: Flutter Mobile Application Development</span>
+  <li>Bovornpol Jiturai</li>
+   <span>Role: <a href=https://github.com/thirds1000rr/SmatFarm_nodejs_sql>Backend Development</a> & <a href=https://github.com/thirds1000rr/RasberryPi5_MiFlora.git>IoT Integration</a></span>
+  
+</ul>
